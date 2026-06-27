@@ -1,0 +1,1 @@
+to edit mgcb: dotnet tool run mgcb-editor-mac ./Content/Content.mgcb
