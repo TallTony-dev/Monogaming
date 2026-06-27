@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Monogaming;
 
-public class Monogaming : Game
+public class MeowGame : Game
 {
     private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    public static SpriteBatch SpriteBatch { get; private set; }
 
 
-    public Monogaming()
+    public MeowGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
@@ -26,10 +26,9 @@ public class Monogaming : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        SpriteBatch = new SpriteBatch(GraphicsDevice);
 
         Textures.LoadTextures(Content);
-
     }
 
     protected override void Update(GameTime gameTime)
@@ -38,7 +37,7 @@ public class Monogaming : Game
             Exit();
 
         // TODO: Add your update logic here
-
+        
         base.Update(gameTime);
     }
 
@@ -46,13 +45,12 @@ public class Monogaming : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        SpriteBatch.Begin();
 
-        _spriteBatch.Begin();
-    
-        _spriteBatch.Draw(Textures.Get2DTex("Icon"), new Vector2(0,0), Color.White);
-        
-        _spriteBatch.End();
+        SpriteBatch.Draw(Textures.Get2DTex("Icon"), new Vector2(0,0), Color.White);
+
+
+        SpriteBatch.End();
 
 
         base.Draw(gameTime);

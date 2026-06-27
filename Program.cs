@@ -1,2 +1,2 @@
-﻿using var game = new Monogaming.Monogaming();
+﻿using var game = new Monogaming.MeowGame();
 game.Run();
