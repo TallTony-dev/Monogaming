@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Monogaming;
+namespace Monogaming.TextureThings;
 
 public static class Textures
 {
@@ -24,7 +24,7 @@ public static class Textures
 
     private static readonly string[] texturesToLoad =
     {
-        "Icon"
+        "Icon", "book", "stickers"
     };
 
     public static void LoadTextures(ContentManager content)

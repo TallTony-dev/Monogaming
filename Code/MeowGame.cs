@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Monogaming.Entities;
+using Monogaming.TextureThings;
 
 namespace Monogaming;
 
@@ -8,6 +11,7 @@ public class MeowGame : Game
 {
     private GraphicsDeviceManager _graphics;
     public static SpriteBatch SpriteBatch { get; private set; }
+
 
 
     public MeowGame()
@@ -35,8 +39,8 @@ public class MeowGame : Game
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-
-        // TODO: Add your update logic here
+        InputManager.Update();
+        
         
         base.Update(gameTime);
     }
