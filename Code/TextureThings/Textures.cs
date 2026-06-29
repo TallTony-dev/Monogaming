@@ -24,7 +24,7 @@ public static class Textures
 
     private static readonly string[] texturesToLoad =
     {
-        "Icon", "book", "stickers"
+        "Icon"
     };
 
     public static void LoadTextures(ContentManager content)
