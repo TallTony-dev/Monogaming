@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,7 +17,7 @@ public class MeowGame : Game
     Camera camera;
 
     Entity testEntity = new(new Vector2(100, 100), 100, 50, "Icon");
-
+    Entity testEntity2 = new(new Vector2(100, 100), 100, 400, "Icon");
     public MeowGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -50,6 +51,8 @@ public class MeowGame : Game
             Exit();
         InputManager.Update();
         
+        testEntity.SetPos(new Vector2(500 * MathF.Cos((float)gameTime.TotalGameTime.TotalSeconds), 
+        500 * MathF.Sin((float)gameTime.TotalGameTime.TotalSeconds)));
 
         camera.Update(gameTime, testEntity.hitbox.Center);
         
@@ -63,6 +66,7 @@ public class MeowGame : Game
         SpriteBatch.Begin(transformMatrix: camera.CameraMatrix);
 
         //SpriteBatch.Draw(Textures.Get2DTex("Icon"), new Vector2(0,0), Color.White);
+        testEntity2.Draw(SpriteBatch);
         testEntity.Draw(SpriteBatch);
 
         SpriteBatch.End();

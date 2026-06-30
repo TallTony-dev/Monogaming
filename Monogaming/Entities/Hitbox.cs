@@ -22,9 +22,13 @@ public class Hitbox
     public int Width { get; protected set; }
     public int Height { get; protected set; }
 
-    public void UpdatePos()
+    public virtual void SetPos(Vector2 pos)
     {
-        
+        Pos = pos;
+    }
+    public virtual void UpdatePos(Vector2 deltaPos)
+    {
+        Pos += deltaPos;
     }
 
     public bool Intersects(Hitbox hitbox)

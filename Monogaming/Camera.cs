@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.Xna.Framework;
 using Monogaming;
@@ -8,37 +7,44 @@ public class Camera
 {
     GraphicsDeviceManager graphicsRef;
     GameWindow gameWindowRef;
-    Vector2 pos;
+    Vector2 prevTarget = Vector2.Zero;
 
     // const int screenDim = 1000;
+    private float trackSpeed;
 
-    float scale = 1;
+    private float scale = 1;
 
-    public Matrix CameraMatrix { get; private set; } = new Matrix();
+    public Matrix CameraMatrix 
+    { get
+        {
+            Matrix m = Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
+            m *= Matrix.CreateScale(scale, scale, 0);
+            m *= Matrix.CreateTranslation((float)gameWindowRef.ClientBounds.Width / 2, (float)gameWindowRef.ClientBounds.Height / 2, 0);
+            return m;
+        }
+    }
 
-    public Camera(GraphicsDeviceManager graphics, GameWindow window)
+    public Camera(GraphicsDeviceManager graphics, GameWindow window, 
+    float trackSpeed = 0.2f)
     {
+        this.trackSpeed = trackSpeed;
         graphicsRef = graphics;
         gameWindowRef = window;
-        UpdateScaling();
     }
 
-    public void Update(GameTime t, Vector2 playerPos)
+    public void Update(GameTime t, Vector2 trackingPos, bool snapToPos = false)
     {
-        pos = playerPos;
-        scale = 1 + MathF.Sin((float)t.TotalGameTime.TotalSeconds) * 0.5f;
-        UpdateScaling();
-    }
-    
-    public void UpdateScaling()
-    {
-        Matrix m = Matrix.CreateTranslation(new Vector3(-pos.X, -pos.Y, 0));
-        // float xScale = (float)gameWindowRef.ClientBounds.Width / screenDim;
-        // float yScale = (float)gameWindowRef.ClientBounds.Height / screenDim;
-        // m *= Matrix.CreateScale(xScale, yScale, 1);
-        m *= Matrix.CreateScale(scale, scale, 0);
-        m *= Matrix.CreateTranslation((float)gameWindowRef.ClientBounds.Width / 2, (float)gameWindowRef.ClientBounds.Height / 2, 0);
-        CameraMatrix = m;
+        //Scale = 1 + MathF.Sin((float)t.TotalGameTime.TotalSeconds) * 0.5f;
+        if (!snapToPos) {
+            float dt = (float)t.ElapsedGameTime.TotalSeconds;
+            Vector2 deltaPos = trackingPos - prevTarget;
+            Vector2 newTarget = deltaPos * trackSpeed * dt * deltaPos.LengthSquared() * 0.0005f;
+            prevTarget += newTarget;
+        }
+        else
+        {
+            prevTarget = trackingPos;
+        }
     }
 
 }

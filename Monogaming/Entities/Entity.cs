@@ -29,6 +29,17 @@ public class Entity : ImDrawable, ImUpdatable
         
     }
 
+    public virtual void SetPos(Vector2 pos)
+    {
+        //should be private
+        hitbox.SetPos(pos);
+    }
+    public virtual void UpdatePos(Vector2 deltaPos)
+    {
+        //should be private
+        hitbox.UpdatePos(deltaPos);
+    }
+
     public virtual void Draw(SpriteBatch spriteBatch)
     {
         if (!String.IsNullOrEmpty(textureId))
