@@ -18,9 +18,10 @@ public class Entity : ImDrawable, ImUpdatable
 
     protected string textureId = "";
 
-    public Entity(Vector2 startPos, int width, int height)
+    public Entity(Vector2 startPos, int width, int height, string textureId)
     {
         hitbox = new Hitbox(startPos, width, height);
+        this.textureId = textureId;
     }
 
     public virtual void Update(GameTime gameTime)
@@ -28,11 +29,11 @@ public class Entity : ImDrawable, ImUpdatable
         
     }
 
-    public virtual void Draw()
+    public virtual void Draw(SpriteBatch spriteBatch)
     {
         if (!String.IsNullOrEmpty(textureId))
         {
-            MeowGame.SpriteBatch.Draw(Textures.Get2DTex(textureId), 
+            spriteBatch.Draw(Textures.Get2DTex(textureId), 
             hitbox.AsRect(), Color.White);
         }
     }

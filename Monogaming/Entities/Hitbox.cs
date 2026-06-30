@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 
 namespace Monogaming.Entities;
@@ -11,8 +12,20 @@ public class Hitbox
         Height = height;
     }
     public Vector2 Pos { get; protected set; }
+    public Vector2 Center
+    {
+        get
+        {
+            return new Vector2(Pos.X + Width / 2, Pos.Y + Height / 2);
+        }
+    }
     public int Width { get; protected set; }
     public int Height { get; protected set; }
+
+    public void UpdatePos()
+    {
+        
+    }
 
     public bool Intersects(Hitbox hitbox)
     {
@@ -28,4 +41,5 @@ public class Hitbox
     {
         return new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height);
     }
+
 }

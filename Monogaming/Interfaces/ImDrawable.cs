@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Monogaming.Interfaces;
 
@@ -6,5 +7,5 @@ public interface ImDrawable
 {
     bool IsVisible { get; } //controls if should be drawn
 
-    void Draw(); //should use the static spritebatch in implementation
+    void Draw(SpriteBatch spriteBatch);
 }

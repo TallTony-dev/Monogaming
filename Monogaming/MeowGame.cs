@@ -10,9 +10,12 @@ namespace Monogaming;
 public class MeowGame : Game
 {
     private GraphicsDeviceManager _graphics;
-    public static SpriteBatch SpriteBatch { get; private set; }
+    private SpriteBatch SpriteBatch;
 
+    Map map;
+    Camera camera;
 
+    Entity testEntity = new(new Vector2(100, 100), 100, 50, "Icon");
 
     public MeowGame()
     {
@@ -24,6 +27,9 @@ public class MeowGame : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        camera = new(_graphics, Window);
+        Window.AllowUserResizing = true;
+        //Window.ClientSizeChanged += some ui update function
 
         base.Initialize();
     }
@@ -31,6 +37,9 @@ public class MeowGame : Game
     protected override void LoadContent()
     {
         SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+        map = new();
+
 
         Textures.LoadTextures(Content);
     }
@@ -41,6 +50,8 @@ public class MeowGame : Game
             Exit();
         InputManager.Update();
         
+
+        camera.Update(gameTime, testEntity.hitbox.Center);
         
         base.Update(gameTime);
     }
@@ -49,10 +60,10 @@ public class MeowGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        SpriteBatch.Begin();
+        SpriteBatch.Begin(transformMatrix: camera.CameraMatrix);
 
-        SpriteBatch.Draw(Textures.Get2DTex("Icon"), new Vector2(0,0), Color.White);
-
+        //SpriteBatch.Draw(Textures.Get2DTex("Icon"), new Vector2(0,0), Color.White);
+        testEntity.Draw(SpriteBatch);
 
         SpriteBatch.End();
 
