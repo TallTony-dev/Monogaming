@@ -25,3 +25,9 @@
 /processorParam:TextureFormat=Color
 /build:Icon.bmp
 
+#begin testshader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:testshader.fx
+

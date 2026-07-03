@@ -14,13 +14,28 @@ public class Camera
 
     private float scale = 1;
 
-    public Matrix CameraMatrix 
+    /// <summary>
+    /// View matrix to be passed when starting spritebatch
+    /// </summary>
+    public Matrix ViewMatrix 
     { get
         {
             Matrix m = Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
             m *= Matrix.CreateScale(scale, scale, 0);
             m *= Matrix.CreateTranslation((float)gameWindowRef.ClientBounds.Width / 2, (float)gameWindowRef.ClientBounds.Height / 2, 0);
             return m;
+        }
+    }
+
+    /// <summary>
+    /// View-Projection matrix to be passed into vertex shader
+    /// </summary>
+    public Matrix ViewProjMatrix 
+    { get
+        {
+            Matrix m = ViewMatrix;
+            return m * Matrix.CreateOrthographicOffCenter(0, graphicsRef.GraphicsDevice.Viewport.Width, 
+            graphicsRef.GraphicsDevice.Viewport.Height, 0, 0, 1);
         }
     }
 
