@@ -10,8 +10,8 @@ namespace Monogaming.Entities;
 
 public class Entity : ImDrawable, ImUpdatable
 {
-    public bool IsVisible { get; private set; }
-    public bool IsActive { get; private set; } // determines if should be updated
+    public bool IsVisible { get; private set; } = true;
+    public bool IsActive { get; private set; } = true; // determines if should be updated
     
     public Hitbox hitbox;
 
@@ -28,24 +28,28 @@ public class Entity : ImDrawable, ImUpdatable
     {
         
     }
-
+    //TEMPTEMPTEMP
     public virtual void SetPos(Vector2 pos)
     {
         //should be private
         hitbox.SetPos(pos);
     }
+
     public virtual void UpdatePos(Vector2 deltaPos)
     {
         //should be private
         hitbox.UpdatePos(deltaPos);
     }
 
-    public virtual void Draw(SpriteBatch spriteBatch)
+    public virtual void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {
-        if (!String.IsNullOrEmpty(textureId))
+        if (screen.Intersects(hitbox))
         {
-            spriteBatch.Draw(Textures.Get2DTex(textureId), 
-            hitbox.AsRect(), Color.White);
+            if (!String.IsNullOrEmpty(textureId))
+            {
+                spriteBatch.Draw(Textures.Get2DTex(textureId), 
+                hitbox.AsRect(), Color.White);
+            }
         }
     }
 }

@@ -32,10 +32,15 @@ PixelInput SpriteVertexShader(VertexInput v) {
 }
 float4 SpritePixelShader(PixelInput p) : SV_TARGET {
 	float2 uv = p.TexCoord.xy;
-
+	//uv is from 0-1
     uv.x += sin(uv.y * 20.0 - time * 4.0) * 0.05; 
-    
+
     float4 diffuse = tex2D(TextureSampler, uv);
+
+	if (floor(p.Position.y) % 4 == 0) {
+		diffuse.rgba = 0;
+	}
+
     return diffuse * p.Color;
 }
 

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 
@@ -5,6 +6,14 @@ namespace Monogaming.Entities;
 
 public class Hitbox
 {
+
+    public static Hitbox Max {
+        get {
+            Hitbox hitbox = new(new Vector2(int.MinValue / 2, int.MinValue / 2), int.MaxValue, int.MaxValue);
+            return hitbox;
+        }
+    }
+
     public Hitbox(Vector2 startPos, int width, int height)
     {
         Pos = startPos;

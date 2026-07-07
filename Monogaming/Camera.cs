@@ -39,6 +39,16 @@ public class Camera
         }
     }
 
+    public Hitbox Screen
+    {
+        get
+        {
+            int width = graphicsRef.GraphicsDevice.Viewport.Width;
+            int height = graphicsRef.GraphicsDevice.Viewport.Height;
+            return new Hitbox(new Vector2(prevTarget.X - width/2, prevTarget.Y - height/2), width, height);
+        }
+    }
+
     public Camera(GraphicsDeviceManager graphics, GameWindow window, 
     float trackSpeed = 0.2f)
     {
