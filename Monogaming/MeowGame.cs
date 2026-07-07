@@ -22,17 +22,17 @@ public class MeowGame : Game
     SpriteFont font;
 
     Effect testEffect;
+
+    //TEMP:
     Entity testEntity;
     Entity testEntity2;
 
-
-
-    Wave testWave = new(new Vector2(0, 0), 300, 100, 10, 1);
-    Wave testWave2 = new(new Vector2(0, 100), 300, 100, 10, 1, MathF.PI * 4);
-    Wave testWavesum;
-
     List<ImUpdatable> activeUpdatables = new();
     List<ImDrawable> activeDrawables = new();
+    float timeSinceCleared = 0;
+    RenderTarget2D testTarget;
+    //:TEMP
+
 
     public MeowGame()
     {
@@ -46,6 +46,7 @@ public class MeowGame : Game
         // TODO: Add your initialization logic here
         camera = new(_graphics, Window);
         Window.AllowUserResizing = true;
+        Window.Title = "Fun awesome game :)";
         //Window.ClientSizeChanged += some ui update function
 
         testEntity = new(new Vector2(100, 100), 100, 50, "Icon");
@@ -55,12 +56,9 @@ public class MeowGame : Game
         activeDrawables.Add(testEntity);
         activeDrawables.Add(testEntity2);
 
-        activeUpdatables.Add(testWave);
-        activeUpdatables.Add(testWave2);
-
         testEffect = Content.Load<Effect>("testshader");
-
-        Wave.Initialize(Content, GraphicsDevice);
+        testTarget = new RenderTarget2D(GraphicsDevice, 1000, 1000, 
+        false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
 
 
         base.Initialize();
@@ -94,7 +92,7 @@ public class MeowGame : Game
             Exit();
         InputHelper.UpdateSetup();
         float s = (float)gameTime.TotalGameTime.TotalSeconds;
-        testEntity.SetPos(new Vector2(200 * MathF.Cos(s), 
+        testEntity.SetPos(new Vector2(400/*200 * MathF.Cos(s)*/, 
         200 * MathF.Sin(s + 10) + 100 * MathF.Cos(s / 2)));
 
         foreach (ImUpdatable e in activeUpdatables)
@@ -105,19 +103,10 @@ public class MeowGame : Game
             }
         }
 
-        testWave.PhaseDiff += (float)(4 * gameTime.ElapsedGameTime.TotalSeconds);
-        testWavesum = testWave.Sum(testWave2);
-        testWavesum.SetPos(new Vector2(0, 200));
-        testWavesum.Update(gameTime);
+
         if (click.Pressed())
         {
-            float score = testWavesum.Amplitude;
-            switch (score)
-            {
-                case < 0.3f : lastPerformance = "Perfect!"; break;
-                case < 0.5f : lastPerformance = "Good"; break;
-                default: lastPerformance = "bad"; break;
-            }
+
         }
 
         camera.Update(gameTime, testEntity.hitbox.Center);
@@ -126,12 +115,17 @@ public class MeowGame : Game
         base.Update(gameTime);
     }
 
+
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
-        testEffect.Parameters["view_projection"].SetValue(camera.ViewProjMatrix);
-        double f = gameTime.TotalGameTime.TotalSeconds;
-        
+        GraphicsDevice.SetRenderTarget(testTarget);
+        if (timeSinceCleared >= 0)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            timeSinceCleared = 0;
+        } else timeSinceCleared += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        testEffect.Parameters["view_projection"].SetValue(camera.ViewProjMatrix);        
         testEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
         SpriteBatch.Begin(transformMatrix: camera.ViewProjMatrix, effect: testEffect);
 
@@ -147,16 +141,19 @@ public class MeowGame : Game
         }
         SpriteBatch.End();
         
+
         SpriteBatch.Begin();
         //ui pass?
         SpriteBatch.DrawString(font, lastPerformance, new Vector2(0,0), Color.Black);
         SpriteBatch.End();
+        
 
+        GraphicsDevice.SetRenderTarget(null);
 
-        testWave.Draw(SpriteBatch, camera.ViewProjMatrix);
-        testWave2.Draw(SpriteBatch, camera.ViewProjMatrix);
-        testWavesum.Draw(SpriteBatch, camera.ViewProjMatrix);
-
+        SpriteBatch.Begin();
+        SpriteBatch.Draw(testTarget, new Rectangle(0,0,Window.ClientBounds.Width, Window.ClientBounds.Height),
+        null, Color.White);
+        SpriteBatch.End();
 
         base.Draw(gameTime);
     }
