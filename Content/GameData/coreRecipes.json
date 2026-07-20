@@ -1,0 +1,28 @@
+{
+    "Title": "recipes",
+    "RecipeBookName": "Core",
+    "core_iron_turret": {
+        "Ingredients": {
+            "core_iron" : 4,
+            "core_wire" : 10
+        },
+        "Outputs": {
+            "core_turret": 1
+        },
+        "Difficulty" : 10,
+        "Workbench": "machiningTable"
+    },
+    "core_ore_iron": {
+        "Ingredients": {
+            "core_ore" : 4
+        },
+        "Outputs": {
+            "core_iron" : 2
+        },
+        "Difficulty" : 0.5,
+        "Workbench": "craftingBench"
+    }
+
+
+
+}

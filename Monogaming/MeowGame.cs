@@ -9,6 +9,7 @@ using Monogaming.Ui;
 using Apos.Input;
 using Monogaming.Interfaces;
 using System.Diagnostics.Metrics;
+using Monogaming.Items;
 
 namespace Monogaming;
 
@@ -70,8 +71,8 @@ public class MeowGame : Game
         SpriteBatch = new SpriteBatch(GraphicsDevice);
         font = Content.Load<SpriteFont>("default");
         map = new();
-
-
+        ItemDict.LoadFromFile("coreItems");
+        RecipeBook.LoadFromFile("coreRecipes");
         Textures.LoadTextures(Content);
     }
 
@@ -149,7 +150,7 @@ public class MeowGame : Game
         
 
         GraphicsDevice.SetRenderTarget(null);
-
+        
         SpriteBatch.Begin();
         SpriteBatch.Draw(testTarget, new Rectangle(0,0,Window.ClientBounds.Width, Window.ClientBounds.Height),
         null, Color.White);

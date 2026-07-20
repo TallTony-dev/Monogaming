@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
+namespace Monogaming.Items;
+
+public static class ItemDict
+{
+    private static Dictionary<string, Item> items = new();
+    
+    public static Item GetNewItem(string itemID)
+    {
+        Item i = items[itemID];
+        return i.Copy();
+    }
+    public static bool ContainsItem(string itemID)
+    {
+        return items.ContainsKey(itemID);
+    }
+
+    public static void LoadFromFile(string fileName)
+    {
+        string path = "./GameData/" + fileName + ".json";
+
+        Stream textStream = File.OpenRead(path);
+        JsonDocument document = JsonDocument.Parse(textStream);
+        JsonElement root = document.RootElement;
+        string title;
+        if ((title = root.GetProperty("Title").GetString()) != "items")
+        {
+            throw new JsonException($"Title of Json at path {path} was unexpected value: {title}.");
+        }
+
+        string name = root.GetProperty("ItemBookName").GetString();
+        int count = 0;
+
+        foreach (JsonProperty obj in root.EnumerateObject())
+        {
+            if (obj.Value.ValueKind == JsonValueKind.Object)
+            {
+                try
+                {
+                    string id = obj.Value.GetProperty("ID").GetString();
+                    items.Add(id, new Item(obj.Name, id,
+                        obj.Value.GetProperty("Category").GetString()));
+                    count++;
+                }
+                catch
+                {
+                    Debug.WriteError($"Failed to parse item {obj} from ItemBook {name}");
+                }
+            }
+        }
+        Debug.WriteInfo($"Parsed {count} items from ItemBook {name}");
+    }
+
+}
