@@ -28,6 +28,11 @@ public class UI : ImDrawable, ImUpdatable
         }
     }
 
+    public void HandleWindowChange(object sender, EventArgs args)
+    {
+        //tell elements to update their sizes to match new window
+    }
+
     public void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {
         foreach (Menu menu in menus)

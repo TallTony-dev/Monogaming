@@ -5,14 +5,13 @@ using Monogaming.Entities;
 
 public class Camera
 {
-    GraphicsDeviceManager graphicsRef;
     GameWindow gameWindowRef;
     Vector2 prevTarget = Vector2.Zero;
 
     // const int screenDim = 1000;
     private float trackSpeed;
 
-    private float scale = 1;
+    private float scale = 1f;
 
     /// <summary>
     /// View matrix to be passed when starting spritebatch
@@ -20,9 +19,9 @@ public class Camera
     public Matrix ViewMatrix 
     { get
         {
-            Matrix m = Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
-            m *= Matrix.CreateScale(scale, scale, 0);
-            m *= Matrix.CreateTranslation((float)gameWindowRef.ClientBounds.Width / 2, (float)gameWindowRef.ClientBounds.Height / 2, 0);
+            Matrix m = Matrix.CreateScale(scale, scale, 0);
+            m *= Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
+            m *= Matrix.CreateTranslation(MeowGame.ScreenWidth / 2, MeowGame.ScreenHeight / 2, 0);
             return m;
         }
     }
@@ -34,8 +33,8 @@ public class Camera
     { get
         {
             Matrix m = ViewMatrix;
-            return m * Matrix.CreateOrthographicOffCenter(0, graphicsRef.GraphicsDevice.Viewport.Width, 
-            graphicsRef.GraphicsDevice.Viewport.Height, 0, 0, 1);
+            return m * Matrix.CreateOrthographicOffCenter(0, MeowGame.ScreenWidth, 
+            MeowGame.ScreenHeight, 0, 0, 1);
         }
     }
 
@@ -43,17 +42,16 @@ public class Camera
     {
         get
         {
-            int width = graphicsRef.GraphicsDevice.Viewport.Width;
-            int height = graphicsRef.GraphicsDevice.Viewport.Height;
+            int width = MeowGame.ScreenWidth;
+            int height = MeowGame.ScreenHeight;
             return new Hitbox(new Vector2(prevTarget.X - width/2, prevTarget.Y - height/2), width, height);
         }
     }
 
-    public Camera(GraphicsDeviceManager graphics, GameWindow window, 
-    float trackSpeed = 0.2f)
+    public Camera(GameWindow window, 
+    float trackSpeed = 0.4f)
     {
         this.trackSpeed = trackSpeed;
-        graphicsRef = graphics;
         gameWindowRef = window;
     }
 

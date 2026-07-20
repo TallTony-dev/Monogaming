@@ -20,6 +20,9 @@ public class MeowGame : Game
 
     Map map;
     Camera camera;
+    RenderTarget2D gameTarget;
+    UI ui;
+
     SpriteFont font;
 
     Effect testEffect;
@@ -31,10 +34,12 @@ public class MeowGame : Game
     List<ImUpdatable> activeUpdatables = new();
     List<ImDrawable> activeDrawables = new();
     float timeSinceCleared = 0;
-    RenderTarget2D testTarget;
-    //:TEMP
 
 
+
+
+    public static readonly int ScreenWidth = 640;
+    public static readonly int ScreenHeight = ScreenWidth / 16 * 9;
     public MeowGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -44,17 +49,16 @@ public class MeowGame : Game
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
-        camera = new(_graphics, Window);
+        camera = new(Window);
+        ui = new();
         Window.AllowUserResizing = true;
         Window.Title = "Fun awesome game :)";
-        //Window.ClientSizeChanged += some ui update function
+        Window.ClientSizeChanged += ui.HandleWindowChange;
 
         testEffect = Content.Load<Effect>("testshader");
-        testTarget = new RenderTarget2D(GraphicsDevice, 1000, 1000, 
+        gameTarget = new RenderTarget2D(GraphicsDevice, ScreenWidth, ScreenHeight, 
         false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
-
-
+        
         base.Initialize();
     }
 
@@ -69,7 +73,7 @@ public class MeowGame : Game
         Textures.LoadTextures(Content, "coreTextures");
         EntityDict.LoadEntities("coreEntities");
 
-        
+
         testEntity = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
         testEntity2 = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
         testEntity2.SetTexture(TextureHandler.TextureType.Walking);
@@ -88,16 +92,14 @@ public class MeowGame : Game
         new GamePadCondition(GamePadButton.A, 0)
     );
 
-    string lastPerformance = "";
-
     protected override void Update(GameTime gameTime)
     {
         if (escape.Pressed())
             Exit();
         InputHelper.UpdateSetup();
         float s = (float)gameTime.TotalGameTime.TotalSeconds;
-        testEntity.SetDrawPos(new Vector2(400/*200 * MathF.Cos(s)*/, 
-        200 * MathF.Sin(s + 10) + 100 * MathF.Cos(s / 2)));
+        testEntity.SetDrawPos(new Vector2(200 * MathF.Sin(s + 10), 
+        100 * MathF.Sin(s + 10) + 100 * MathF.Cos(s / 2)));
 
         foreach (ImUpdatable e in activeUpdatables)
         {
@@ -122,16 +124,18 @@ public class MeowGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.SetRenderTarget(testTarget);
+        GraphicsDevice.SetRenderTarget(gameTarget);
         if (timeSinceCleared >= 0)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             timeSinceCleared = 0;
+
         } else timeSinceCleared += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
 
         testEffect.Parameters["view_projection"].SetValue(camera.ViewProjMatrix);        
         testEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
-        SpriteBatch.Begin(transformMatrix: camera.ViewProjMatrix, effect: testEffect);
+        SpriteBatch.Begin(transformMatrix: camera.ViewProjMatrix, effect: testEffect, samplerState: SamplerState.PointClamp);
 
         //https://github.com/SuRGeoNix/Flyleaf
         //try implementing this for videos
@@ -144,20 +148,17 @@ public class MeowGame : Game
             }
         }
         SpriteBatch.End();
-        
-
-        SpriteBatch.Begin();
-        //ui pass?
-        SpriteBatch.DrawString(font, lastPerformance, new Vector2(0,0), Color.Black);
-        SpriteBatch.End();
-        
 
         GraphicsDevice.SetRenderTarget(null);
         
-        SpriteBatch.Begin();
-        SpriteBatch.Draw(testTarget, new Rectangle(0,0,Window.ClientBounds.Width, Window.ClientBounds.Height),
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        SpriteBatch.Draw(gameTarget, new Rectangle(0,0,Window.ClientBounds.Width, Window.ClientBounds.Height),
         null, Color.White);
         SpriteBatch.End();
+
+        //do ui stuff here probably
+
+
 
         base.Draw(gameTime);
     }
