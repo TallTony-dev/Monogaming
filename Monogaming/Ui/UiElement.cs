@@ -29,7 +29,7 @@ public class UiElement : ImDrawable, ImUpdatable
     {
         if (texture.IsAnimated)
         {
-            ((AnimatedTexture)texture).Update(gameTime);
+            ((TextureAnimation)texture).Update(gameTime);
         }
     }
 

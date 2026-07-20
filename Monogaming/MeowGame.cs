@@ -56,13 +56,6 @@ public class MeowGame : Game
 
 
         base.Initialize();
-        
-        testEntity = new(new Vector2(100, 100), 100, 50, Textures.Get2DTex("core_topLeft"));
-        testEntity2 = new(new Vector2(100, 100), 100, 400,  Textures.GetAnimatedTexture("core_animatedTest"));
-        activeUpdatables.Add(testEntity);
-        activeUpdatables.Add(testEntity2);
-        activeDrawables.Add(testEntity);
-        activeDrawables.Add(testEntity2);
     }
 
     protected override void LoadContent()
@@ -74,6 +67,16 @@ public class MeowGame : Game
         ItemDict.LoadFromFile("coreItems");
         RecipeBook.LoadFromFile("coreRecipes");
         Textures.LoadTextures(Content, "coreTextures");
+        EntityDict.LoadEntities("coreEntities");
+
+        
+        testEntity = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
+        testEntity2 = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
+        testEntity2.SetTexture(TextureHandler.TextureType.Walking);
+        activeUpdatables.Add(testEntity);
+        activeUpdatables.Add(testEntity2);
+        activeDrawables.Add(testEntity);
+        activeDrawables.Add(testEntity2);
     }
 
     ICondition escape = new AnyCondition(
@@ -93,7 +96,7 @@ public class MeowGame : Game
             Exit();
         InputHelper.UpdateSetup();
         float s = (float)gameTime.TotalGameTime.TotalSeconds;
-        testEntity.SetPos(new Vector2(400/*200 * MathF.Cos(s)*/, 
+        testEntity.SetDrawPos(new Vector2(400/*200 * MathF.Cos(s)*/, 
         200 * MathF.Sin(s + 10) + 100 * MathF.Cos(s / 2)));
 
         foreach (ImUpdatable e in activeUpdatables)
@@ -110,7 +113,7 @@ public class MeowGame : Game
 
         }
 
-        camera.Update(gameTime, testEntity.hitbox.Center);
+        camera.Update(gameTime, testEntity.DrawBox.Center);
 
         InputHelper.UpdateCleanup();
         base.Update(gameTime);

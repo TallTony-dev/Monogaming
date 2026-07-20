@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
+using System.Text.Json;
 
 namespace Monogaming.Entities;
 
@@ -13,48 +14,67 @@ public class Entity : ImDrawable, ImUpdatable
     public bool IsVisible { get; private set; } = true;
     public bool IsActive { get; private set; } = true; // determines if should be updated
     
-    public Hitbox hitbox;
+    public Hitbox DrawBox;
 
+    public string Name { get; private set; }
+    public string ID { get; private set; } //used to identify entity in code
+    private TextureHandler textureHandler;
 
-    private ImTexture texture;
-
-    public Entity(Vector2 startPos, int width, int height, ImTexture texture)
+    public Entity(Vector2 startPos, int drawWidth, int drawHeight, TextureHandler handler)
     {
-        hitbox = new Hitbox(startPos, width, height);
-        this.texture = texture;
+        DrawBox = new Hitbox(startPos, drawWidth, drawHeight);
+        textureHandler = handler;
+    }
+
+    public Entity(JsonProperty entityProp)
+    {
+        JsonElement entityObj = entityProp.Value;
+        textureHandler = new TextureHandler(entityObj.GetProperty("Textures"));
+
+        ID = entityObj.GetProperty("ID").GetString();
+        Name = entityProp.Name;
+
+        JsonElement drawBoxElement = entityObj.GetProperty("DrawBox");
+        DrawBox = new Hitbox(Vector2.Zero, drawBoxElement.GetProperty("Width").GetInt32(),
+        drawBoxElement.GetProperty("Height").GetInt32());
+
+    }
+
+    public virtual Entity CopyToPos(Vector2 pos)
+    {
+        return new Entity(pos, DrawBox.Width, DrawBox.Height, textureHandler.Copy());
     }
 
     public virtual void Update(GameTime gameTime)
     {
-        if (texture.IsAnimated)
-        {
-            ((AnimatedTexture)texture).Update(gameTime);
-        }
+        textureHandler.Update(gameTime);
     }
 
-    protected void SetTexture(ImTexture tex)
+
+    //SHOULD BE PROTECTED
+    public void SetTexture(TextureHandler.TextureType type)
     {
-        texture = tex;
+        textureHandler.SetTexture(type);
     }
 
     //TEMPTEMPTEMP
-    public virtual void SetPos(Vector2 pos)
+    public virtual void SetDrawPos(Vector2 pos)
     {
         //should be private
-        hitbox.SetPos(pos);
+        DrawBox.SetPos(pos);
     }
 
-    public virtual void UpdatePos(Vector2 deltaPos)
+    public virtual void UpdateDrawPos(Vector2 deltaPos)
     {
         //should be private
-        hitbox.UpdatePos(deltaPos);
+        DrawBox.UpdatePos(deltaPos);
     }
 
     public virtual void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {
-        if (screen.Intersects(hitbox))
+        if (screen.Intersects(DrawBox))
         {
-            texture.Draw(spriteBatch, hitbox.AsRect());
+            textureHandler.Draw(spriteBatch, DrawBox.AsRect());
         }
     }
 }

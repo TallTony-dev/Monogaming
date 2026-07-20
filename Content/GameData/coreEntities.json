@@ -1,0 +1,17 @@
+{
+    "Title": "entities",
+    "EntityBookName": "Core",
+
+    "testEntity": {
+        "ID": "core_testEntity",
+        "Textures": {
+            "Default": "core_topLeft",
+            "Idle": "core_topLeft",
+            "Walking": "core_animatedTest"
+        },
+        "DrawBox": {
+            "Width": 300,
+            "Height": 300
+        }
+    }
+}

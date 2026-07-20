@@ -7,10 +7,11 @@ using Monogaming.Interfaces;
 
 namespace Monogaming.TextureThings;
 
-public class AnimatedTexture : ImUpdatable, ImTexture
+public class TextureAnimation : ImUpdatable, ImTexture
 {
     public bool IsActive { get; private set; } // determines if should be updated
     public bool IsAnimated { get; } = true;
+    public int loopCount { get; private set; } = 0;
 
     //TODO: define a set of things here that describe how the texture should change over time
     //have a list of textures and the delays that come after them and aan active one that rotates
@@ -21,14 +22,14 @@ public class AnimatedTexture : ImUpdatable, ImTexture
     List<(AtlasTex tex, float delay)> animation = new();
     int currentIndex = 0;
 
-    public AnimatedTexture(List<(AtlasTex tex, float delay)> list)
+    public TextureAnimation(List<(AtlasTex tex, float delay)> list)
     {
         animation = list;
     }
 
-    public AnimatedTexture Copy()
+    public TextureAnimation Copy()
     {
-        return new AnimatedTexture(animation);
+        return new TextureAnimation(animation);
     }
 
     public void Draw(SpriteBatch batch, Vector2 pos)
@@ -52,6 +53,7 @@ public class AnimatedTexture : ImUpdatable, ImTexture
             else
             {
                 currentIndex = 0;
+                loopCount++;
             }
 
             passedTime = 0;

@@ -29,9 +29,40 @@ public static class Textures
     /// </summary>
     private static Dictionary<string, AtlasTex> loadedAtlasTexs = new();
     
-    private static Dictionary<string, AnimatedTexture> loadedAnimatedTexs = new();
-
-    public static AtlasTex Get2DTex(string textureName)
+    private static Dictionary<string, TextureAnimation> loadedAnimatedTexs = new();
+    
+    public static bool TextureExists(string textureName)
+    {
+        return loadedAtlasTexs.ContainsKey(textureName) || 
+        loadedAnimatedTexs.ContainsKey(textureName);
+    }
+    /// <summary>
+    /// Gets a reference to a loaded textureatlastex, or a copy of an animated texture
+    /// </summary>
+    public static ImTexture GetTexture(string textureName)
+    {
+        try
+        {
+            if (loadedAtlasTexs.ContainsKey(textureName))
+            {
+                return loadedAtlasTexs[textureName];
+            }
+            else if (loadedAnimatedTexs.ContainsKey(textureName))
+            {
+                return loadedAnimatedTexs[textureName].Copy();
+            }
+            else
+            {
+                throw new ArgumentException($"Texture with name '{textureName}' not found in loadedImTexs.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteError($"Failed to load texture {textureName} with exception {ex.Message}");
+        }
+        return null;
+    }
+    private static AtlasTex Get2DTex(string textureName)
     {
         try
         {
@@ -47,7 +78,7 @@ public static class Textures
         }
         return null;
     }
-    public static AnimatedTexture GetAnimatedTexture(string textureName)
+    private static TextureAnimation GetAnimatedTexture(string textureName)
     {
         try {
             if (!loadedAnimatedTexs.ContainsKey(textureName))
@@ -127,7 +158,7 @@ public static class Textures
                         }
                         List<(AtlasTex tex, float delay)> textures = 
                         texs.OrderBy(t => t.order).Select(t => (t.tex, t.delay)).ToList();
-                        loadedAnimatedTexs.Add(imTexName, new AnimatedTexture(textures));
+                        loadedAnimatedTexs.Add(imTexName, new TextureAnimation(textures));
                         loadCount++;
                     }
                     else

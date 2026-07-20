@@ -14,12 +14,6 @@ public class Hitbox
         }
     }
 
-    public Hitbox(Vector2 startPos, int width, int height)
-    {
-        Pos = startPos;
-        Width = width;
-        Height = height;
-    }
     public Vector2 Pos { get; protected set; }
     public Vector2 Center
     {
@@ -30,7 +24,13 @@ public class Hitbox
     }
     public int Width { get; protected set; }
     public int Height { get; protected set; }
-
+    public Hitbox(Vector2 startPos, int width, int height)
+    {
+        Pos = startPos;
+        Width = width;
+        Height = height;
+    }
+    
     public virtual void SetPos(Vector2 pos)
     {
         Pos = pos;
