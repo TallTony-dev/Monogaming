@@ -16,27 +16,26 @@ public class UiElement : ImDrawable, ImUpdatable
     public bool IsActive { get; private set; } = true;
     
     public Hitbox hitbox { get; protected set; }
-    string textureId;
+    ImTexture texture;
 
 
-    public UiElement(Vector2 startPos, int width, int height, string textureId)
+    public UiElement(Vector2 startPos, int width, int height, ImTexture texture)
     {
         hitbox = new Hitbox(startPos, width, height);
-        this.textureId = textureId;
+        this.texture = texture;
     }
 
     public virtual void Update(GameTime gameTime)
     {
-        
+        if (texture.IsAnimated)
+        {
+            ((AnimatedTexture)texture).Update(gameTime);
+        }
     }
 
     public virtual void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {
-        if (!String.IsNullOrEmpty(textureId))
-        {
-            spriteBatch.Draw(Textures.Get2DTex(textureId), 
-            hitbox.AsRect(), Color.White);
-        }
+        texture.Draw(spriteBatch, hitbox.AsRect());
     }
 
 }

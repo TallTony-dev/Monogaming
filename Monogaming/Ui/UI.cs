@@ -19,12 +19,24 @@ public class UI : ImDrawable, ImUpdatable
 
     public void Update(GameTime gameTime)
     {
-        
+        foreach (Menu menu in menus)
+        {
+            if (menu.IsActive)
+            {
+                menu.Update(gameTime);
+            }
+        }
     }
 
     public void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {
-        
+        foreach (Menu menu in menus)
+        {
+            if (menu.IsVisible)
+            {
+                menu.Draw(spriteBatch, screen);
+            }
+        }
     }
     //TODO: implement this wrapper and also an animation handler one too
 }

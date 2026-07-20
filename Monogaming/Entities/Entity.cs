@@ -16,18 +16,27 @@ public class Entity : ImDrawable, ImUpdatable
     public Hitbox hitbox;
 
 
-    protected string textureId = "";
+    private ImTexture texture;
 
-    public Entity(Vector2 startPos, int width, int height, string textureId)
+    public Entity(Vector2 startPos, int width, int height, ImTexture texture)
     {
         hitbox = new Hitbox(startPos, width, height);
-        this.textureId = textureId;
+        this.texture = texture;
     }
 
     public virtual void Update(GameTime gameTime)
     {
-        
+        if (texture.IsAnimated)
+        {
+            ((AnimatedTexture)texture).Update(gameTime);
+        }
     }
+
+    protected void SetTexture(ImTexture tex)
+    {
+        texture = tex;
+    }
+
     //TEMPTEMPTEMP
     public virtual void SetPos(Vector2 pos)
     {
@@ -45,11 +54,7 @@ public class Entity : ImDrawable, ImUpdatable
     {
         if (screen.Intersects(hitbox))
         {
-            if (!String.IsNullOrEmpty(textureId))
-            {
-                spriteBatch.Draw(Textures.Get2DTex(textureId), 
-                hitbox.AsRect(), Color.White);
-            }
+            texture.Draw(spriteBatch, hitbox.AsRect());
         }
     }
 }

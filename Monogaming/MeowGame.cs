@@ -50,19 +50,19 @@ public class MeowGame : Game
         Window.Title = "Fun awesome game :)";
         //Window.ClientSizeChanged += some ui update function
 
-        testEntity = new(new Vector2(100, 100), 100, 50, "Icon");
-        testEntity2 = new(new Vector2(100, 100), 100, 400, "Icon");
-        activeUpdatables.Add(testEntity);
-        activeUpdatables.Add(testEntity2);
-        activeDrawables.Add(testEntity);
-        activeDrawables.Add(testEntity2);
-
         testEffect = Content.Load<Effect>("testshader");
         testTarget = new RenderTarget2D(GraphicsDevice, 1000, 1000, 
         false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
 
 
         base.Initialize();
+        
+        testEntity = new(new Vector2(100, 100), 100, 50, Textures.Get2DTex("core_topLeft"));
+        testEntity2 = new(new Vector2(100, 100), 100, 400,  Textures.GetAnimatedTexture("core_animatedTest"));
+        activeUpdatables.Add(testEntity);
+        activeUpdatables.Add(testEntity2);
+        activeDrawables.Add(testEntity);
+        activeDrawables.Add(testEntity2);
     }
 
     protected override void LoadContent()
@@ -73,7 +73,7 @@ public class MeowGame : Game
         map = new();
         ItemDict.LoadFromFile("coreItems");
         RecipeBook.LoadFromFile("coreRecipes");
-        Textures.LoadTextures(Content);
+        Textures.LoadTextures(Content, "coreTextures");
     }
 
     ICondition escape = new AnyCondition(

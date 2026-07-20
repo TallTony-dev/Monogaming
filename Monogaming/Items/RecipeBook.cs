@@ -13,64 +13,69 @@ public static class RecipeBook
 
     public static void LoadFromFile(string fileName)
     {
-        string path = "./GameData/" + fileName + ".json";
+        try {
+            string path = "./GameData/" + fileName + ".json";
 
-        Stream textStream = File.OpenRead(path);
-        JsonDocument document = JsonDocument.Parse(textStream);
-        JsonElement root = document.RootElement;
-        string title;
-        if ((title = root.GetProperty("Title").GetString()) != "recipes")
-        {
-            throw new JsonException($"Title of Json at path {path} was unexpected value: {title}.");
-        }
-        string name = root.GetProperty("RecipeBookName").GetString();
-
-        int count = 0;
-
-        foreach (JsonProperty obj in root.EnumerateObject())
-        {
-            if (obj.Value.ValueKind == JsonValueKind.Object)
+            Stream textStream = File.OpenRead(path);
+            JsonDocument document = JsonDocument.Parse(textStream);
+            JsonElement root = document.RootElement;
+            string title;
+            if ((title = root.GetProperty("Title").GetString()) != "recipes")
             {
-                try
+                throw new JsonException($"Title of Json at path {path} was unexpected value: {title}.");
+            }
+            string name = root.GetProperty("RecipeBookName").GetString();
+
+            int count = 0;
+
+            foreach (JsonProperty obj in root.EnumerateObject())
+            {
+                if (obj.Value.ValueKind == JsonValueKind.Object)
                 {
-                    JsonElement recipe = obj.Value;
-                    string workbench = recipe.GetProperty("Workbench").GetString();
-                    float difficulty = recipe.GetProperty("Difficulty").GetSingle();
-
-                    List<(string, int)> ingredients = new();
-                    foreach (var property in recipe.GetProperty("Ingredients").EnumerateObject())
+                    try
                     {
-                        string itemID = property.Name;
-                        if (!ItemDict.ContainsItem(itemID))
-                        {
-                            Debug.WriteWarn($"Cannot find any loaded item with id {itemID}");
-                        }
-                        int itemCount = property.Value.GetInt32();
-                        ingredients.Add((itemID, itemCount));
-                    }
+                        JsonElement recipe = obj.Value;
+                        string workbench = recipe.GetProperty("Workbench").GetString();
+                        float difficulty = recipe.GetProperty("Difficulty").GetSingle();
 
-                    List<(string, int)> outputs = new();
-                    foreach (var property in recipe.GetProperty("Outputs").EnumerateObject())
+                        List<(string, int)> ingredients = new();
+                        foreach (var property in recipe.GetProperty("Ingredients").EnumerateObject())
+                        {
+                            string itemID = property.Name;
+                            if (!ItemDict.ContainsItem(itemID))
+                            {
+                                Debug.WriteWarn($"Cannot find any loaded item with id {itemID}");
+                            }
+                            int itemCount = property.Value.GetInt32();
+                            ingredients.Add((itemID, itemCount));
+                        }
+
+                        List<(string, int)> outputs = new();
+                        foreach (var property in recipe.GetProperty("Outputs").EnumerateObject())
+                        {
+                            string itemID = property.Name;
+                            if (!ItemDict.ContainsItem(itemID))
+                            {
+                                Debug.WriteWarn($"Cannot find any loaded item with id {itemID}");
+                            }
+                            int itemCount = property.Value.GetInt32();
+                            ingredients.Add((itemID, itemCount));
+                        }
+
+                        recipeList.Add(obj.Name, new Recipe(ingredients, outputs, obj.Name, workbench, difficulty));
+                        count++;
+                    }
+                    catch
                     {
-                        string itemID = property.Name;
-                        if (!ItemDict.ContainsItem(itemID))
-                        {
-                            Debug.WriteWarn($"Cannot find any loaded item with id {itemID}");
-                        }
-                        int itemCount = property.Value.GetInt32();
-                        ingredients.Add((itemID, itemCount));
+                        Debug.WriteError($"Failed to parse recipe {obj} from RecipeBook {name}");
                     }
-
-                    recipeList.Add(obj.Name, new Recipe(ingredients, outputs, obj.Name, workbench, difficulty));
-                    count++;
-                }
-                catch
-                {
-                    Debug.WriteError($"Failed to parse recipe {obj} from RecipeBook {name}");
                 }
             }
+            Debug.WriteInfo($"Parsed/Loaded {count} recipes from RecipeBook {name}");
         }
-        Debug.WriteInfo($"Parsed {count} recipes from RecipeBook {name}");
-
+        catch (Exception ex)
+        {
+            Debug.WriteError($"Failed to load RecipeBook with name {fileName} with exception {ex.Message}");
+        }
     }
 }

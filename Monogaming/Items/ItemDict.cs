@@ -22,38 +22,44 @@ public static class ItemDict
 
     public static void LoadFromFile(string fileName)
     {
-        string path = "./GameData/" + fileName + ".json";
+        try {
+            string path = "./GameData/" + fileName + ".json";
 
-        Stream textStream = File.OpenRead(path);
-        JsonDocument document = JsonDocument.Parse(textStream);
-        JsonElement root = document.RootElement;
-        string title;
-        if ((title = root.GetProperty("Title").GetString()) != "items")
-        {
-            throw new JsonException($"Title of Json at path {path} was unexpected value: {title}.");
-        }
-
-        string name = root.GetProperty("ItemBookName").GetString();
-        int count = 0;
-
-        foreach (JsonProperty obj in root.EnumerateObject())
-        {
-            if (obj.Value.ValueKind == JsonValueKind.Object)
+            Stream textStream = File.OpenRead(path);
+            JsonDocument document = JsonDocument.Parse(textStream);
+            JsonElement root = document.RootElement;
+            string title;
+            if ((title = root.GetProperty("Title").GetString()) != "items")
             {
-                try
+                throw new JsonException($"Title of Json at path {path} was unexpected value: {title}.");
+            }
+
+            string name = root.GetProperty("ItemBookName").GetString();
+            int count = 0;
+
+            foreach (JsonProperty obj in root.EnumerateObject())
+            {
+                if (obj.Value.ValueKind == JsonValueKind.Object)
                 {
-                    string id = obj.Value.GetProperty("ID").GetString();
-                    items.Add(id, new Item(obj.Name, id,
-                        obj.Value.GetProperty("Category").GetString()));
-                    count++;
-                }
-                catch
-                {
-                    Debug.WriteError($"Failed to parse item {obj} from ItemBook {name}");
+                    try
+                    {
+                        string id = obj.Value.GetProperty("ID").GetString();
+                        items.Add(id, new Item(obj.Name, id,
+                            obj.Value.GetProperty("Category").GetString()));
+                        count++;
+                    }
+                    catch
+                    {
+                        Debug.WriteError($"Failed to parse item {obj} from ItemBook {name}");
+                    }
                 }
             }
+            Debug.WriteInfo($"Parsed/Loaded {count} items from ItemBook {name}");
         }
-        Debug.WriteInfo($"Parsed {count} items from ItemBook {name}");
+        catch (Exception ex)
+        {
+            Debug.WriteError($"Failed to load ItemBict with name {fileName} with exception {ex.Message}");
+        }
     }
 
 }
