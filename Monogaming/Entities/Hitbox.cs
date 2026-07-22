@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
+using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 
 namespace Monogaming.Entities;
@@ -15,6 +16,8 @@ public class Hitbox
     }
 
     public Vector2 Pos { get; protected set; }
+    
+    [JsonIgnore]
     public Vector2 Center
     {
         get
@@ -30,7 +33,14 @@ public class Hitbox
         Width = width;
         Height = height;
     }
-    
+    [JsonConstructor]
+    public Hitbox(int width, int height)
+    {
+        Width = width;
+        Height = height;
+        Pos = Vector2.Zero;
+    }
+
     public virtual void SetPos(Vector2 pos)
     {
         Pos = pos;

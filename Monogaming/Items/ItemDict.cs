@@ -57,7 +57,7 @@ public static class ItemDict
         }
         catch (Exception ex)
         {
-            Debug.WriteError($"Failed to load ItemBict with name {fileName} with exception {ex.Message}");
+            Debug.WriteError($"Failed to load ItemDict with name {fileName} with exception {ex.Message}");
         }
     }
 

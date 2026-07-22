@@ -9,8 +9,9 @@ using Monogaming.TextureThings;
 
 namespace Monogaming.MapThings;
 
-public class Tile
+public class Tile : ImUpdatable
 {
+    public bool IsActive { get; private set; } = true;
     public bool Walkable { get; private set; }
     public ImTexture Texture { get; private set; }
 
@@ -20,5 +21,13 @@ public class Tile
         Walkable = property.Value.GetProperty("Walkable").GetBoolean();
     }
 
+    public void Update(GameTime gameTime)
+    {
+        if (Texture.IsAnimated)
+        {
+            var a = Texture as TextureAnimation;
+            a.Update(gameTime);
+        }
+    }
 
 }

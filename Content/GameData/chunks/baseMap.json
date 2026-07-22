@@ -2,12 +2,40 @@
     "Title": "chunk",
     "MapName": "Core",
 
-    "tiles": [
-        "core_gravel",
-        "core_gravel"
-    ],
+    "Width": 9,
+    "Height": 10,
 
     "objects": {
+        
+    },
 
-    }
+    "tiles": [
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ]
+    ]
 }

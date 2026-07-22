@@ -23,7 +23,8 @@ public class Chunk
     public Chunk(string fileName)
     {
         this.fileName = fileName;
-
+        string json = File.ReadAllText(fileName);
+        
         throw new NotImplementedException();
     }
 

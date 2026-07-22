@@ -7,6 +7,8 @@ using Monogaming.Interfaces;
 using Monogaming.TextureThings;
 using System.Text.Json;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace Monogaming.Entities;
 
@@ -14,37 +16,28 @@ public class TextureHandler
 {
     private ImTexture currentTexture;
 
-    Dictionary<TextureType, string> textures; //mix of keys to animated and static textures
+    public Dictionary<TextureType, string> textures { get; private set; } //mix of keys to animated and static textures
 
-
-    public TextureHandler(JsonElement textureObj)
-    {
-        textures = new();
-        foreach (JsonProperty e in textureObj.EnumerateObject())
-        {
-            try
-            {
-                TextureType type = Enum.Parse<TextureType>(e.Name);
-                string tex = e.Value.GetString();
-                if (!Textures.TextureExists(tex))
-                {
-                    throw new JsonException($"Texture {tex} is not loaded");
-                }
-                textures.Add(type, tex);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteError($"Failed to parse {e} to textureHandler with exception {ex.Message}");
-            }
-            
-        }
-    }
-
-    private TextureHandler(Dictionary<TextureType, string> textures)
+    
+    [JsonConstructor]
+    public TextureHandler(Dictionary<TextureType, string> textures)
     {
         this.textures = textures;
-        currentTexture = Textures.GetTexture(textures[TextureType.Default]);
+        SetTexture(TextureType.Default);
     }
+
+    public TextureHandler(TextureType type, string texID)
+    {
+        textures = new();
+        if (!Textures.TextureExists(texID))
+        {
+            throw new JsonException($"Texture {texID} is not loaded");
+        }
+        textures.Add(type, texID);
+        currentTexture = Textures.GetTexture(texID);
+    }
+
+
 
     public TextureHandler Copy()
     {

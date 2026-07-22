@@ -14,11 +14,7 @@ namespace Monogaming.TextureThings;
 public static class Textures
 {
 
-    //TODO: Make these load from a given json file (coretextures) instead of being hardcoded!!
-
-    //have 
-
-
+    private static readonly string DefaultTextureID = "core_default";
 
     /// <summary>
     /// Has actual loaded texture handles
@@ -60,7 +56,8 @@ public static class Textures
         {
             Debug.WriteError($"Failed to load texture {textureName} with exception {ex.Message}");
         }
-        return null;
+
+        return loadedAtlasTexs[DefaultTextureID];
     }
     private static AtlasTex Get2DTex(string textureName)
     {

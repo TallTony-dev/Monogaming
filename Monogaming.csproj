@@ -5,8 +5,6 @@
     <RollForward>Major</RollForward>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <EnableGameDataSync>true</EnableGameDataSync> 
-    <!-- EnableGameDataSync sets if the gamedata folder should be backcopied on build (llm) -->
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -29,29 +27,11 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.5" />
   </ItemGroup>
-
   <ItemGroup>
-    <Content Update="Content\GameData\**\*">
+    <Content Include="Content\GameData\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>GameData\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </Content>
   </ItemGroup>
-
-  <Target Name="SyncGeneratedGameDataFromOutput" BeforeTargets="Build" Condition="'$(EnableGameDataSync)' == 'true'">
-    <PropertyGroup>
-      <_BuiltGameDataRoot>$(OutputPath)GameData\</_BuiltGameDataRoot>
-      <_ProjectGameDataRoot>$(MSBuildProjectDirectory)\Content\GameData\</_ProjectGameDataRoot>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <_GeneratedGameDataFiles Include="$(_BuiltGameDataRoot)**\*" Condition="Exists('$(_BuiltGameDataRoot)')" />
-    </ItemGroup>
-
-    <Copy
-      SourceFiles="@(_GeneratedGameDataFiles)"
-      DestinationFiles="@(_GeneratedGameDataFiles->'$(_ProjectGameDataRoot)%(RecursiveDir)%(Filename)%(Extension)')"
-      SkipUnchangedFiles="true"
-      Condition="'@(_GeneratedGameDataFiles)' != ''" />
-  </Target>
 </Project>

@@ -38,12 +38,14 @@ public static class EntityDict
                 }
                 try
                 {
-                    entityDict.Add(prop.Value.GetProperty("ID").GetString(), new Entity(prop));
+                    Entity entity = JsonSerializer.Deserialize<Entity>(prop.Value);
+
+                    entityDict.Add(prop.Value.GetProperty("ID").GetString(), entity);
                     loadCount++;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteError($"Failed to load entity {prop.Name}in {name} with error {ex.Message}");
+                    Debug.WriteError($"Failed to load entity {prop.Name} in {name} with error {ex.Message}");
                 }
 
             }

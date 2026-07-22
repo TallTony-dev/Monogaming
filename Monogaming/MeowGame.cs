@@ -11,6 +11,7 @@ using Monogaming.Interfaces;
 using System.Diagnostics.Metrics;
 using Monogaming.Items;
 using Monogaming.MapThings;
+using System.Text.Json;
 
 namespace Monogaming;
 
@@ -19,10 +20,11 @@ public class MeowGame : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch SpriteBatch;
 
-    Map map;
+
+    GameState gameState;
+
     Camera camera;
     RenderTarget2D gameTarget;
-    UI ui;
 
     SpriteFont font;
 
@@ -51,15 +53,15 @@ public class MeowGame : Game
     protected override void Initialize()
     {
         camera = new(Window);
-        ui = new();
+        gameState = new(Window);
+
         Window.AllowUserResizing = true;
         Window.Title = "Fun awesome game :)";
-        Window.ClientSizeChanged += ui.HandleWindowChange;
 
         testEffect = Content.Load<Effect>("testshader");
         gameTarget = new RenderTarget2D(GraphicsDevice, ScreenWidth, ScreenHeight, 
         false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
-        
+
         base.Initialize();
     }
 
@@ -68,12 +70,11 @@ public class MeowGame : Game
         InputHelper.Setup(this);
         SpriteBatch = new SpriteBatch(GraphicsDevice);
         font = Content.Load<SpriteFont>("default");
-        map = new();
+
         ItemDict.LoadFromFile("coreItems");
         RecipeBook.LoadFromFile("coreRecipes");
         Textures.LoadTextures(Content, "coreTextures");
         EntityDict.LoadEntities("coreEntities");
-
 
         testEntity = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
         testEntity2 = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
@@ -98,6 +99,9 @@ public class MeowGame : Game
         if (escape.Pressed())
             Exit();
         InputHelper.UpdateSetup();
+
+        gameState.Update(gameTime);
+
         float s = (float)gameTime.TotalGameTime.TotalSeconds;
         testEntity.SetDrawPos(new Vector2(200 * MathF.Sin(s + 10), 
         100 * MathF.Sin(s + 10) + 100 * MathF.Cos(s / 2)));
