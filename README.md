@@ -1,18 +1,6 @@
-to edit mgcb: dotnet tool run mgcb-editor-mac ./Content/Content.mgcb
-
-using Apos.Input and Monogame.
+Hey there, this is a hopefully longish term game I plan to work on using Monogame with Apos.Input for input management as thats something I've implemented before and wouldn't learn much from doing again. 
 
 
-drawable and updatable template: 
-    public bool IsVisible { get; private set; }
-    public bool IsActive { get; private set; } // determines if should be updated
-    
-    public void Update(GameTime gameTime)
-    {
-        
-    }
+to edit mgcb on mac: dotnet tool run mgcb-editor-mac ./Content/Content.mgcb
 
-    public void Draw()
-    {
-        
-    }
+.jsons contain data for things (something new I'm trying that should be helpful)

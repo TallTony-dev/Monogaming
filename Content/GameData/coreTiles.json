@@ -1,0 +1,11 @@
+{
+    "Title": "tiles",
+    "TextureBookName": "Core",
+
+    "core_gravel": {
+        "Texture": "core_topLeft",
+        "Walkable": true
+    }
+
+
+}

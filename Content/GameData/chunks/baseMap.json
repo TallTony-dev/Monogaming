@@ -1,0 +1,13 @@
+{
+    "Title": "chunk",
+    "MapName": "Core",
+
+    "tiles": [
+        "core_gravel",
+        "core_gravel"
+    ],
+
+    "objects": {
+
+    }
+}

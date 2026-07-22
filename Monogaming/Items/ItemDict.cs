@@ -44,8 +44,7 @@ public static class ItemDict
                     try
                     {
                         string id = obj.Value.GetProperty("ID").GetString();
-                        items.Add(id, new Item(obj.Name, id,
-                            obj.Value.GetProperty("Category").GetString()));
+                        items.Add(id, new Item(obj));
                         count++;
                     }
                     catch

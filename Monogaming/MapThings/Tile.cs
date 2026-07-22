@@ -1,0 +1,24 @@
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Microsoft.Xna.Framework;
+using Monogaming.Entities;
+using Monogaming.Interfaces;
+using Monogaming.TextureThings;
+
+namespace Monogaming.MapThings;
+
+public class Tile
+{
+    public bool Walkable { get; private set; }
+    public ImTexture Texture { get; private set; }
+
+    public Tile(JsonProperty property)
+    {
+        Texture = Textures.GetTexture(property.Value.GetProperty("Texture").GetString());
+        Walkable = property.Value.GetProperty("Walkable").GetBoolean();
+    }
+
+
+}
