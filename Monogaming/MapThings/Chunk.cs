@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Entities;
+using Monogaming.Interfaces;
 
 namespace Monogaming.MapThings;
 
@@ -15,8 +18,9 @@ public class Chunk
 
 
     Tile[,] tiles;
-
-
+    List<ImUpdatable> updatables;
+    List<ImDrawable> drawables;
+    
     /// <summary>
     /// Loads a chunk from a json file
     /// </summary>
@@ -54,12 +58,32 @@ public class Chunk
         throw new NotImplementedException();
     }
 
+    public void Draw(SpriteBatch spriteBatch, Hitbox screen)
+    {
+        //decode which are on screen here :p
+    }
+
     /// <summary>
     /// Returns the vector out if collides, otherwise returns Vector2.Zero
     /// </summary>
     public Vector2 Collides(Hitbox box)
     {
-        throw new NotImplementedException();
+        Vector2 boxTilePos = Map.WorldPosToTilePos(box.Pos);
+
+        for (int x = (int)boxTilePos.X - 1; x < boxTilePos.X + 1; x++)
+        {
+            for (int y = (int)boxTilePos.Y - 1; y < boxTilePos.Y + 1; y++)
+            {
+                if (x > 0 && x < tiles.Length && y > 0 && y < tiles.Length 
+                && !tiles[x,y].Walkable)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+        }
+
+        //maybe check if theres any collidable entities here too!!
+
         return Vector2.Zero;
     }
 

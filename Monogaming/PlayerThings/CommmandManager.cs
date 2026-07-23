@@ -10,7 +10,7 @@ public class CommandManager
     public bool IsActive;
 
     List<Command> Commands = new();
-    public void Update(GameTime gameTime)
+    public void Update(GameTime gameTime, ref GameState state)
     {
         
     }
@@ -24,6 +24,8 @@ public class CommandManager
     private class Command
     {
         string command;
+        
+        Action<GameState> action;
 
         public Command(string cmd)
         {

@@ -1,8 +1,7 @@
 using System;
-using System.IO;
-using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Entities;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
@@ -30,4 +29,8 @@ public class Tile : ImUpdatable
         }
     }
 
+    public void Draw(SpriteBatch spriteBatch, Vector2 pos)
+    {
+        Texture.Draw(spriteBatch, pos);
+    }
 }

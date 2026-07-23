@@ -8,7 +8,6 @@ public class Camera
     GameWindow gameWindowRef;
     Vector2 prevTarget = Vector2.Zero;
 
-    // const int screenDim = 1000;
     private float trackSpeed;
 
     private float scale = 1f;
@@ -20,8 +19,8 @@ public class Camera
     { get
         {
             Matrix m = Matrix.CreateScale(scale, scale, 0);
-            m *= Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
-            m *= Matrix.CreateTranslation(MeowGame.ScreenWidth / 2, MeowGame.ScreenHeight / 2, 0);
+            m *= Matrix.CreateTranslation(new Vector3(-prevTarget.X + MeowGame.ScreenWidth / 2, 
+            -prevTarget.Y + MeowGame.ScreenHeight / 2, 0));
             return m;
         }
     }
@@ -49,7 +48,7 @@ public class Camera
     }
 
     public Camera(GameWindow window, 
-    float trackSpeed = 0.4f)
+    float trackSpeed = 1f)
     {
         this.trackSpeed = trackSpeed;
         gameWindowRef = window;
@@ -61,7 +60,9 @@ public class Camera
         if (!snapToPos) {
             float dt = (float)t.ElapsedGameTime.TotalSeconds;
             Vector2 deltaPos = trackingPos - prevTarget;
-            Vector2 newTarget = deltaPos * trackSpeed * dt * deltaPos.LengthSquared() * 0.0005f;
+            Vector2 newTarget = deltaPos * trackSpeed * dt * deltaPos.LengthSquared() * 0.005f;
+            newTarget.X += Math.Sign(deltaPos.X) * trackSpeed * dt * 0.0005f;
+            newTarget.Y += Math.Sign(deltaPos.Y) * trackSpeed * dt * 0.0005f;
             prevTarget += newTarget;
         }
         else

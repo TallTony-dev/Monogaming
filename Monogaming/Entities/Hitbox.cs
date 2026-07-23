@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
@@ -7,13 +8,6 @@ namespace Monogaming.Entities;
 
 public class Hitbox
 {
-
-    public static Hitbox Max {
-        get {
-            Hitbox hitbox = new(new Vector2(int.MinValue / 2, int.MinValue / 2), int.MaxValue, int.MaxValue);
-            return hitbox;
-        }
-    }
 
     public Vector2 Pos { get; protected set; }
     
@@ -58,6 +52,11 @@ public class Hitbox
     public bool Intersects(Vector2 pos)
     {
         return Pos.X < pos.X && Pos.X + Width > pos.X && Pos.Y < pos.Y && Pos.Y + Height > pos.Y;
+    }
+
+    public Vector2 GetCollision(Hitbox hitbox)
+    {
+        throw new NotImplementedException();
     }
 
     public Rectangle AsRect()

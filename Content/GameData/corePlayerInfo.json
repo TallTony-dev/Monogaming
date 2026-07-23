@@ -1,0 +1,14 @@
+{
+    "Title": "playerData",
+    "PlayerDataName": "core",
+
+    "MoveSpeed": 100,
+    
+    "TextureHandler": {
+        "textures": {
+            "Default": "core_topLeft",
+            "Idle": "core_topLeft",
+            "Walking": "core_animatedTest"
+        }
+    }
+}

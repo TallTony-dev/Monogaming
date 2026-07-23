@@ -12,6 +12,7 @@ using System.Diagnostics.Metrics;
 using Monogaming.Items;
 using Monogaming.MapThings;
 using System.Text.Json;
+using Monogaming.PlayerThings;
 
 namespace Monogaming;
 
@@ -25,7 +26,6 @@ public class MeowGame : Game
 
     Camera camera;
     RenderTarget2D gameTarget;
-
     SpriteFont font;
 
     Effect testEffect;
@@ -53,8 +53,6 @@ public class MeowGame : Game
     protected override void Initialize()
     {
         camera = new(Window);
-        gameState = new(Window);
-
         Window.AllowUserResizing = true;
         Window.Title = "Fun awesome game :)";
 
@@ -75,7 +73,8 @@ public class MeowGame : Game
         RecipeBook.LoadFromFile("coreRecipes");
         Textures.LoadTextures(Content, "coreTextures");
         EntityDict.LoadEntities("coreEntities");
-
+        
+        gameState = new(Window);
         testEntity = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
         testEntity2 = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
         testEntity2.SetTexture(TextureHandler.TextureType.Walking);
@@ -120,7 +119,7 @@ public class MeowGame : Game
 
         }
 
-        camera.Update(gameTime, testEntity.DrawBox.Center);
+        camera.Update(gameTime, gameState.Player.body.Center);
 
         InputHelper.UpdateCleanup();
         base.Update(gameTime);
@@ -140,7 +139,7 @@ public class MeowGame : Game
 
         testEffect.Parameters["view_projection"].SetValue(camera.ViewProjMatrix);        
         testEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
-        SpriteBatch.Begin(transformMatrix: camera.ViewProjMatrix, effect: testEffect, samplerState: SamplerState.PointClamp);
+        SpriteBatch.Begin(effect: testEffect, samplerState: SamplerState.PointClamp);
 
         //https://github.com/SuRGeoNix/Flyleaf
         //try implementing this for videos
@@ -152,6 +151,8 @@ public class MeowGame : Game
                 e.Draw(SpriteBatch, screen);
             }
         }
+        gameState.Draw(SpriteBatch, screen);
+        gameState.DrawUI(SpriteBatch);
         SpriteBatch.End();
 
         GraphicsDevice.SetRenderTarget(null);

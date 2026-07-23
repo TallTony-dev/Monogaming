@@ -10,11 +10,12 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Linq;
 
-namespace Monogaming.Entities;
+namespace Monogaming.TextureThings;
 
 public class TextureHandler
 {
     private ImTexture currentTexture;
+    public TextureType CurrentTextureType { get; private set; }
 
     public Dictionary<TextureType, string> textures { get; private set; } //mix of keys to animated and static textures
 
@@ -68,6 +69,7 @@ public class TextureHandler
         {
             //creates a copy if animated so works good
             currentTexture = Textures.GetTexture(textures[textureType]);
+            CurrentTextureType = textureType;
         }
         else
         {

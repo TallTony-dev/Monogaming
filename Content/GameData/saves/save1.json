@@ -1,0 +1,8 @@
+{
+    "Title": "save",
+    "SaveName": "Save1",
+
+    "Flags": {
+        "act1_HasCompletedIntro": false
+    }
+}

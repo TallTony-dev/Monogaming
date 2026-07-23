@@ -11,6 +11,8 @@ using Monogaming.Interfaces;
 using System.Diagnostics.Metrics;
 using Monogaming.MapThings;
 using Monogaming.PlayerThings;
+using System.Text.Json;
+using System.IO;
 
 namespace Monogaming;
 
@@ -18,23 +20,43 @@ public class GameState
 {
     //TODO: implement a game state system here to update things based off current state
 
-    UI ui = new();
-    Map map = new();
-    Player player = new();
+    public UI Ui { get; private set; } = new();
+    public Map Map { get; private set; } = new();
+    public Player Player { get; private set; }
+    CommandManager commandManager;
 
+
+    bool isInMainMenu = true;
     
+
+    bool isInGame = true;
+    bool isPaused = false;
+
+
 
     public GameState(GameWindow window)
     {
-        window.ClientSizeChanged += ui.HandleWindowChange;
+        window.ClientSizeChanged += Ui.HandleWindowChange;
+        var stream = File.OpenRead("./GameData/corePlayerInfo.json");
+        Player = JsonSerializer.Deserialize<Player>(stream);
     }
 
     public void Update(GameTime gameTime)
     {
-        
+        if (isInGame)
+        {
+            Player.Update(gameTime, this);
+            Map.Update(gameTime);
+        }
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch, Hitbox screen)
+    {
+        Map.Draw(spriteBatch, screen);
+        Player.Draw(spriteBatch);
+    }
+
+    public void DrawUI(SpriteBatch spriteBatch)
     {
         
     }
