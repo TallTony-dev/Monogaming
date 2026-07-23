@@ -11,16 +11,16 @@ public class Body : Hitbox
 {
 
     private static readonly float PhysicsTimeStep = 0.05f;
-    private static readonly float MovingEpsilon = 1f;
+    private static readonly float WalkingEpsilon = 0.1f;
 
     public Vector2 Velocity { get; private set; }= Vector2.Zero;
 
     public float Damping { get; private set; } = 0.7f;
 
     /// <summary>
-    /// True if Velocity length > MovingEpsilon
+    /// True if Velocity length > WalkingEpsilon
     /// </summary>
-    public bool IsMoving { get; private set; }
+    public bool IsWalking { get; private set; }
     /// <summary>
     /// True if collided last frame
     /// </summary>
@@ -48,13 +48,13 @@ public class Body : Hitbox
         
         Velocity -= Velocity * Damping * i;
 
-        if (Velocity.Length() > MovingEpsilon)
+        if (Velocity.Length() > WalkingEpsilon)
         {
-            IsMoving = true;
+            IsWalking = true;
         }
         else
         {
-            IsMoving = false;
+            IsWalking = false;
         }
 
         do

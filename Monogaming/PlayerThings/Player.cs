@@ -36,11 +36,11 @@ public class Player
         body.Update(gameTime, null);
 
         TextureHandler.Update(gameTime);
-        if (body.IsMoving && (TextureHandler.CurrentTextureType != TextureHandler.TextureType.Walking))
+        if (body.IsWalking && (TextureHandler.CurrentTextureType != TextureHandler.TextureType.Walking))
         {
             TextureHandler.SetTexture(TextureHandler.TextureType.Walking);
         }
-        else if (TextureHandler.CurrentTextureType == TextureHandler.TextureType.Walking)
+        else if (!body.IsWalking && TextureHandler.CurrentTextureType == TextureHandler.TextureType.Walking)
         {
             TextureHandler.SetTexture(TextureHandler.TextureType.Idle);
         }
