@@ -54,9 +54,18 @@ public class Hitbox
         return Pos.X < pos.X && Pos.X + Width > pos.X && Pos.Y < pos.Y && Pos.Y + Height > pos.Y;
     }
 
+    /// <summary>
+    /// returns the vector out for the passed in hitbox
+    /// </summary>
     public Vector2 GetCollision(Hitbox hitbox)
     {
+        Vector2 otherPos = hitbox.Pos;
+        Vector2 otherMax = otherPos + new Vector2(hitbox.Width, hitbox.Height);
+        Vector2 max = Pos + new Vector2(Width, Height);
+
         throw new NotImplementedException();
+
+
     }
 
     public Rectangle AsRect()

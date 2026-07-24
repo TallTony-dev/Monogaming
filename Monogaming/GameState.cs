@@ -33,12 +33,13 @@ public class GameState
     bool isPaused = false;
 
 
-
     public GameState(GameWindow window)
     {
         window.ClientSizeChanged += Ui.HandleWindowChange;
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);
+
+        _ = Map.LoadChunkAsync("baseMap");
     }
 
     public void Update(GameTime gameTime)

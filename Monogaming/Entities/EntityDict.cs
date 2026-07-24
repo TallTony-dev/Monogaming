@@ -62,6 +62,10 @@ public static class EntityDict
 
     public static Entity CreateEntity(string id, Vector2 pos)
     {
+        if (!entityDict.ContainsKey(id))
+        {
+            throw new ArgumentException($"No entity with id {id} loaded, tried to create entity with that id.");
+        }
         return entityDict[id].CopyToPos(pos);
     }
 

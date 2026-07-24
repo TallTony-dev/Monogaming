@@ -1,15 +1,18 @@
 {
     "Title": "chunk",
-    "MapName": "Core",
+    "MapName": "baseMap",
 
     "Width": 9,
     "Height": 10,
 
-    "objects": {
-        
+    "Entities": {
+        "enemy1": {
+            "ID": "core_testEntity",
+            "Pos": [0, 0]
+        }
     },
 
-    "tiles": [
+    "Tiles": [
         [
             "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
         ],

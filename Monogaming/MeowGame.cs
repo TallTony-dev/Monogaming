@@ -73,6 +73,7 @@ public class MeowGame : Game
         RecipeBook.LoadFromFile("coreRecipes");
         Textures.LoadTextures(Content, "coreTextures");
         EntityDict.LoadEntities("coreEntities");
+        TileDict.LoadTiles("coreTiles");
         
         gameState = new(Window);
         testEntity = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
