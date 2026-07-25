@@ -104,7 +104,7 @@ public class Chunk
         (int tileWidth, int tileHeight) = Map.WorldPosToAbsTilePos(new Vector2(screen.Width, screen.Height));
         leftX = Math.Clamp(leftX, 0, tiles.GetLength(0));
         topY = Math.Clamp(topY, 0, tiles.GetLength(1));
-        int rightX = Math.Clamp(leftX + tileWidth, 0, tiles.GetLength(0));
+        int rightX = Math.Clamp(leftX + tileWidth + 1, 0, tiles.GetLength(0));
         int bottomY = Math.Clamp(topY + tileHeight, 0, tiles.GetLength(1));
 
         for (int x = leftX; x < rightX; x++)

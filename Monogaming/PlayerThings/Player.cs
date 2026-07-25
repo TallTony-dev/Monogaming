@@ -7,6 +7,7 @@ using Monogaming.MapThings;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Monogaming.TextureThings;
+using Monogaming.Items;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -16,14 +17,17 @@ namespace Monogaming.PlayerThings;
 public class Player
 {
     public Body body { get; private set; } = new(Vector2.Zero, Map.TileDims, Map.TileDims, 10f);
-    InputManager inputManager = new();
+    private InputManager inputManager = new();
     public TextureHandler TextureHandler { get; private set; }
+
+    public Inventory Inventory { get; private set; }
 
     public float MoveSpeed { get; private set; }
 
     [JsonConstructor]
-    public Player(float moveSpeed, TextureHandler textureHandler)
+    public Player(float moveSpeed, TextureHandler textureHandler, Inventory inventory)
     {
+        Inventory = inventory;
         MoveSpeed = moveSpeed;
         TextureHandler = textureHandler;
     }

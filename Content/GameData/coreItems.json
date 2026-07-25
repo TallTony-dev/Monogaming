@@ -3,19 +3,23 @@
     "ItemBookName": "Core",
     "turret": {
         "ID": "core_turret",
-        "Category": "weapons"
+        "Category": "weapons",
+        "TextureID": "core_default"
     },
     "iron": {
         "ID": "core_iron",
-        "Category": "materials"
+        "Category": "materials",
+        "TextureID": "core_default"
     },
     "ore": {
         "ID": "core_ore",
-        "Category": "rawMaterials"
+        "Category": "rawMaterials",
+        "TextureID": "core_default"
     },
     "wire": {
         "ID": "core_wire",
-        "Category": "materials"
+        "Category": "materials",
+        "TextureID": "core_default"
     }
     
 

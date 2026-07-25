@@ -4,46 +4,98 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Monogaming.Items;
 
 
 public class Inventory
 {
-    List<Item> items = new();
+    public int MaxStackSize { get; private set; }
+    public int MaxStackCount { get; private set; }
+    [JsonIgnore]
+    public List<Item> Items { get; private set; }
 
-    public Inventory(string fileName)
+    [JsonPropertyName("Items")]
+    public JsonItem[] SerializedItems
     {
-        throw new NotImplementedException();
-        //should populate the inventory with items based off saved file
+        get => Items.Select(t => new JsonItem(t.TypeID, t.Count)).ToArray();
     }
 
+    [JsonConstructor]
+    public Inventory(int MaxStackSize, int MaxStackCount, JsonItem[] SerializedItems)
+    {
+        this.MaxStackSize = MaxStackSize;
+        this.MaxStackCount = MaxStackCount;
+        this.Items = SerializedItems.Select(t => ItemDict.GetNewItem(t.ItemID, t.Count)).ToList();
+    }
+
+    public struct JsonItem
+    {
+        [JsonConstructor]
+        public JsonItem(string ItemID, int Count)
+        {
+            this.ItemID = ItemID;
+            this.Count = Count;
+        }
+        [JsonInclude]
+        public string ItemID;
+        [JsonInclude]
+        public int Count;
+    }
+
+    /// <summary>
+    /// Adds items to inventory, note that the count of the item object added
+    /// can be greater than MaxStackCount. Returns false on fail to add all
+    /// </summary>
     public bool AddItem(Item item)
     {
-        //No duplicates currently
+        //No duplicates currently, and unordered set
         if (item.Count == 0)
         {
             return false;
         }
+        //try adding to the existing item stacks first
+        List<Item> matches = Items.FindAll(i => i.IDEqual(item));
 
-        int ind;
-        if ((ind = items.FindIndex(i => i.IDEqual(item))) != -1)
+        int matchesInd = 0;
+        while (item.Count != 0 && matchesInd < matches.Count)
         {
-            items[ind].AddTo(item.Count);
-            return true;
+            int diff = MaxStackSize - matches[matchesInd].Count;
+            diff = diff > item.Count ? item.Count : diff;
+
+            matches[matchesInd].AddTo(diff);
+            item.RemoveFrom(diff);
+
+            matchesInd++;
         }
-        else
+        //make new stacks otherwise :P
+        //the below if is implied by the following but its useful to think of as that
+        // if (item.Count != 0)
+        // {
+            while (item.Count != 0 && Items.Count < MaxStackCount)
+            {
+                int stackCnt = MaxStackSize < item.Count ? MaxStackSize : item.Count;
+                Items.Add(item.Copy(stackCnt));
+                item.RemoveFrom(stackCnt);
+            }
+        // }
+
+        if (item.Count != 0)
         {
-            items.Add(item);
-            return true;
+            return false;
         }
+
+        return true;
     }
     public bool RemoveItem(string id, int count)
     {
         //return true if items were all removed
         //can handle duplicates
         int toRemove = count;
-        foreach (Item i in items)
+        foreach (Item i in Items)
         {
             if (i.IDEqual(id))
             {
@@ -52,7 +104,7 @@ public class Inventory
                 toRemove -= amt;
                 if (i.Count == 0)
                 {
-                    items.Remove(i);
+                    Items.Remove(i);
                     continue;
                 }
             }
@@ -67,7 +119,7 @@ public class Inventory
     public int GetCountOfItem(string id)
     {
         int count = 0;
-        foreach (Item i in items)
+        foreach (Item i in Items)
         {
             if (i.IDEqual(id))
             {
@@ -77,9 +129,16 @@ public class Inventory
         return count;
     }
 
-    public List<Item> GetItems()
+    public void Update(GameTime gameTime)
     {
-        return items;
-    }
+        //update items here in case any are animated?
 
+
+    }
+    public void Draw(SpriteBatch batch, Rectangle pos)
+    {
+        //determine best representation and draw it here
+
+        throw new NotImplementedException();
+    }
 }

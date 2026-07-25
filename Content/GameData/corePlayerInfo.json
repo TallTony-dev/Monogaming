@@ -10,5 +10,20 @@
             "Idle": "core_topLeft",
             "Walking": "core_animatedTest"
         }
+    },
+
+    "Inventory": {
+        "MaxStackSize": 100,
+        "MaxStackCount": 30,
+        "Items" : [
+            {
+                "ItemID" : "core_iron",
+                "Count" : 40
+            },
+            {
+                "ItemID" : "core_wire",
+                "Count" : 50
+            }
+        ]
     }
 }

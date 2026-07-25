@@ -10,7 +10,7 @@ public class AtlasTex : ImTexture
 {
     public bool IsAnimated { get; } = false;
     public Rectangle SourceRect { get; private set; }
-    public Texture2D Texture { get; private set; }
+    public Texture2D Texture { get; private set; } //ref to the one made by textures.cs so its fine for efficiency okkk :((
 
     public AtlasTex(Texture2D tex, Rectangle sourceRect)
     { 

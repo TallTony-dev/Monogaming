@@ -90,7 +90,18 @@ public static class Textures
         }
         return null;
     }
-
+    public static Texture2D GetRawTex(string textureID)
+    {
+        if (loadedTextures2D.ContainsKey(textureID))
+        {
+            return loadedTextures2D[textureID];
+        }
+        else
+        {
+            Debug.WriteError($"Tried to get raw texture {textureID} but failed");
+            return null;
+        }
+    }
     private static AtlasTex ParseTex(JsonElement element, string texture2DKey)
     {
         JsonElement rectElement = element.GetProperty("Rect");

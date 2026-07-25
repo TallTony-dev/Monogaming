@@ -15,6 +15,11 @@ public static class ItemDict
         Item i = items[itemID];
         return i.Copy();
     }
+    public static Item GetNewItem(string itemID, int count)
+    {
+        Item i = items[itemID];
+        return i.Copy(count);
+    }
     public static bool ContainsItem(string itemID)
     {
         return items.ContainsKey(itemID);
@@ -44,7 +49,7 @@ public static class ItemDict
                     try
                     {
                         string id = obj.Value.GetProperty("ID").GetString();
-                        items.Add(id, new Item(obj));
+                        items.Add(id, JsonSerializer.Deserialize<Item>(obj.Value));
                         count++;
                     }
                     catch

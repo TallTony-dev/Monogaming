@@ -39,8 +39,6 @@ public class MeowGame : Game
     float timeSinceCleared = 0;
 
 
-
-
     public static readonly int ScreenWidth = 640;
     public static readonly int ScreenHeight = ScreenWidth / 16 * 9;
     public MeowGame()
@@ -68,10 +66,10 @@ public class MeowGame : Game
         InputHelper.Setup(this);
         SpriteBatch = new SpriteBatch(GraphicsDevice);
         font = Content.Load<SpriteFont>("default");
-
+        Textures.LoadTextures(Content, "coreTextures");
         ItemDict.LoadFromFile("coreItems");
         RecipeBook.LoadFromFile("coreRecipes");
-        Textures.LoadTextures(Content, "coreTextures");
+        
         EntityDict.LoadEntities("coreEntities");
         TileDict.LoadTiles("coreTiles");
         
