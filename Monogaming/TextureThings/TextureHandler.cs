@@ -24,7 +24,7 @@ public class TextureHandler
     public TextureHandler(Dictionary<TextureType, string> textures)
     {
         this.textures = textures;
-        SetTexture(TextureType.Default);
+        currentTexture = Textures.GetTexture(textures[TextureType.Default]);
     }
 
     public TextureHandler(TextureType type, string texID)
@@ -65,15 +65,17 @@ public class TextureHandler
 
     public void SetTexture(TextureType textureType)
     {
-        if (textures.ContainsKey(textureType))
-        {
-            //creates a copy if animated so works good
-            currentTexture = Textures.GetTexture(textures[textureType]);
-            CurrentTextureType = textureType;
-        }
-        else
-        {
-            Debug.WriteWarn($"Tried to set to nonexistent textureType {textureType}, leaving at current texture");
+        if (CurrentTextureType != textureType) {
+            if (textures.ContainsKey(textureType))
+            {
+                //creates a copy if animated so works good
+                currentTexture = Textures.GetTexture(textures[textureType]);
+                CurrentTextureType = textureType;
+            }
+            else
+            {
+                Debug.WriteWarn($"Tried to set to nonexistent textureType {textureType}, leaving at current texture");
+            }
         }
     }
 

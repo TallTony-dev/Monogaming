@@ -19,18 +19,17 @@ public class Hitbox
     }
     public int Width { get; protected set; }
     public int Height { get; protected set; }
-    public Hitbox(Vector2 startPos, int width, int height)
+    [JsonConstructor]
+    public Hitbox(Vector2 pos, int width, int height)
     {
-        Pos = startPos;
+        Pos = pos;
         Width = width;
         Height = height;
     }
-    [JsonConstructor]
     public Hitbox(int width, int height)
     {
         Width = width;
         Height = height;
-        Pos = Vector2.Zero;
     }
 
     public virtual void SetPos(Vector2 pos)

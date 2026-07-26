@@ -26,15 +26,16 @@ public class UiElement : ImUpdatable
     public bool IsActive { get; private set; } = true;
     
     public string ID { get; private set; }
-    public Hitbox drawBox { get; protected set; }
+    
+    public Hitbox DrawBox { get; protected set; }
 
     public List<UiElement> Children { get; protected set; }
 
 
     [JsonConstructor]
-    public UiElement(Hitbox drawBox, string ID, List<UiElement> Children)
+    public UiElement(string ID, Hitbox DrawBox, List<UiElement> Children)
     {
-        this.drawBox = drawBox;
+        this.DrawBox = DrawBox;
         this.ID = ID;
         this.Children = Children != null ? Children : new List<UiElement>();
     }

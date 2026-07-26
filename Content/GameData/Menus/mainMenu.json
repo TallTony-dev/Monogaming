@@ -3,25 +3,42 @@
     "ID": "mainMenu",
 
 
-    "Elements": {
-        "element1": {
-            "ID": "startButton",
-            "ElementType": "textureElement",
-            "TextureHandler": {
-                "textures": {
-                    "Default": "core_topLeft",
-                    "OnHover": "core_animatedTest_noloop"
-                }
-            },
+    "RootElement": {
+        "ElementType": "textureElement",
+        "ID": "startButton",
 
-            "Children": {
-                "text": {
-                    "ID": "startButtonText",
-                    "ElementType": "textElement",
-                    "Text": "Start"
-                }
+        "DrawBox": {
+            "Pos" : {
+                "X": 0,
+                "Y": 0
+            },
+            "Width": 100,
+            "Height": 100
+        },
+        "TextureHandler": {
+            "textures": {
+                "Default": "core_topLeft",
+                "OnHover": "core_animatedTest_noloop"
             }
-        }
+        },
+
+        "Children": [
+            {
+                "ElementType": "textElement",
+                "ID": "startButtonText",
+
+                "DrawBox": {
+                    "Pos" : {
+                        "X": 0,
+                        "Y": 0
+                    },
+                    "Width": 100,
+                    "Height": 100
+                },
+
+                "Text": "Start"
+            }
+        ]
     }
 
     

@@ -149,6 +149,9 @@ public class MeowGame : Game
             }
         }
         gameState.Draw(SpriteBatch, screen);
+        SpriteBatch.End();
+
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         gameState.DrawUI(SpriteBatch);
         SpriteBatch.End();
 

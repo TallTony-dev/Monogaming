@@ -28,7 +28,8 @@ public class Chunk
 
     //TODO: Fix how these are stored seperately
     [JsonInclude]
-    Dictionary<string, JsonEntity> JsonEntities;
+    [JsonPropertyName("Entities")]
+    Dictionary<string, JsonEntity> Entities;
 
     [JsonIgnore]
     private Tile[,] tiles;
@@ -46,7 +47,7 @@ public class Chunk
         this.Width = Width;
         this.Height = Height;
         this.Tiles = Tiles;
-        this.JsonEntities = Entities;
+        this.Entities = Entities;
 
         if (Tiles.GetLength(0) != Width || Tiles.Any(t => t.Length != Height))
         {
@@ -101,7 +102,7 @@ public class Chunk
     {
         (int x, int y) tilePos = Map.WorldPosToAbsTilePos(pos);
         JsonEntity entity = new JsonEntity(EntityID, new int[]{tilePos.x, tilePos.y});
-        JsonEntities.Add(EntityID, entity);
+        Entities.Add(EntityID, entity);
 
         Entity e = EntityDict.CreateEntity(EntityID, pos);
         Updatables.Add(e);

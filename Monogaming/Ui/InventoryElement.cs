@@ -12,13 +12,13 @@ using Monogaming.Items;
 
 public class InventoryElement : UiElement
 {
-    
+    [JsonIgnore]
     Inventory boundInventory;
 
     [JsonConstructor]
-    public InventoryElement(string ID, Hitbox drawBox, List<UiElement> Children) : base(drawBox, ID, Children)
+    public InventoryElement(string ID, Hitbox drawBox, List<UiElement> Children) : base(ID, drawBox, Children)
     {
-        this.drawBox = drawBox;
+        
     }
 
     /// <summary>

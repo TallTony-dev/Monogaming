@@ -38,7 +38,8 @@ public class UI : ImUpdatable
                 {
                     throw new JsonException($"Error loading {fileName}, attempted to load a json not titled with menu");
                 }
-                menus.Add(root.GetProperty("ID").GetString(), JsonSerializer.Deserialize<UiElement>(root.GetProperty("Elements")));
+                menus.Add(root.GetProperty("ID").GetString(), 
+                JsonSerializer.Deserialize<UiElement>(root.GetProperty("RootElement")));
                 count++;
             }
             catch (Exception ex)

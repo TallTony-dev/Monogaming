@@ -62,6 +62,6 @@ public class GameState
 
     public void DrawUI(SpriteBatch spriteBatch)
     {
-        
+        Ui.Draw(spriteBatch);
     }
 }

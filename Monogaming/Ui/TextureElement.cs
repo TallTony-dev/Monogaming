@@ -14,39 +14,42 @@ namespace Monogaming.Ui;
 
 public class TextureElement : UiElement
 {
-
-    protected TextureHandler textureHandler { get; private set; }
+    [JsonInclude]
+    protected TextureHandler TextureHandler { get; private set; }
 
     [JsonConstructor]
-    public TextureElement(string ID, Hitbox drawBox, TextureHandler textureHandler, List<UiElement> Children) : base(drawBox, ID, Children)
+    public TextureElement(string ID, Hitbox drawBox, TextureHandler TextureHandler, List<UiElement> Children) : base(ID, drawBox, Children)
     {
-        this.drawBox = drawBox;
-        this.textureHandler = textureHandler;
+        this.TextureHandler = TextureHandler;
     }
 
 
     public override void Update(GameTime gameTime)
     {
-        if (drawBox.Intersects(InputHelper.NewMouse.Position))
+        if (DrawBox.Intersects(InputHelper.NewMouse.Position))
         {
             if (!(InputHelper.NewMouse.LeftButton == ButtonState.Pressed))
             {
-                textureHandler.SetTexture(TextureHandler.TextureType.OnHover);
+                TextureHandler.SetTexture(TextureHandler.TextureType.OnHover);
             }
             else
             {
-                textureHandler.SetTexture(TextureHandler.TextureType.OnClick);
+                TextureHandler.SetTexture(TextureHandler.TextureType.OnClick);
             }
         }
+        else
+        {
+            TextureHandler.SetTexture(TextureHandler.TextureType.Default);
+        }
 
-        textureHandler.Update(gameTime);
-        
+        TextureHandler.Update(gameTime);
+
         base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        textureHandler.Draw(spriteBatch, drawBox.AsRect());
+        TextureHandler.Draw(spriteBatch, DrawBox.AsRect());
         base.Draw(spriteBatch);
     }
 }

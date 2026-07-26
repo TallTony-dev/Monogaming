@@ -13,14 +13,13 @@ namespace Monogaming.Ui;
 
 public class TextElement : UiElement
 {
-
-    protected string text { get; private set; }
+    [JsonInclude]
+    protected string Text { get; private set; }
 
     [JsonConstructor]
-    public TextElement(string ID, Hitbox drawBox, string text, List<UiElement> Children) : base(drawBox, ID, Children)
+    public TextElement(string ID, Hitbox drawBox, string Text, List<UiElement> Children) : base(ID, drawBox, Children)
     {
-        this.drawBox = drawBox;
-        this.text = text;
+        this.Text = Text;
     }
 
 
@@ -31,8 +30,8 @@ public class TextElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        float scaleX = drawBox.Width / Textures.MainFont.MeasureString(text).X;
-        spriteBatch.DrawString(Textures.MainFont, text, drawBox.Pos, Color.BlueViolet, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
+        float scaleX = DrawBox.Width / Textures.MainFont.MeasureString(Text).X;
+        spriteBatch.DrawString(Textures.MainFont, Text, DrawBox.Pos, Color.BlueViolet, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
         base.Draw(spriteBatch);
     }
 }
