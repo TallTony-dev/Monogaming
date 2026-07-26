@@ -14,7 +14,9 @@ namespace Monogaming.TextureThings;
 public static class Textures
 {
 
-    private static readonly string DefaultTextureID = "core_default";
+    private const string DefaultTextureID = "core_default";
+
+    public static SpriteFont MainFont { get; private set; }
 
     /// <summary>
     /// Has actual loaded texture handles
@@ -117,6 +119,7 @@ public static class Textures
 
     public static void LoadTextures(ContentManager content, string fileName)
     {
+        MainFont = content.Load<SpriteFont>("default");
         try
         {
             string path = "./GameData/" + fileName + ".json";
@@ -166,7 +169,8 @@ public static class Textures
                         }
                         List<(AtlasTex tex, float delay)> textures = 
                         texs.OrderBy(t => t.order).Select(t => (t.tex, t.delay)).ToList();
-                        loadedAnimatedTexs.Add(imTexName, new TextureAnimation(textures));
+
+                        loadedAnimatedTexs.Add(imTexName, new TextureAnimation(textures, texObj.GetProperty("Looping").GetBoolean()));
                         loadCount++;
                     }
                     else

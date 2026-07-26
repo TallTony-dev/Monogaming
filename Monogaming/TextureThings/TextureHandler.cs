@@ -78,5 +78,5 @@ public class TextureHandler
     }
 
 
-    public enum TextureType { Default, Idle, Walking, Running }
+    public enum TextureType { Default, Idle, Walking, Running, OnHover, OnClick }
 }

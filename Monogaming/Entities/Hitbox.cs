@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 
@@ -50,6 +48,10 @@ public class Hitbox
         Pos.Y < hitbox.Pos.Y + hitbox.Height && Pos.Y + Height > hitbox.Pos.Y;
     }
     public bool Intersects(Vector2 pos)
+    {
+        return Pos.X < pos.X && Pos.X + Width > pos.X && Pos.Y < pos.Y && Pos.Y + Height > pos.Y;
+    }
+    public bool Intersects(Point pos)
     {
         return Pos.X < pos.X && Pos.X + Width > pos.X && Pos.Y < pos.Y && Pos.Y + Height > pos.Y;
     }

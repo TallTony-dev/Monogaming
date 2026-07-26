@@ -26,7 +26,6 @@ public class MeowGame : Game
 
     Camera camera;
     RenderTarget2D gameTarget;
-    SpriteFont font;
 
     Effect testEffect;
 
@@ -39,8 +38,8 @@ public class MeowGame : Game
     float timeSinceCleared = 0;
 
 
-    public static readonly int ScreenWidth = 640;
-    public static readonly int ScreenHeight = ScreenWidth / 16 * 9;
+    public const int ScreenWidth = 640;
+    public const int ScreenHeight = ScreenWidth / 16 * 9;
     public MeowGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -65,7 +64,6 @@ public class MeowGame : Game
     {
         InputHelper.Setup(this);
         SpriteBatch = new SpriteBatch(GraphicsDevice);
-        font = Content.Load<SpriteFont>("default");
         Textures.LoadTextures(Content, "coreTextures");
         ItemDict.LoadFromFile("coreItems");
         RecipeBook.LoadFromFile("coreRecipes");

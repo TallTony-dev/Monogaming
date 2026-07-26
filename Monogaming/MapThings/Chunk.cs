@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -17,8 +18,6 @@ namespace Monogaming.MapThings;
 /// </summary>
 public class Chunk
 {
-    [JsonIgnore]
-    static readonly string fileRoot = "./GameData/chunks/";
     public string MapName { get; private set; }
     public int Width { get; private set; }
     public int Height { get; private set; }
@@ -26,8 +25,10 @@ public class Chunk
     [JsonInclude]
     private string[][] Tiles;
 
+
+    //TODO: Fix how these are stored seperately
     [JsonInclude]
-    Dictionary<string, JsonEntity> Entities;
+    Dictionary<string, JsonEntity> JsonEntities;
 
     [JsonIgnore]
     private Tile[,] tiles;
@@ -45,7 +46,7 @@ public class Chunk
         this.Width = Width;
         this.Height = Height;
         this.Tiles = Tiles;
-        this.Entities = Entities;
+        this.JsonEntities = Entities;
 
         if (Tiles.GetLength(0) != Width || Tiles.Any(t => t.Length != Height))
         {
@@ -95,6 +96,17 @@ public class Chunk
 
     //     throw new NotImplementedException();
     // }
+
+    public void AddEntity(string EntityID, Vector2 pos)
+    {
+        (int x, int y) tilePos = Map.WorldPosToAbsTilePos(pos);
+        JsonEntity entity = new JsonEntity(EntityID, new int[]{tilePos.x, tilePos.y});
+        JsonEntities.Add(EntityID, entity);
+
+        Entity e = EntityDict.CreateEntity(EntityID, pos);
+        Updatables.Add(e);
+        Drawables.Add(e);
+    }
 
     public void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {

@@ -11,6 +11,7 @@ public class TextureAnimation : ImUpdatable, ImTexture
 {
     public bool IsActive { get; private set; } // determines if should be updated
     public bool IsAnimated { get; } = true;
+    public bool IsLooping { get; private set; } = true;
     public int loopCount { get; private set; } = 0;
 
     //TODO: define a set of things here that describe how the texture should change over time
@@ -22,14 +23,15 @@ public class TextureAnimation : ImUpdatable, ImTexture
     List<(AtlasTex tex, float delay)> animation = new();
     int currentIndex = 0;
 
-    public TextureAnimation(List<(AtlasTex tex, float delay)> list)
+    public TextureAnimation(List<(AtlasTex tex, float delay)> list, bool isLooping)
     {
+        IsLooping = isLooping;
         animation = list;
     }
 
     public TextureAnimation Copy()
     {
-        return new TextureAnimation(animation);
+        return new TextureAnimation(animation, IsLooping);
     }
 
     public void Draw(SpriteBatch batch, Vector2 pos)
@@ -43,20 +45,25 @@ public class TextureAnimation : ImUpdatable, ImTexture
     
     public void Update(GameTime gameTime)
     {
-        passedTime += gameTime.ElapsedGameTime.TotalSeconds;
-        if (passedTime > animation[currentIndex].delay)
-        {
-            if (currentIndex < animation.Count - 1) 
+        if (IsLooping || loopCount != 1) {
+            passedTime += gameTime.ElapsedGameTime.TotalSeconds;
+            if (passedTime > animation[currentIndex].delay)
             {
-                currentIndex++;
-            }
-            else
-            {
-                currentIndex = 0;
-                loopCount++;
-            }
+                if (currentIndex < animation.Count - 1) 
+                {
+                    currentIndex++;
+                }
+                else
+                {
+                    if (IsLooping)
+                    {
+                        currentIndex = 0;
+                    }
+                    loopCount++;
+                }
 
-            passedTime = 0;
+                passedTime = 0;
+            }
         }
     }
 

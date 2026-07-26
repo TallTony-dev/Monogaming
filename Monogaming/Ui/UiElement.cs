@@ -5,37 +5,77 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
-using System.Runtime.Intrinsics.X86;
 using Microsoft.Xna.Framework.Content;
+using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using Apos.Input;
+using Monogaming.PlayerThings;
 
 namespace Monogaming.Ui;
 
-public class UiElement : ImDrawable, ImUpdatable
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "ElementType")]
+[JsonDerivedType(typeof(UiElement), typeDiscriminator: "baseElement")]
+[JsonDerivedType(typeof(TextureElement), typeDiscriminator: "textureElement")]
+[JsonDerivedType(typeof(TextElement), typeDiscriminator: "textElement")]
+
+public class UiElement : ImUpdatable
 {
+    [JsonIgnore]
     public bool IsVisible { get; private set; } = true;
+    [JsonIgnore]
     public bool IsActive { get; private set; } = true;
     
-    public Hitbox hitbox { get; protected set; }
-    ImTexture texture;
+    public string ID { get; private set; }
+    public Hitbox drawBox { get; protected set; }
+
+    public List<UiElement> Children { get; protected set; }
 
 
-    public UiElement(Vector2 startPos, int width, int height, ImTexture texture)
+    [JsonConstructor]
+    public UiElement(Hitbox drawBox, string ID, List<UiElement> Children)
     {
-        hitbox = new Hitbox(startPos, width, height);
-        this.texture = texture;
+        this.drawBox = drawBox;
+        this.ID = ID;
+        this.Children = Children != null ? Children : new List<UiElement>();
+    }
+
+    /// <summary>
+    /// Recursively searches for a subelement, where path is dot seperated element IDs,
+    /// eg "buttonPanel.startButton"
+    /// </summary>
+    public UiElement GetChild(string searchPath)
+    {
+        if (!string.IsNullOrEmpty(searchPath))
+        {
+            return Children.Find(t => t.ID == searchPath.Substring(0, searchPath.IndexOf('.')))
+            .GetChild(searchPath.Substring(searchPath.IndexOf('.') + 1, searchPath.Length - 1));
+        }
+        else
+        {
+            return this;
+        }
     }
 
     public virtual void Update(GameTime gameTime)
     {
-        if (texture.IsAnimated)
+        foreach(UiElement child in Children)
         {
-            ((TextureAnimation)texture).Update(gameTime);
+            if (child.IsActive)
+            {
+                child.Update(gameTime);
+            }
         }
     }
 
-    public virtual void Draw(SpriteBatch spriteBatch, Hitbox screen)
+    public virtual void Draw(SpriteBatch spriteBatch)
     {
-        texture.Draw(spriteBatch, hitbox.AsRect());
+        foreach(UiElement child in Children)
+        {
+            if (child.IsVisible)
+            {
+                child.Draw(spriteBatch);
+            }
+        }
     }
 
 }

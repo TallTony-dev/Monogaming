@@ -7,7 +7,7 @@
         
         "core_default" : {
             "Animated": false,
-
+            
             "Rect": {
                 "X": 0,
                 "Y": 0,
@@ -28,7 +28,41 @@
 
         "core_animatedTest" : {
             "Animated": true,
-
+            "Looping": true,
+            "topLeft" : {
+                "Order": 1,
+                "Delay": 0.5,
+                "Rect": {
+                    "X": 0,
+                    "Y": 0,
+                    "Width": 100,
+                    "Height": 100
+                }
+            },
+            "topRight" : {
+                "Order": 2,
+                "Delay": 0.5,
+                "Rect": {
+                    "X": 50,
+                    "Y": 0,
+                    "Width": 100,
+                    "Height": 100
+                }
+            },
+            "bottomLeft" : {
+                "Order": 3,
+                "Delay": 1,
+                "Rect": {
+                    "X": 0,
+                    "Y": 50,
+                    "Width": 100,
+                    "Height": 100
+                }
+            }
+        },
+        "core_animatedTest_noloop" : {
+            "Animated": true,
+            "Looping": false,
             "topLeft" : {
                 "Order": 1,
                 "Delay": 0.5,
@@ -60,7 +94,6 @@
                 }
             }
         }
-
 
     }
 }

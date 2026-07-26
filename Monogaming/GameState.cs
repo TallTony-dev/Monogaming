@@ -38,12 +38,15 @@ public class GameState
         window.ClientSizeChanged += Ui.HandleWindowChange;
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);
-
+        
         _ = Map.LoadChunkAsync("baseMap");
     }
 
     public void Update(GameTime gameTime)
     {
+        Ui.Update(gameTime);
+
+        //you should have something here that stops if theres a transition in progress
         if (isInGame)
         {
             Player.Update(gameTime, this);

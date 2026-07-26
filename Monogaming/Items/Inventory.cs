@@ -129,16 +129,30 @@ public class Inventory
         return count;
     }
 
-    public void Update(GameTime gameTime)
-    {
-        //update items here in case any are animated?
+    // public void Update(GameTime gameTime)
+    // {
+    //     //update items here in case any are animated?
 
 
-    }
-    public void Draw(SpriteBatch batch, Rectangle pos)
-    {
-        //determine best representation and draw it here
+    // }
 
-        throw new NotImplementedException();
-    }
+    const int ItemPadding = 10;
+    const int MaxItemDisplaySize = 40;
+    const int MinItemDisplaySize = 20;
+    // public void Draw(SpriteBatch batch, Rectangle pos)
+    // {
+    //     //determine best representation and draw it here
+    //     int stackCount = Items.Count;
+    //     float aspectRatio = pos.Width / pos.Height;
+
+
+
+    //     int itemDisplaySize = Math.Clamp( pref, MinItemDisplaySize, MaxItemDisplaySize);
+
+    //     //stackCount = ciel(rows * columns)
+
+    //     int itemWidth = 
+
+    //     throw new NotImplementedException();
+    // }
 }
