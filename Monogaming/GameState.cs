@@ -29,7 +29,7 @@ public class GameState
     bool isInMainMenu = true;
     
 
-    bool isInGame = true;
+    bool isInGame = false;
     bool isPaused = false;
 
 
@@ -39,7 +39,17 @@ public class GameState
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);
         
+        UiAction.GlobalInit(this);
+
         _ = Map.LoadChunkAsync("baseMap");
+    }
+
+    public void EnterMainGame()
+    {
+        isInGame = true;
+        isPaused = false;
+        isInMainMenu = false;
+        Ui.DeactivateElement("mainMenu");
     }
 
     public void Update(GameTime gameTime)

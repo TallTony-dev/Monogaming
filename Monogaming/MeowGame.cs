@@ -37,6 +37,7 @@ public class MeowGame : Game
     List<ImDrawable> activeDrawables = new();
     float timeSinceCleared = 0;
 
+    public static Vector2 ScaledMousePos { get; private set; }
 
     public const int ScreenWidth = 640;
     public const int ScreenHeight = ScreenWidth / 16 * 9;
@@ -96,6 +97,8 @@ public class MeowGame : Game
             Exit();
         InputHelper.UpdateSetup();
 
+        ScaledMousePos = InputHelper.NewMouse.Position.ToVector2() * 
+        new Vector2(ScreenWidth / (float)Window.ClientBounds.Width, ScreenHeight / (float)Window.ClientBounds.Height);
         gameState.Update(gameTime);
 
         float s = (float)gameTime.TotalGameTime.TotalSeconds;

@@ -4,7 +4,7 @@
 
 
     "RootElement": {
-        "ElementType": "textureElement",
+        "ElementType": "buttonElement",
         "ID": "startButton",
 
         "DrawBox": {
@@ -20,6 +20,9 @@
                 "Default": "core_topLeft",
                 "OnHover": "core_animatedTest_noloop"
             }
+        },
+        "OnClickAction": {
+            "CommandName": "EnterMainGame"
         },
 
         "Children": [

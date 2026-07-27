@@ -17,6 +17,7 @@ namespace Monogaming.Ui;
 [JsonDerivedType(typeof(UiElement), typeDiscriminator: "baseElement")]
 [JsonDerivedType(typeof(TextureElement), typeDiscriminator: "textureElement")]
 [JsonDerivedType(typeof(TextElement), typeDiscriminator: "textElement")]
+[JsonDerivedType(typeof(ButtonElement), typeDiscriminator: "buttonElement")]
 
 public class UiElement : ImUpdatable
 {
@@ -26,9 +27,7 @@ public class UiElement : ImUpdatable
     public bool IsActive { get; private set; } = true;
     
     public string ID { get; private set; }
-    
     public Hitbox DrawBox { get; protected set; }
-
     public List<UiElement> Children { get; protected set; }
 
 
@@ -54,6 +53,26 @@ public class UiElement : ImUpdatable
         else
         {
             return this;
+        }
+    }
+
+    public void ActivateElement()
+    {
+        IsActive = true;
+        IsVisible = true;
+        foreach (UiElement child in Children)
+        {
+            child.ActivateElement();
+        }
+    }
+
+    public void DeactivateElement()
+    {
+        IsActive = false;
+        IsVisible = false;
+        foreach (UiElement child in Children)
+        {
+            child.DeactivateElement();
         }
     }
 

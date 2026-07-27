@@ -14,6 +14,8 @@ namespace Monogaming.Ui;
 
 public class TextureElement : UiElement
 {
+    [JsonIgnore]
+    static ICondition click = new MouseCondition(MouseButton.LeftButton);
     [JsonInclude]
     protected TextureHandler TextureHandler { get; private set; }
 
@@ -26,15 +28,15 @@ public class TextureElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
-        if (DrawBox.Intersects(InputHelper.NewMouse.Position))
+        if (DrawBox.Intersects(MeowGame.ScaledMousePos))
         {
-            if (!(InputHelper.NewMouse.LeftButton == ButtonState.Pressed))
+            if (click.Pressed(false))
             {
-                TextureHandler.SetTexture(TextureHandler.TextureType.OnHover);
+                TextureHandler.SetTexture(TextureHandler.TextureType.OnClick);
             }
             else
             {
-                TextureHandler.SetTexture(TextureHandler.TextureType.OnClick);
+                TextureHandler.SetTexture(TextureHandler.TextureType.OnHover);
             }
         }
         else

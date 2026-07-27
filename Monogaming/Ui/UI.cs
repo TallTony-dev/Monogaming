@@ -51,6 +51,34 @@ public class UI : ImUpdatable
         Debug.WriteInfo($"Loaded {count} menus from {UIPath}");
     }
 
+    public void ActivateElement(string elementID)
+    {
+        try
+        {
+            menus[elementID].ActivateElement();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteError($"Tried to activate non existent element {elementID} with error {ex.Message}");
+        }
+    }
+    public void DeactivateElement(string elementID)
+    {
+        try
+        {
+            menus[elementID].DeactivateElement();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteError($"Tried to deactivate non existent element {elementID} with error {ex.Message}");
+        }
+    }
+
+    public void HandleWindowChange(object sender, EventArgs args)
+    {
+        //tell elements to update their sizes to match new window
+    }
+
     public void Update(GameTime gameTime)
     {
         foreach (UiElement menu in menus.Values)
@@ -60,11 +88,6 @@ public class UI : ImUpdatable
                 menu.Update(gameTime);
             }
         }
-    }
-
-    public void HandleWindowChange(object sender, EventArgs args)
-    {
-        //tell elements to update their sizes to match new window
     }
 
     public void Draw(SpriteBatch spriteBatch)
