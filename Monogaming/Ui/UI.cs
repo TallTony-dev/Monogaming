@@ -38,8 +38,14 @@ public class UI : ImUpdatable
                 {
                     throw new JsonException($"Error loading {fileName}, attempted to load a json not titled with menu");
                 }
-                menus.Add(root.GetProperty("ID").GetString(), 
-                JsonSerializer.Deserialize<UiElement>(root.GetProperty("RootElement")));
+                
+                List<UiElement> children = new();
+                foreach (JsonProperty prop in root.GetProperty("RootElement").EnumerateObject()) {
+                    children.Add(JsonSerializer.Deserialize<UiElement>(prop.Value));
+                }
+                UiElement rootElement = new("root", null, children);
+
+                menus.Add(root.GetProperty("ID").GetString(), rootElement);
                 count++;
             }
             catch (Exception ex)
@@ -72,6 +78,11 @@ public class UI : ImUpdatable
         {
             Debug.WriteError($"Tried to deactivate non existent element {elementID} with error {ex.Message}");
         }
+    }
+
+    public UiElement GetElement(string menuName, string searchPath)
+    {
+        return menus[menuName].GetChild("root." + searchPath);
     }
 
     public void HandleWindowChange(object sender, EventArgs args)

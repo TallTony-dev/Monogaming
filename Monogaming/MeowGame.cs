@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 using Monogaming.Entities;
 using Monogaming.TextureThings;
-using Monogaming.Ui;
 using Apos.Input;
 using Monogaming.Interfaces;
-using System.Diagnostics.Metrics;
 using Monogaming.Items;
 using Monogaming.MapThings;
-using System.Text.Json;
-using Monogaming.PlayerThings;
 
 namespace Monogaming;
 
@@ -57,6 +49,10 @@ public class MeowGame : Game
         testEffect = Content.Load<Effect>("testshader");
         gameTarget = new RenderTarget2D(GraphicsDevice, ScreenWidth, ScreenHeight, 
         false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
+
+        #if EDITOR_BUILD
+            Debug.WriteInfo("Editor build enabled");
+        #endif
 
         base.Initialize();
     }
@@ -143,8 +139,8 @@ public class MeowGame : Game
         }
         gameState.Draw(SpriteBatch, screen);
         SpriteBatch.End();
-
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.ScaleMatrix, effect: null);
         gameState.DrawUI(SpriteBatch);
         SpriteBatch.End();
 

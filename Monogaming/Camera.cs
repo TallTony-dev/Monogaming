@@ -12,6 +12,13 @@ public class Camera
 
     private float scale = 1f;
 
+    public Matrix ScaleMatrix
+    { get
+        {
+            return Matrix.CreateScale(scale, scale, 0);
+        }
+    }
+
     /// <summary>
     /// View matrix to be passed when starting spritebatch
     /// </summary>

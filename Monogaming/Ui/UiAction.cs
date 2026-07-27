@@ -25,9 +25,10 @@ public class UiAction
 
 
     public string CommandName { get; private set; }
-    public JsonProperty Args { get; private set; } //maybe just one int lolol
+    public JsonElement Args { get; private set; } //maybe just one int lolol
+
     [JsonConstructor]
-    public UiAction(string CommandName, JsonProperty Args)
+    public UiAction(string CommandName, JsonElement Args)
     {
         this.CommandName = CommandName;
         this.Args = Args;
@@ -40,15 +41,17 @@ public class UiAction
             switch(CommandName)
             {
                 case ("ActivateElement"):
-                    gameStateRef.Ui.ActivateElement(Args.Value.GetString());
+                    gameStateRef.Ui.ActivateElement(Args.GetString());
                 break;
                 case ("DeactivateElement"):
-                    gameStateRef.Ui.DeactivateElement(Args.Value.GetString());
+                    gameStateRef.Ui.DeactivateElement(Args.GetString());
                 break;
                 case ("EnterMainGame"):
                     gameStateRef.EnterMainGame();
                 break;
-
+                case ("EnterEditor"):
+                    gameStateRef.EnterEditor();
+                break;
                 default:
                 Debug.WriteWarn($"Fell out of dispatch ui command with name {CommandName}");
                 break;

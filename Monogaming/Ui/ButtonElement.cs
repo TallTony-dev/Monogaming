@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using Apos.Input;
 using Monogaming.PlayerThings;
+using System.Linq;
 
 namespace Monogaming.Ui;
 
@@ -17,13 +18,13 @@ public class ButtonElement : TextureElement
 {
     [JsonIgnore]
     static ICondition click = new MouseCondition(MouseButton.LeftButton);
-    public UiAction OnClickAction { get; private set;}
+    public List<UiAction> OnClickActions { get; private set; }
     
     [JsonConstructor]
-    public ButtonElement(string ID, Hitbox drawBox, TextureHandler textureHandler, UiAction OnClickAction, List<UiElement> Children) : 
+    public ButtonElement(string ID, Hitbox drawBox, TextureHandler textureHandler, List<UiAction> OnClickActions, List<UiElement> Children) : 
     base(ID, drawBox, textureHandler, Children)
     {
-        this.OnClickAction = OnClickAction;
+        this.OnClickActions = OnClickActions == null? new List<UiAction>() : OnClickActions;
     }
 
     public override void Update(GameTime gameTime)
@@ -32,7 +33,10 @@ public class ButtonElement : TextureElement
         {
             if (click.Pressed())
             {
-                OnClickAction.DispatchCommand();
+                foreach (UiAction action in OnClickActions)
+                {
+                    action.DispatchCommand();
+                }
             }
         }
 

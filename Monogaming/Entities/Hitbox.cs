@@ -6,9 +6,6 @@ namespace Monogaming.Entities;
 
 public class Hitbox
 {
-
-    public Vector2 Pos { get; protected set; }
-    
     [JsonIgnore]
     public Vector2 Center
     {
@@ -17,9 +14,21 @@ public class Hitbox
             return new Vector2(Pos.X + Width / 2, Pos.Y + Height / 2);
         }
     }
+    [JsonInclude]
+    public Vector2 Pos { get; protected set; }
     public int Width { get; protected set; }
     public int Height { get; protected set; }
+
+    public int X { get => (int)Pos.X; }
+    public int Y { get => (int)Pos.Y; }
+
     [JsonConstructor]
+    public Hitbox(int X, int Y, int width, int height)
+    {
+        Pos = new Vector2(X,Y);
+        Width = width;
+        Height = height;
+    }
     public Hitbox(Vector2 pos, int width, int height)
     {
         Pos = pos;

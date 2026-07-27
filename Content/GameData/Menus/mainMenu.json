@@ -4,45 +4,89 @@
 
 
     "RootElement": {
-        "ElementType": "buttonElement",
-        "ID": "startButton",
+        "Start": {
+            "ElementType": "buttonElement",
+            "ID": "startButton",
 
-        "DrawBox": {
-            "Pos" : {
+            "DrawBox": {
                 "X": 0,
-                "Y": 0
+                "Y": 0,
+                "Width": 100,
+                "Height": 100
             },
-            "Width": 100,
-            "Height": 100
-        },
-        "TextureHandler": {
-            "textures": {
-                "Default": "core_topLeft",
-                "OnHover": "core_animatedTest_noloop"
-            }
-        },
-        "OnClickAction": {
-            "CommandName": "EnterMainGame"
-        },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "core_topLeft",
+                    "OnHover": "core_animatedTest_noloop"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "EnterMainGame"
+                }
+            ],
 
-        "Children": [
-            {
-                "ElementType": "textElement",
-                "ID": "startButtonText",
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "startButtonText",
 
-                "DrawBox": {
-                    "Pos" : {
+                    "DrawBox": {
                         "X": 0,
-                        "Y": 0
+                        "Y": 0,
+                        "Width": 100,
+                        "Height": 100
                     },
-                    "Width": 100,
-                    "Height": 100
-                },
 
-                "Text": "Start"
-            }
-        ]
+                    "Text": "Start"
+                }
+            ]
+        },
+
+        "EditorEnter": {
+            "ElementType": "buttonElement",
+            "ID": "editorButton",
+
+            "DrawBox": {
+                "X": 400,
+                "Y": 0,
+                "Width": 200,
+                "Height": 100
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "core_topLeft",
+                    "OnHover": "core_animatedTest_noloop"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "EnterEditor"
+                },
+                {
+                    "CommandName": "DeactivateElement",
+                    "Args": "mainMenu"
+                }
+            ],
+
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "editorButtonText",
+
+                    "DrawBox": {
+                        "X": 400,
+                        "Y": 0,
+                        "Width": 200,
+                        "Height": 100
+                    },
+
+                    "Text": "Editor"
+                }
+            ]
+        }
     }
+    
 
     
 }

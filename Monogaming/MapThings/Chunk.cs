@@ -26,7 +26,7 @@ public class Chunk
     private string[][] Tiles;
 
 
-    //TODO: Fix how these are stored seperately
+    //TODO: Fix how these are stored seperately, make a custom jsonConverter or something!
     [JsonInclude]
     [JsonPropertyName("Entities")]
     Dictionary<string, JsonEntity> Entities;

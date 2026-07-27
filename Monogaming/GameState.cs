@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+global using System;
+global using System.Collections.Generic;
+global using Microsoft.Xna.Framework;
+global using Microsoft.Xna.Framework.Graphics;
+global using System.Text.Json;
 using Monogaming.Entities;
 using Monogaming.TextureThings;
 using Monogaming.Ui;
@@ -11,8 +11,8 @@ using Monogaming.Interfaces;
 using System.Diagnostics.Metrics;
 using Monogaming.MapThings;
 using Monogaming.PlayerThings;
-using System.Text.Json;
 using System.IO;
+using Monogaming.Utils;
 
 namespace Monogaming;
 
@@ -26,12 +26,13 @@ public class GameState
     CommandManager commandManager;
 
 
-    bool isInMainMenu = true;
     
+    
+    State state = State.InMenus;
+    bool isGameLogicPaused = false;
 
-    bool isInGame = false;
-    bool isPaused = false;
-
+  
+    bool isInLevelEditor = false;
 
     public GameState(GameWindow window)
     {
@@ -46,32 +47,68 @@ public class GameState
 
     public void EnterMainGame()
     {
-        isInGame = true;
-        isPaused = false;
-        isInMainMenu = false;
+        state = State.InGame;
+        isGameLogicPaused = false;
         Ui.DeactivateElement("mainMenu");
+    }
+    public void ExitMainGame()
+    {
+        state = State.InMenus;
+        isGameLogicPaused = true;
+        Ui.ActivateElement("mainMenu");
+    }
+
+    public void EnterEditor()
+    {
+        state = State.InEditor;
+        isGameLogicPaused = true;
+        //Ui.DeactivateElement("mainMenu");
+        // Ui.ActivateElement("editorMenu");
     }
 
     public void Update(GameTime gameTime)
     {
         Ui.Update(gameTime);
-
+        
         //you should have something here that stops if theres a transition in progress
-        if (isInGame)
+        if (!isGameLogicPaused)
         {
             Player.Update(gameTime, this);
             Map.Update(gameTime);
+        }
+        switch (state)
+        {
+            case State.InEditor:
+                LevelEditor.Update(gameTime);
+            break;
+
+            default:
+            break;
         }
     }
 
     public void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {
-        Map.Draw(spriteBatch, screen);
-        Player.Draw(spriteBatch);
+        switch (state)
+        {
+            case State.InEditor:
+                LevelEditor.Draw(spriteBatch);
+                Map.Draw(spriteBatch, screen);
+            break;
+            case State.InGame:
+                Map.Draw(spriteBatch, screen);
+                Player.Draw(spriteBatch);
+            break;
+            default:
+            break;
+        }
     }
 
     public void DrawUI(SpriteBatch spriteBatch)
     {
         Ui.Draw(spriteBatch);
     }
+
+
+    private enum State { InMenus, InGame, InEditor }
 }
