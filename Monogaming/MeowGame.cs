@@ -86,10 +86,6 @@ public class MeowGame : Game
         new KeyboardCondition(Keys.Escape),
         new GamePadCondition(GamePadButton.Back, 0)
     );
-    ICondition click = new AnyCondition(
-        new KeyboardCondition(Keys.Space),
-        new GamePadCondition(GamePadButton.A, 0)
-    );
 
     protected override void Update(GameTime gameTime)
     {
@@ -111,12 +107,6 @@ public class MeowGame : Game
             {
                 e.Update(gameTime);
             }
-        }
-
-
-        if (click.Pressed())
-        {
-
         }
 
         camera.Update(gameTime, gameState.Player.body.Center);

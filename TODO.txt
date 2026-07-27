@@ -1,1 +1,4 @@
 - Make UI elements be able to be anchored to other origins of the screen and to scale nicer
+- Implement Inventory element that can reference player inventory
+- Implement Level Editor
+- Implement Texture Atlas Tool
