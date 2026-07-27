@@ -37,6 +37,14 @@ public class UiElement : ImUpdatable
         this.DrawBox = DrawBox;
         this.ID = ID;
         this.Children = Children != null ? Children : new List<UiElement>();
+
+        //TODO: implement anchoring here instead of this
+        if (this.DrawBox != null) {
+            foreach (UiElement child in this.Children)
+            {
+                child.DrawBox.ChangePos(this.DrawBox.Pos);
+            }
+        }
     }
 
     /// <summary>

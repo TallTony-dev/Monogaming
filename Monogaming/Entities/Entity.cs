@@ -71,7 +71,7 @@ public class Entity : ImDrawable, ImUpdatable
     public virtual void UpdateDrawPos(Vector2 deltaPos)
     {
         //should be private
-        DrawBox.UpdatePos(deltaPos);
+        DrawBox.ChangePos(deltaPos);
     }
 
     public virtual void Draw(SpriteBatch spriteBatch, Hitbox screen)

@@ -75,7 +75,7 @@
                     "ID": "editorButtonText",
 
                     "DrawBox": {
-                        "X": 400,
+                        "X": 0,
                         "Y": 0,
                         "Width": 200,
                         "Height": 100

@@ -45,7 +45,7 @@ public class Hitbox
     {
         Pos = pos;
     }
-    public virtual void UpdatePos(Vector2 deltaPos)
+    public virtual void ChangePos(Vector2 deltaPos)
     {
         Pos += deltaPos;
     }
