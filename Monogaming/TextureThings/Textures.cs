@@ -142,7 +142,13 @@ public static class Textures
                 string texFileName = texFileObj.GetProperty("FileName").GetString();
                 if (!loadedTextures2D.ContainsKey(texFileName))
                 {
-                    loadedTextures2D.Add(texFileName, content.Load<Texture2D>(texFileName));
+                    try {
+                        loadedTextures2D.Add(texFileName, content.Load<Texture2D>(texFileName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteError($"Failed to load file {texFileName} from contentloader in file {fileName} with err {ex.Message}");
+                    }
                 }
 
                 //each texture property within the texture file object

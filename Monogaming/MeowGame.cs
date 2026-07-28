@@ -36,7 +36,7 @@ public class MeowGame : Game
     public MeowGame()
     {
         _graphics = new GraphicsDeviceManager(this);
-        Content.RootDirectory = "Content";
+        Content.RootDirectory = "Content\\Resources";
         IsMouseVisible = true;
     }
 

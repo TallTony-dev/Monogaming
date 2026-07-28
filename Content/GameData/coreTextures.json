@@ -2,6 +2,21 @@
     "Title": "textures",
     "TextureBookName": "Core",
 
+    "Button": {
+        "FileName": "buttonRock",
+
+        "core_button": {
+            "Animated": false,
+
+            "Rect": {
+                "X": 0,
+                "Y": 0,
+                "Width": 64,
+                "Height": 32
+            }
+        }
+    },
+
     "Icon": {
         "FileName": "Icon",
         
