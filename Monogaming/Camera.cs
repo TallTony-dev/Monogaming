@@ -6,16 +6,32 @@ using Monogaming.Entities;
 public class Camera
 {
     GameWindow gameWindowRef;
+    GraphicsDeviceManager graphicsRef;
     Vector2 prevTarget = Vector2.Zero;
 
     private float trackSpeed;
 
-    private float scale = 1f;
+    public const int ScreenWidth = 640;
+    public const int ScreenHeight = ScreenWidth / 16 * 9;
+
+    private float _scale = 1f;
+    public Vector2 UiScale
+    {
+        get {
+            return new Vector2((float)gameWindowRef.ClientBounds.Width / ScreenWidth, (float)gameWindowRef.ClientBounds.Height / ScreenHeight);
+        } 
+    }
+    public float Scale { 
+        get {
+            return _scale + (float)gameWindowRef.ClientBounds.Width / ScreenWidth;
+        } 
+    }
+    
 
     public Matrix ScaleMatrix
     { get
         {
-            return Matrix.CreateScale(scale, scale, 0);
+            return Matrix.CreateScale(Scale, Scale, 0);
         }
     }
 
@@ -25,9 +41,16 @@ public class Camera
     public Matrix ViewMatrix 
     { get
         {
-            Matrix m = Matrix.CreateScale(scale, scale, 0);
-            m *= Matrix.CreateTranslation(new Vector3(-prevTarget.X + MeowGame.ScreenWidth / 2, 
-            -prevTarget.Y + MeowGame.ScreenHeight / 2, 0));
+            Matrix m = Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
+            m *= ScaleMatrix;
+            m *= Matrix.CreateTranslation(gameWindowRef.ClientBounds.Width / 2, gameWindowRef.ClientBounds.Height / 2, 0);
+            
+            
+            // if (graphicsRef.GraphicsDevice.UseHalfPixelOffset)
+            // {
+                m.M41 += -0.5f * m.M11;
+                m.M42 += -0.5f * m.M22;
+            // }
             return m;
         }
     }
@@ -39,8 +62,8 @@ public class Camera
     { get
         {
             Matrix m = ViewMatrix;
-            return m * Matrix.CreateOrthographicOffCenter(0, MeowGame.ScreenWidth, 
-            MeowGame.ScreenHeight, 0, 0, 1);
+            return m * Matrix.CreateOrthographicOffCenter(0, gameWindowRef.ClientBounds.Width, 
+            gameWindowRef.ClientBounds.Height, 0, 0, 1);
         }
     }
 
@@ -48,17 +71,19 @@ public class Camera
     {
         get
         {
-            int width = MeowGame.ScreenWidth;
-            int height = MeowGame.ScreenHeight;
+            int width = (int)gameWindowRef.ClientBounds.Width;
+            int height = (int)gameWindowRef.ClientBounds.Height;
             return new Hitbox(new Vector2(prevTarget.X - width/2, prevTarget.Y - height/2), width, height);
         }
     }
 
-    public Camera(GameWindow window, 
-    float trackSpeed = 1f)
+    
+
+    public Camera(GameWindow window, GraphicsDeviceManager graphics, float trackSpeed = 1f)
     {
         this.trackSpeed = trackSpeed;
         gameWindowRef = window;
+        graphicsRef = graphics;
     }
 
     public void Update(GameTime t, Vector2 trackingPos, bool snapToPos = false)

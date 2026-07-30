@@ -40,6 +40,10 @@ public class Hitbox
         Width = width;
         Height = height;
     }
+    public Hitbox(Rectangle rect)
+    {
+        
+    }
 
     public virtual void SetPos(Vector2 pos)
     {

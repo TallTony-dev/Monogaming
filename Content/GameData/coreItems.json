@@ -4,22 +4,22 @@
     "turret": {
         "ID": "core_turret",
         "Category": "weapons",
-        "TextureID": "core_default"
+        "TextureID": "Sprite-0006.Idle"
     },
     "iron": {
         "ID": "core_iron",
         "Category": "materials",
-        "TextureID": "core_default"
+        "TextureID": "Sprite-0006.Idle"
     },
     "ore": {
         "ID": "core_ore",
         "Category": "rawMaterials",
-        "TextureID": "core_default"
+        "TextureID": "Sprite-0006.Idle"
     },
     "wire": {
         "ID": "core_wire",
         "Category": "materials",
-        "TextureID": "core_default"
+        "TextureID": "Sprite-0006.Idle"
     }
     
 

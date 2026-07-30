@@ -16,7 +16,7 @@ public class InventoryElement : UiElement
     Inventory boundInventory;
 
     [JsonConstructor]
-    public InventoryElement(string ID, Hitbox drawBox, List<UiElement> Children) : base(ID, drawBox, Children)
+    public InventoryElement(string ID, AnchorPoint Anchor, Hitbox drawBox, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
     {
         
     }

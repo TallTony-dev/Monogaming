@@ -17,7 +17,7 @@ public class MeowGame : Game
     GameState gameState;
 
     Camera camera;
-    RenderTarget2D gameTarget;
+    // RenderTarget2D gameTarget;
 
     Effect testEffect;
 
@@ -31,8 +31,7 @@ public class MeowGame : Game
 
     public static Vector2 ScaledMousePos { get; private set; }
 
-    public const int ScreenWidth = 640;
-    public const int ScreenHeight = ScreenWidth / 16 * 9;
+
     public MeowGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -42,17 +41,13 @@ public class MeowGame : Game
 
     protected override void Initialize()
     {
-        camera = new(Window);
+        camera = new(Window, _graphics);
         Window.AllowUserResizing = true;
         Window.Title = "Fun awesome game :)";
 
         testEffect = Content.Load<Effect>("testshader");
-        gameTarget = new RenderTarget2D(GraphicsDevice, ScreenWidth, ScreenHeight, 
-        false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
-
-        #if EDITOR_BUILD
-            Debug.WriteInfo("Editor build enabled");
-        #endif
+        // gameTarget = new RenderTarget2D(GraphicsDevice, ScreenWidth, ScreenHeight, 
+        // false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
 
         base.Initialize();
     }
@@ -61,7 +56,7 @@ public class MeowGame : Game
     {
         InputHelper.Setup(this);
         SpriteBatch = new SpriteBatch(GraphicsDevice);
-        Textures.LoadTextures(Content, "coreTextures");
+        Textures.Initialize(Content);
         ItemDict.LoadFromFile("coreItems");
         RecipeBook.LoadFromFile("coreRecipes");
         
@@ -89,8 +84,7 @@ public class MeowGame : Game
             Exit();
         InputHelper.UpdateSetup();
 
-        ScaledMousePos = InputHelper.NewMouse.Position.ToVector2() * 
-        new Vector2(ScreenWidth / (float)Window.ClientBounds.Width, ScreenHeight / (float)Window.ClientBounds.Height);
+        ScaledMousePos = InputHelper.NewMouse.Position.ToVector2() / camera.Scale;
         gameState.Update(gameTime);
 
         float s = (float)gameTime.TotalGameTime.TotalSeconds;
@@ -114,7 +108,7 @@ public class MeowGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.SetRenderTarget(gameTarget);
+        // GraphicsDevice.SetRenderTarget(gameTarget);
         if (timeSinceCleared >= 0)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -123,9 +117,9 @@ public class MeowGame : Game
         } else timeSinceCleared += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 
-        testEffect.Parameters["view_projection"].SetValue(camera.ViewProjMatrix);        
+        // testEffect.Parameters["view_projection"].SetValue(camera.ViewProjMatrix);        
         testEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
-        SpriteBatch.Begin(effect: testEffect, samplerState: SamplerState.PointClamp);
+        SpriteBatch.Begin(effect: testEffect, samplerState: SamplerState.PointClamp, transformMatrix: camera.ViewMatrix);
 
         //https://github.com/SuRGeoNix/Flyleaf
         //try implementing this for videos
@@ -140,16 +134,19 @@ public class MeowGame : Game
         gameState.Draw(SpriteBatch, screen);
         SpriteBatch.End();
         
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.ScaleMatrix, effect: null);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: null);
         gameState.DrawUI(SpriteBatch);
         SpriteBatch.End();
 
-        GraphicsDevice.SetRenderTarget(null);
+        // GraphicsDevice.SetRenderTarget(null);
         
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        SpriteBatch.Draw(gameTarget, new Rectangle(0,0,Window.ClientBounds.Width, Window.ClientBounds.Height),
-        null, Color.White);
-        SpriteBatch.End();
+        
+        // SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        // // SpriteBatch.Draw(gameTarget, new Rectangle(0,0,Window.ClientBounds.Width, Window.ClientBounds.Height),
+        // // null, Color.White);
+        // SpriteBatch.Draw(gameTarget, new Rectangle(0,0,ScreenWidth, ScreenHeight),
+        // null, Color.White);
+        // SpriteBatch.End();
 
         //do ui stuff here probably
 

@@ -2,19 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Nodes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Interfaces;
+using Monogaming.Items;
+using Microsoft.VisualBasic;
 
 namespace Monogaming.TextureThings;
 
 public static class Textures
 {
 
-    private const string DefaultTextureID = "core_default";
+    private const string DefaultTextureID = "Sprite-0006.Idle";
 
     public static SpriteFont MainFont { get; private set; }
 
@@ -43,7 +45,7 @@ public static class Textures
         {
             if (loadedAtlasTexs.ContainsKey(textureName))
             {
-                return loadedAtlasTexs[textureName];
+                return loadedAtlasTexs[textureName].Copy();
             }
             else if (loadedAnimatedTexs.ContainsKey(textureName))
             {
@@ -59,7 +61,7 @@ public static class Textures
             Debug.WriteError($"Failed to load texture {textureName} with exception {ex.Message}");
         }
 
-        return loadedAtlasTexs[DefaultTextureID];
+        return loadedAnimatedTexs[DefaultTextureID];
     }
     private static AtlasTex Get2DTex(string textureName)
     {
@@ -84,7 +86,7 @@ public static class Textures
             {
                 throw new ArgumentException($"Texture with name '{textureName}' not found in loadedImTexs.");
             }
-            return loadedAnimatedTexs[textureName].Copy();
+            return (TextureAnimation)loadedAnimatedTexs[textureName].Copy();
         }
         catch (Exception ex)
         {
@@ -104,96 +106,152 @@ public static class Textures
             return null;
         }
     }
-    private static AtlasTex ParseTex(JsonElement element, string texture2DKey)
+    private static AtlasTex ParseTex(FrameInfo element, string texture2DKey)
     {
-        JsonElement rectElement = element.GetProperty("Rect");
+        Rect badRect = element.Frame;
         Rectangle rect = new Rectangle(
-            rectElement.GetProperty("X").GetInt32(),
-            rectElement.GetProperty("Y").GetInt32(),
-            rectElement.GetProperty("Width").GetInt32(),
-            rectElement.GetProperty("Height").GetInt32()
+            badRect.X,
+            badRect.Y,
+            badRect.W,
+            badRect.H
         );
         AtlasTex tex = new AtlasTex(loadedTextures2D[texture2DKey], rect);
         return tex;
     }
 
-    public static void LoadTextures(ContentManager content, string fileName)
+
+    const string DefaultPath = "./GameData/Textures/";
+    public static void Initialize(ContentManager content)
     {
         MainFont = content.Load<SpriteFont>("default");
+        foreach(string path in Directory.EnumerateFiles(DefaultPath))
+        {
+            LoadTextures(content, path);
+        }
+    }
+
+    private static void LoadTextures(ContentManager content, string path)
+    {
         try
         {
-            string path = "./GameData/" + fileName + ".json";
 
             Stream textStream = File.OpenRead(path);
             JsonDocument document = JsonDocument.Parse(textStream);
             JsonElement root = document.RootElement;
 
-            string name = root.GetProperty("TextureBookName").GetString();
-
+            JsonElement meta = root.GetProperty("meta");
+            string title = meta.GetProperty("image").GetString();
+            title = title.Split('.')[0]; //trim extension
 
             int loadCount = 0;
-            foreach (JsonProperty prop in root.EnumerateObject()) {
-                if (!(prop.Value.ValueKind == JsonValueKind.Object))
+
+
+            JsonElement frames = root.GetProperty("frames");
+
+            if (!loadedTextures2D.ContainsKey(title))
+            {
+                try {
+                    loadedTextures2D.Add(title, content.Load<Texture2D>(title));
+                }
+                catch (Exception ex)
                 {
-                    continue;
+                    Debug.WriteError($"Failed to load file {title} from contentloader in file {path} with err {ex.Message}");
                 }
-                JsonElement texFileObj = prop.Value;
+            }
 
-                string texFileName = texFileObj.GetProperty("FileName").GetString();
-                if (!loadedTextures2D.ContainsKey(texFileName))
+            Dictionary<(string texType, int frameNum), FrameInfo> frameInfos = new();
+            //each texture property within the texture file object
+            foreach (JsonProperty frame in frames.EnumerateObject()) {
+ 
+                string[] texNameSplit = frame.Name.Split('.');
+                string texName = texNameSplit[0];
+                string texType = texNameSplit[1];
+                int frameNum = 0;
+                if (texNameSplit.Length > 2)
                 {
-                    try {
-                        loadedTextures2D.Add(texFileName, content.Load<Texture2D>(texFileName));
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteError($"Failed to load file {texFileName} from contentloader in file {fileName} with err {ex.Message}");
-                    }
+                    frameNum = Convert.ToInt32(texNameSplit[2]);
                 }
 
-                //each texture property within the texture file object
-                foreach (JsonProperty texProp in texFileObj.EnumerateObject()) {
-                    if (!(texProp.Value.ValueKind == JsonValueKind.Object))
-                    {
-                        continue;
-                    }
-                    JsonElement texObj = texProp.Value;
-                    string imTexName = texProp.Name;
-                    bool isAnimated = texObj.GetProperty("Animated").GetBoolean();
-
-                    //if is animated, loop through subobjs again to get rects
-                    if (isAnimated)
-                    {
-                        List<(AtlasTex tex, float delay, int order)> texs = new();
-
-                        foreach (JsonProperty animTexProp in texObj.EnumerateObject())
-                        {
-                            if (animTexProp.Value.ValueKind == JsonValueKind.Object) {
-                                texs.Add((ParseTex(animTexProp.Value, texFileName), animTexProp.Value.GetProperty("Delay").GetSingle(),
-                                animTexProp.Value.GetProperty("Order").GetInt32()));
-                            }
-                        }
-                        List<(AtlasTex tex, float delay)> textures = 
-                        texs.OrderBy(t => t.order).Select(t => (t.tex, t.delay)).ToList();
-
-                        loadedAnimatedTexs.Add(imTexName, new TextureAnimation(textures, texObj.GetProperty("Looping").GetBoolean()));
-                        loadCount++;
-                    }
-                    else
-                    {
-                        loadedAtlasTexs.Add(imTexName, ParseTex(texObj, texFileName));
-                        loadCount++;
-                    }
-
-                }
+                FrameInfo frameInfo = JsonSerializer.Deserialize<FrameInfo>(frame.Value);
+                
+                //if is animated, loop through subobjs again to get rects
+                frameInfos.Add((texType, frameNum), frameInfo);
 
             }
-            Debug.WriteInfo($"Parsed/Loaded {loadCount} textures from TextureBook {name}");
+
+            var groups = frameInfos.GroupBy(t => t.Key.texType);
+            //group them by type
+            foreach (var group in groups)
+            {
+                group.OrderBy(t => t.Key.frameNum);
+
+                if (group.Count() > 1)
+                {
+                    List<(AtlasTex tex, float delay)> texs = new();
+                    
+                    foreach (var item in group)
+                    {
+                        //is ascending from previous ordering
+                        texs.Add((ParseTex(item.Value, title), item.Value.Duration));
+                    }
+
+                    loadedAnimatedTexs.Add($"{title}.{group.First().Key.texType}", 
+                    new TextureAnimation(texs));
+                    loadCount++;
+
+
+                }
+                else
+                {
+                    loadedAtlasTexs.Add($"{title}.{group.First().Key.texType}", 
+                    ParseTex(group.First().Value, title));
+                    loadCount++;
+                }
+            }
+
+            Debug.WriteInfo($"Parsed/Loaded {loadCount} textures from TextureBook {title}");
         }
         catch (Exception ex)
         {
-            Debug.WriteError($"Failed to load textureFile with name {fileName} with exception {ex.Message}");
+            Debug.WriteError($"Failed to load textureFile with name {path} with exception {ex.Message}");
         }
 
+    }
+
+
+
+    private class FrameInfo
+    {
+        [JsonPropertyName("frame")]
+        public Rect Frame { get; set; }
+
+        [JsonPropertyName("rotated")]
+        public bool Rotated { get; set; }
+
+        [JsonPropertyName("trimmed")]
+        public bool Trimmed { get; set; }
+
+        [JsonPropertyName("spriteSourceSize")]
+        public Rect SpriteSourceSize { get; set; }
+
+        [JsonPropertyName("sourceSize")]
+        public Size SourceSize { get; set; }
+
+        [JsonPropertyName("duration")]
+        public int Duration { get; set; }
+    }
+
+    private class Rect
+    {
+        [JsonPropertyName("x")] public int X { get; set; }
+        [JsonPropertyName("y")] public int Y { get; set; }
+        [JsonPropertyName("w")] public int W { get; set; }
+        [JsonPropertyName("h")] public int H { get; set; }
+    }
+
+    private class Size
+    {
+        [JsonPropertyName("w")] public int W { get; set; }
+        [JsonPropertyName("h")] public int H { get; set; }
     }
 }

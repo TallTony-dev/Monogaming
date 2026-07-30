@@ -10,4 +10,5 @@ public interface ImTexture
     bool IsAnimated { get; }
     void Draw(SpriteBatch batch, Vector2 pos);
     void Draw(SpriteBatch batch, Rectangle dest);
+    ImTexture Copy();
 }

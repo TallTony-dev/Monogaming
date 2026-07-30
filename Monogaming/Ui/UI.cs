@@ -19,10 +19,13 @@ public class UI : ImUpdatable
     public bool IsActive { get; private set; } = true;
     Dictionary<string, UiElement> menus = new();
 
+    private GameWindow gameWindowRef;
 
     private const string UIPath = "./GameData/Menus/";
-    public UI()
+    public UI(GameWindow windowRef)
     {
+        gameWindowRef = windowRef;
+
         //add menus here cause i dont wanna do more json lol
         //haha suck it we're doing more json lolol enjoy scalability loser
         int count = 0;
@@ -43,7 +46,7 @@ public class UI : ImUpdatable
                 foreach (JsonProperty prop in root.GetProperty("RootElement").EnumerateObject()) {
                     children.Add(JsonSerializer.Deserialize<UiElement>(prop.Value));
                 }
-                UiElement rootElement = new("root", null, children);
+                UiElement rootElement = new("root", AnchorPoint.TopLeft, null, children);
 
                 menus.Add(root.GetProperty("ID").GetString(), rootElement);
                 count++;
@@ -54,6 +57,8 @@ public class UI : ImUpdatable
             }
 
         }
+        HandleWindowChange(this, EventArgs.Empty);
+
         Debug.WriteInfo($"Loaded {count} menus from {UIPath}");
     }
 
@@ -88,6 +93,10 @@ public class UI : ImUpdatable
     public void HandleWindowChange(object sender, EventArgs args)
     {
         //tell elements to update their sizes to match new window
+        foreach (UiElement element in menus.Values)
+        {
+            element.UpdatePos(gameWindowRef);
+        }
     }
 
     public void Update(GameTime gameTime)

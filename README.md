@@ -14,3 +14,12 @@ Hopefully I'll implement visual editors for json to make texture creation and at
 to edit mgcb on mac: dotnet tool run mgcb-editor-mac ./Content/Content.mgcb
 
 .jsons contain data for things (something new I'm trying that should be helpful)
+
+Aseprite export: fileName is {title}.{tag}.{tagframe}
+
+
+Potential future opimizations:
+- Use ZLinq for faster linq
+- Optimize tile rendering to be better
+- Have a 'lazy' ui that draws to a rendertarget only every so often
+- Have tilemap be drawn lazily to a rendertarget too

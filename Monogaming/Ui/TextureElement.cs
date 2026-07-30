@@ -20,7 +20,7 @@ public class TextureElement : UiElement
     protected TextureHandler TextureHandler { get; private set; }
 
     [JsonConstructor]
-    public TextureElement(string ID, Hitbox drawBox, TextureHandler TextureHandler, List<UiElement> Children) : base(ID, drawBox, Children)
+    public TextureElement(string ID, AnchorPoint Anchor, Hitbox drawBox, TextureHandler TextureHandler, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
     {
         this.TextureHandler = TextureHandler;
     }
@@ -28,7 +28,7 @@ public class TextureElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
-        if (DrawBox.Intersects(MeowGame.ScaledMousePos))
+        if (ScaledDrawBox.Intersects(MeowGame.ScaledMousePos))
         {
             if (click.Pressed(false))
             {
@@ -51,7 +51,7 @@ public class TextureElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        TextureHandler.Draw(spriteBatch, DrawBox.AsRect());
+        TextureHandler.Draw(spriteBatch, ScaledDrawBox.AsRect());
         base.Draw(spriteBatch);
     }
 }

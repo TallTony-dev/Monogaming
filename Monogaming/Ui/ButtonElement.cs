@@ -21,15 +21,15 @@ public class ButtonElement : TextureElement
     public List<UiAction> OnClickActions { get; private set; }
     
     [JsonConstructor]
-    public ButtonElement(string ID, Hitbox drawBox, TextureHandler textureHandler, List<UiAction> OnClickActions, List<UiElement> Children) : 
-    base(ID, drawBox, textureHandler, Children)
+    public ButtonElement(string ID, AnchorPoint Anchor, Hitbox drawBox, TextureHandler textureHandler, List<UiAction> OnClickActions, List<UiElement> Children) : 
+    base(ID, Anchor, drawBox, textureHandler, Children)
     {
         this.OnClickActions = OnClickActions == null? new List<UiAction>() : OnClickActions;
     }
 
     public override void Update(GameTime gameTime)
     {
-        if (DrawBox.Intersects(MeowGame.ScaledMousePos))
+        if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
         {
             if (click.Pressed())
             {

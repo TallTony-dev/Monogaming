@@ -34,7 +34,7 @@ public class Tile : ImUpdatable
 
     public Tile Copy()
     {
-        return new Tile(Texture, Walkable);
+        return new Tile(Texture.Copy(), Walkable);
     }
 
     public void Update(GameTime gameTime)
@@ -48,6 +48,7 @@ public class Tile : ImUpdatable
 
     public void Draw(SpriteBatch spriteBatch, Vector2 pos)
     {
-        Texture.Draw(spriteBatch, new Rectangle((int)pos.X, (int)pos.Y, Map.TileDims, Map.TileDims));
+        Texture.Draw(spriteBatch, pos);
+        //Texture.Draw(spriteBatch, new Rectangle((int)pos.X, (int)pos.Y, Map.TileDims, Map.TileDims));
     }
 }

@@ -20,7 +20,7 @@ public class GameState
 {
     //TODO: implement a game state system here to update things based off current state
 
-    public UI Ui { get; private set; } = new();
+    public UI Ui { get; private set; }
     public Map Map { get; private set; } = new();
     public Player Player { get; private set; }
     CommandManager commandManager;
@@ -36,6 +36,7 @@ public class GameState
 
     public GameState(GameWindow window)
     {
+        Ui = new UI(window);
         window.ClientSizeChanged += Ui.HandleWindowChange;
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);

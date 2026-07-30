@@ -23,13 +23,13 @@ public class TextureAnimation : ImUpdatable, ImTexture
     List<(AtlasTex tex, float delay)> animation = new();
     int currentIndex = 0;
 
-    public TextureAnimation(List<(AtlasTex tex, float delay)> list, bool isLooping)
+    public TextureAnimation(List<(AtlasTex tex, float delay)> list, bool isLooping = true)
     {
         IsLooping = isLooping;
         animation = list;
     }
 
-    public TextureAnimation Copy()
+    public ImTexture Copy()
     {
         return new TextureAnimation(animation, IsLooping);
     }

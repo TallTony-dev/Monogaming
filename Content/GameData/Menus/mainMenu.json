@@ -1,23 +1,24 @@
 {
     "Title": "menu",
     "ID": "mainMenu",
-
+    "Anchor": "TopLeft",
 
     "RootElement": {
         "Start": {
             "ElementType": "buttonElement",
             "ID": "startButton",
+            "Anchor": "TopLeft",
 
             "DrawBox": {
-                "X": 0,
-                "Y": 0,
-                "Width": 64,
-                "Height": 32
+                "X": 50,
+                "Y": 20,
+                "Width": 200,
+                "Height": 100
             },
             "TextureHandler": {
                 "textures": {
-                    "Default": "core_button",
-                    "OnHover": "core_button"
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
                 }
             },
             "OnClickActions": [
@@ -30,6 +31,7 @@
                 {
                     "ElementType": "textElement",
                     "ID": "startButtonText",
+                    "Anchor": "Center",
 
                     "DrawBox": {
                         "X": 0,
@@ -46,17 +48,17 @@
         "EditorEnter": {
             "ElementType": "buttonElement",
             "ID": "editorButton",
-
+            "Anchor": "BottomRight",
             "DrawBox": {
-                "X": 400,
-                "Y": 0,
-                "Width": 200,
-                "Height": 100
+                "X": 10,
+                "Y": 10,
+                "Width": 140,
+                "Height": 70
             },
             "TextureHandler": {
                 "textures": {
-                    "Default": "core_button",
-                    "OnHover": "core_button"
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
                 }
             },
             "OnClickActions": [
@@ -73,12 +75,12 @@
                 {
                     "ElementType": "textElement",
                     "ID": "editorButtonText",
-
+                    "Anchor": "Center",
                     "DrawBox": {
                         "X": 0,
                         "Y": 0,
-                        "Width": 200,
-                        "Height": 100
+                        "Width": 50,
+                        "Height": 30
                     },
 
                     "Text": "Editor"

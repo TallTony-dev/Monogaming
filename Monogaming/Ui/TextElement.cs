@@ -17,7 +17,7 @@ public class TextElement : UiElement
     protected string Text { get; private set; }
 
     [JsonConstructor]
-    public TextElement(string ID, Hitbox drawBox, string Text, List<UiElement> Children) : base(ID, drawBox, Children)
+    public TextElement(string ID, AnchorPoint Anchor, Hitbox drawBox, string Text, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
     {
         this.Text = Text;
     }
@@ -30,8 +30,8 @@ public class TextElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        float scaleX = DrawBox.Width / Textures.MainFont.MeasureString(Text).X;
-        spriteBatch.DrawString(Textures.MainFont, Text, DrawBox.Pos, Color.BlueViolet, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
+        float scaleX = ScaledDrawBox.Width / Textures.MainFont.MeasureString(Text).X;
+        spriteBatch.DrawString(Textures.MainFont, Text, ScaledDrawBox.Pos, Color.BlueViolet, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
         base.Draw(spriteBatch);
     }
 }

@@ -16,9 +16,9 @@ public class TextureHandler
 {
     private ImTexture currentTexture;
     public TextureType CurrentTextureType { get; private set; }
-
     public Dictionary<TextureType, string> textures { get; private set; } //mix of keys to animated and static textures
 
+    //TODO: clean this up a little lot to be more efficient with new texture loader
     
     [JsonConstructor]
     public TextureHandler(Dictionary<TextureType, string> textures)

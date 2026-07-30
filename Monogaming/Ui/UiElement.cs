@@ -25,26 +25,103 @@ public class UiElement : ImUpdatable
     public bool IsVisible { get; private set; } = true;
     [JsonIgnore]
     public bool IsActive { get; private set; } = true;
-    
+    [JsonIgnore]
+    public Hitbox ScaledDrawBox { get; protected set; } //scaled to fit screen 
+    [JsonIgnore]
+    public Hitbox ParentOffset { get; set; }
+
     public string ID { get; private set; }
-    public Hitbox DrawBox { get; protected set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public AnchorPoint Anchor { get; private set; }
     public List<UiElement> Children { get; protected set; }
+    [JsonInclude]
+    [JsonPropertyName("DrawBox")]
+    public Hitbox DrawBox { get; private set; } // the actual pos (offset from anchor) as defined by Camera.ScreenWidth/Height
+
 
 
     [JsonConstructor]
-    public UiElement(string ID, Hitbox DrawBox, List<UiElement> Children)
+    public UiElement(string ID, AnchorPoint Anchor, Hitbox DrawBox, List<UiElement> Children)
     {
+        this.Anchor = Anchor;
         this.DrawBox = DrawBox;
         this.ID = ID;
         this.Children = Children != null ? Children : new List<UiElement>();
+        this.ScaledDrawBox = DrawBox;
+    }
+    
 
-        //TODO: implement anchoring here instead of this
-        if (this.DrawBox != null) {
-            foreach (UiElement child in this.Children)
+    public static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent) 
+    {
+        Vector2 retPos = Vector2.Zero;
+        if (anchor == AnchorPoint.Center)
+        {
+            retPos.X = parent.X + (parent.Width - child.Width) / 2 + child.X;
+            retPos.Y = parent.Y + (parent.Height - child.Height) / 2 + child.Y;
+        }
+        else
+        {
+            if (((int)anchor & 1) == 1)
             {
-                child.DrawBox.ChangePos(this.DrawBox.Pos);
+                //right anchored
+                retPos.X = parent.Width + parent.X - child.X - child.Width;
+            }
+            else
+            {
+                //left anchored
+                retPos.X = parent.X + child.X;
+            }
+            if ((int)anchor >= 2)
+            {
+                //bottom anchored
+                retPos.Y = parent.Height + parent.Y - child.Y - child.Height;
+            }
+            else
+            {
+                retPos.Y = parent.Y + child.Y;
             }
         }
+
+        return new Hitbox(retPos, child.Width, child.Height);
+    }
+
+    public void UpdatePos(GameWindow window)
+    {
+        if (DrawBox != null) {
+            int ScreenWidth = Camera.ScreenWidth;
+            int ScreenHeight = Camera.ScreenHeight;
+            Rectangle realWindow = window.ClientBounds;
+            realWindow.X = 0;
+            realWindow.Y = 0;
+
+            Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight);
+
+            Hitbox scaled = new Hitbox(DrawBox.Pos * scale, (int)(DrawBox.Width * scale.X), (int)(DrawBox.Height * scale.Y));
+
+            if (ParentOffset == null) {
+                ScaledDrawBox = OffsetHitbox(Anchor, scaled, realWindow);
+            }
+            else
+            {
+                ScaledDrawBox = OffsetHitbox(Anchor, scaled, ParentOffset.AsRect());
+            }
+        }
+        // else
+        // {
+        //     ScaledDrawBox = new Hitbox(window.ClientBounds);
+        // }
+
+        
+
+        foreach (UiElement child in this.Children)
+        {
+            child.ParentOffset = this.ScaledDrawBox;
+        }
+        foreach (UiElement child in Children)
+        {
+            child.UpdatePos(window);
+        }
+
     }
 
     /// <summary>
@@ -56,7 +133,7 @@ public class UiElement : ImUpdatable
         if (!string.IsNullOrEmpty(searchPath))
         {
             return Children.Find(t => t.ID == searchPath.Substring(0, searchPath.IndexOf('.')))
-            .GetChild(searchPath.Substring(searchPath.IndexOf('.') + 1, searchPath.Length - 1));
+            .GetChild(searchPath.Substring(searchPath.IndexOf('.') + 1, searchPath.Length - searchPath.IndexOf('.') - 1));
         }
         else
         {
@@ -105,5 +182,6 @@ public class UiElement : ImUpdatable
             }
         }
     }
-
 }
+
+public enum AnchorPoint { TopLeft, TopRight, BottomLeft, BottomRight, Center }
