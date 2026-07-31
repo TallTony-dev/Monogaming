@@ -85,14 +85,13 @@ public class UiElement : ImUpdatable
         return new Hitbox(retPos, child.Width, child.Height);
     }
 
-    public void UpdatePos(GameWindow window)
+    public void UpdatePos(Rectangle window)
     {
         if (DrawBox != null) {
             int ScreenWidth = Camera.ScreenWidth;
             int ScreenHeight = Camera.ScreenHeight;
-            Rectangle realWindow = window.ClientBounds;
-            realWindow.X = 0;
-            realWindow.Y = 0;
+            Rectangle realWindow = window;
+
 
             Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight);
 

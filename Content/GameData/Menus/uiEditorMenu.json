@@ -9,10 +9,10 @@
             "Anchor": "TopLeft",
 
             "DrawBox": {
-                "X": 50,
-                "Y": 20,
-                "Width": 200,
-                "Height": 100
+                "X": 10,
+                "Y": 0,
+                "Width": 100,
+                "Height": 50
             },
             "TextureHandler": {
                 "textures": {
@@ -39,7 +39,95 @@
                         "Height": 32
                     },
 
-                    "Text": "Start"
+                    "Text": "Button2"
+                }
+            ]
+        },
+        
+        {
+            "ElementType": "buttonElement",
+            "ID": "loadButton",
+            "Anchor": "BottomLeft",
+
+            "DrawBox": {
+                "X": 10,
+                "Y": 10,
+                "Width": 50,
+                "Height": 50
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "UiEditor",
+                    "Args": {
+                        "UiCommand": "LoadFile"
+                    }
+                }
+            ],
+
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "loadButtonText",
+                    "Anchor": "Center",
+
+                    "DrawBox": {
+                        "X": 0,
+                        "Y": 0,
+                        "Width": 50,
+                        "Height": 32
+                    },
+
+                    "Text": "Load File"
+                }
+            ]
+        },
+
+        {
+            "ElementType": "buttonElement",
+            "ID": "saveButton",
+            "Anchor": "BottomLeft",
+
+            "DrawBox": {
+                "X": 60,
+                "Y": 10,
+                "Width": 50,
+                "Height": 50
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "UiEditor",
+                    "Args": {
+                        "UiCommand": "SaveFile"
+                    }
+                }
+            ],
+
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "saveButtonText",
+                    "Anchor": "Center",
+
+                    "DrawBox": {
+                        "X": 0,
+                        "Y": 0,
+                        "Width": 50,
+                        "Height": 32
+                    },
+
+                    "Text": "Save File"
                 }
             ]
         }

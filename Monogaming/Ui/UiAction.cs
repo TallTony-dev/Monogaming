@@ -64,6 +64,9 @@ public class UiAction
                     Debug.WriteInfo($"Serialized menu {menuName} to {outputPath}");
                     File.WriteAllText(outputPath, gameStateRef.Ui.SerializeMenu(menuName));
                 break;
+                case ("UiEditor"):
+                    gameStateRef.uiEditor.HandleCommand(Args);
+                break;
                 default:
                 Debug.WriteWarn($"Fell out of dispatch ui command with name {CommandName}");
                 break;

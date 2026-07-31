@@ -25,18 +25,17 @@ public class GameState
     public Player Player { get; private set; }
     CommandManager commandManager;
 
-    private UiEditor uiEditor;
+    public UiEditor uiEditor { get; private set; }
     
     
     State state = State.InMenus;
     bool isGameLogicPaused = false;
 
-  
-    bool isInLevelEditor = false;
 
     public GameState(GameWindow window)
     {
         Ui = new UI(window);
+        uiEditor = new (this, window);
         window.ClientSizeChanged += Ui.HandleWindowChange;
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);
@@ -63,7 +62,6 @@ public class GameState
     {
         state = State.InUiEditor;
         isGameLogicPaused = true;
-        uiEditor = new (this);
         Ui.ActivateElement("uiEditorMenu");
     }
 
@@ -93,7 +91,6 @@ public class GameState
         switch (state)
         {
             case State.InUiEditor:
-                uiEditor.Draw(spriteBatch);
                 Map.Draw(spriteBatch, screen);
             break;
             case State.InGame:
@@ -108,6 +105,10 @@ public class GameState
     public void DrawUI(SpriteBatch spriteBatch)
     {
         Ui.Draw(spriteBatch);
+        if (state == State.InUiEditor)
+        {
+            uiEditor.Draw(spriteBatch);
+        }
     }
 
 

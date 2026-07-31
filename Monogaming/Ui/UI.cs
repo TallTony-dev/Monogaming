@@ -93,9 +93,12 @@ public class UI : ImUpdatable
     public void HandleWindowChange(object sender, EventArgs args)
     {
         //tell elements to update their sizes to match new window
+        Rectangle bounds = gameWindowRef.ClientBounds;
+        bounds.X = 0;
+        bounds.Y = 0;
         foreach (UiElement element in menus.Values)
         {
-            element.UpdatePos(gameWindowRef);
+            element.UpdatePos(bounds);
         }
     }
 

@@ -19,6 +19,7 @@ public static class Textures
     private const string DefaultTextureID = "Sprite-0006.Idle";
 
     public static SpriteFont MainFont { get; private set; }
+    public static Texture2D BlankTexture { get; private set; }
 
     /// <summary>
     /// Has actual loaded texture handles
@@ -121,9 +122,12 @@ public static class Textures
 
 
     const string DefaultPath = "./GameData/Textures/";
-    public static void Initialize(ContentManager content)
+    public static void Initialize(ContentManager content, GraphicsDevice graphics)
     {
         MainFont = content.Load<SpriteFont>("default");
+        BlankTexture = new Texture2D(graphics, 1, 1);
+        BlankTexture.SetData(new[] { Color.White });
+        
         foreach(string path in Directory.EnumerateFiles(DefaultPath))
         {
             LoadTextures(content, path);

@@ -56,7 +56,7 @@ public class MeowGame : Game
     {
         InputHelper.Setup(this);
         SpriteBatch = new SpriteBatch(GraphicsDevice);
-        Textures.Initialize(Content);
+        Textures.Initialize(Content, _graphics.GraphicsDevice);
         ItemDict.LoadFromFile("coreItems");
         RecipeBook.LoadFromFile("coreRecipes");
         

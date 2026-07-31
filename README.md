@@ -2,7 +2,7 @@ Hey there, this is a hopefully longish term game I plan to work on using Monogam
 
 Current Design Decisions:
 Textures in classes are references to ImTextures (Either animated texs or atlas texs) which are loaded from Jsons and contain references to a texture2D loaded via monogame content pipeline. This is to facilitate texture atlassing kinda hopefully.
-No AI/LLM support will be used apart from after >30 mins working on a bug as it makes me depressed to use on personal projects lol.
+No significant AI/LLM support will be used apart from after >30 mins working on a bug as it makes me depressed to use on personal projects, and if it is used it will be noted in comments.
 All data is stored in jsons for now as it seems to be much better than hardcoding.
 Ui elements are recursive polymorphic structures based off UiElements that contain elements which can be bound to values passed in to them.
 There is a map which contains retangular "chunks" that describe an area on the map and are stored as JSONs. Chunks store a list of Updateables, Drawables, and JsonEntities (defined by an ID). Entities are noted in the jsonentitieslist to serialize them for now, though theres probably a better way to approach it in the future.
@@ -17,6 +17,8 @@ to edit mgcb on mac: dotnet tool run mgcb-editor-mac ./Content/Content.mgcb
 
 Aseprite export: fileName is {title}.{tag}.{tagframe}
 
+
+Current external libs: monogame, apos.input, nativefiledialognet
 
 Potential future opimizations:
 - Use ZLinq for faster linq
