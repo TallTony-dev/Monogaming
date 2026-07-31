@@ -25,7 +25,7 @@ public class GameState
     public Player Player { get; private set; }
     CommandManager commandManager;
 
-
+    private UiEditor uiEditor;
     
     
     State state = State.InMenus;
@@ -59,12 +59,12 @@ public class GameState
         Ui.ActivateElement("mainMenu");
     }
 
-    public void EnterEditor()
+    public void EnterUiEditor()
     {
-        state = State.InEditor;
+        state = State.InUiEditor;
         isGameLogicPaused = true;
-        //Ui.DeactivateElement("mainMenu");
-        // Ui.ActivateElement("editorMenu");
+        uiEditor = new (this);
+        Ui.ActivateElement("uiEditorMenu");
     }
 
     public void Update(GameTime gameTime)
@@ -79,8 +79,8 @@ public class GameState
         }
         switch (state)
         {
-            case State.InEditor:
-                LevelEditor.Update(gameTime);
+            case State.InUiEditor:
+                uiEditor.Update(gameTime);
             break;
 
             default:
@@ -92,8 +92,8 @@ public class GameState
     {
         switch (state)
         {
-            case State.InEditor:
-                LevelEditor.Draw(spriteBatch);
+            case State.InUiEditor:
+                uiEditor.Draw(spriteBatch);
                 Map.Draw(spriteBatch, screen);
             break;
             case State.InGame:
@@ -111,5 +111,5 @@ public class GameState
     }
 
 
-    private enum State { InMenus, InGame, InEditor }
+    private enum State { InMenus, InGame, InUiEditor }
 }

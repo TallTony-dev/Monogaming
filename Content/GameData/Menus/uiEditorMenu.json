@@ -1,0 +1,47 @@
+{
+    "ElementType": "baseElement",
+    "ID": "root",
+    "Anchor": "TopLeft",
+    "Children": [
+        {
+            "ElementType": "buttonElement",
+            "ID": "startButton",
+            "Anchor": "TopLeft",
+
+            "DrawBox": {
+                "X": 50,
+                "Y": 20,
+                "Width": 200,
+                "Height": 100
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "EnterMainGame"
+                }
+            ],
+
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "startButtonText",
+                    "Anchor": "Center",
+
+                    "DrawBox": {
+                        "X": 0,
+                        "Y": 0,
+                        "Width": 64,
+                        "Height": 32
+                    },
+
+                    "Text": "Start"
+                }
+            ]
+        }
+    ]
+}

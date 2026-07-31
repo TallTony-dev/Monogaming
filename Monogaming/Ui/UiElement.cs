@@ -22,9 +22,9 @@ namespace Monogaming.Ui;
 public class UiElement : ImUpdatable
 {
     [JsonIgnore]
-    public bool IsVisible { get; private set; } = true;
+    public bool IsVisible { get; private set; } = false;
     [JsonIgnore]
-    public bool IsActive { get; private set; } = true;
+    public bool IsActive { get; private set; } = false;
     [JsonIgnore]
     public Hitbox ScaledDrawBox { get; protected set; } //scaled to fit screen 
     [JsonIgnore]
@@ -132,8 +132,9 @@ public class UiElement : ImUpdatable
     {
         if (!string.IsNullOrEmpty(searchPath))
         {
-            return Children.Find(t => t.ID == searchPath.Substring(0, searchPath.IndexOf('.')))
-            .GetChild(searchPath.Substring(searchPath.IndexOf('.') + 1, searchPath.Length - searchPath.IndexOf('.') - 1));
+            int dotIndex = searchPath.IndexOf('.');
+            return Children.Find(t => t.ID == searchPath.Substring(0, dotIndex))
+            .GetChild(searchPath.Substring(dotIndex + 1, searchPath.Length - dotIndex - 1));
         }
         else
         {
@@ -185,3 +186,4 @@ public class UiElement : ImUpdatable
 }
 
 public enum AnchorPoint { TopLeft, TopRight, BottomLeft, BottomRight, Center }
+

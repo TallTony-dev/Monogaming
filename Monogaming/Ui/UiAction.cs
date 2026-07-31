@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Apos.Input;
 using Monogaming.PlayerThings;
 using System.Text.Json;
+using System.IO;
 
 namespace Monogaming.Ui;
 
@@ -25,6 +26,7 @@ public class UiAction
 
 
     public string CommandName { get; private set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public JsonElement Args { get; private set; } //maybe just one int lolol
 
     [JsonConstructor]
@@ -49,8 +51,18 @@ public class UiAction
                 case ("EnterMainGame"):
                     gameStateRef.EnterMainGame();
                 break;
-                case ("EnterEditor"):
-                    gameStateRef.EnterEditor();
+                case ("EnterUiEditor"):
+                    gameStateRef.EnterUiEditor();
+                break;
+                case ("DeserializeUi"):
+                    string menuName = Args.GetProperty("MenuName").GetString();
+                    string outputPath = Args.GetProperty("OutputPath").GetString();
+                    if (File.Exists(outputPath)) {
+                        File.Move(outputPath, outputPath + ".bckp");
+                        Debug.WriteInfo($"Moved old file at {outputPath} to .bckp");
+                    }
+                    Debug.WriteInfo($"Serialized menu {menuName} to {outputPath}");
+                    File.WriteAllText(outputPath, gameStateRef.Ui.SerializeMenu(menuName));
                 break;
                 default:
                 Debug.WriteWarn($"Fell out of dispatch ui command with name {CommandName}");

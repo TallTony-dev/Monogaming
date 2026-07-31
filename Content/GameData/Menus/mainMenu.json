@@ -1,10 +1,9 @@
 {
-    "Title": "menu",
-    "ID": "mainMenu",
+    "ElementType": "baseElement",
+    "ID": "root",
     "Anchor": "TopLeft",
-
-    "RootElement": {
-        "Start": {
+    "Children": [
+        {
             "ElementType": "buttonElement",
             "ID": "startButton",
             "Anchor": "TopLeft",
@@ -45,15 +44,15 @@
             ]
         },
 
-        "EditorEnter": {
+        {
             "ElementType": "buttonElement",
-            "ID": "editorButton",
+            "ID": "uiEditorButton",
             "Anchor": "BottomRight",
             "DrawBox": {
                 "X": 10,
                 "Y": 10,
-                "Width": 140,
-                "Height": 70
+                "Width": 200,
+                "Height": 100
             },
             "TextureHandler": {
                 "textures": {
@@ -63,7 +62,7 @@
             },
             "OnClickActions": [
                 {
-                    "CommandName": "EnterEditor"
+                    "CommandName": "EnterUiEditor"
                 },
                 {
                     "CommandName": "DeactivateElement",
@@ -79,16 +78,55 @@
                     "DrawBox": {
                         "X": 0,
                         "Y": 0,
-                        "Width": 50,
-                        "Height": 30
+                        "Width": 64,
+                        "Height": 32
                     },
 
-                    "Text": "Editor"
+                    "Text": "Ui Editor"
+                }
+            ]
+        },
+        {
+            "ElementType": "buttonElement",
+            "ID": "deserializingButton",
+            "Anchor": "BottomLeft",
+            "DrawBox": {
+                "X": 10,
+                "Y": 10,
+                "Width": 200,
+                "Height": 100
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "DeserializeUi",
+                    "Args": {
+                        "OutputPath": "./GameData/outputUI.json",
+                        "MenuName": "mainMenu"
+                    }
+                }
+            ],
+
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "editorButtonText",
+                    "Anchor": "Center",
+                    "DrawBox": {
+                        "X": 0,
+                        "Y": 0,
+                        "Width": 64,
+                        "Height": 32
+                    },
+
+                    "Text": "Serializer"
                 }
             ]
         }
-    }
-    
-
-    
+    ]
 }

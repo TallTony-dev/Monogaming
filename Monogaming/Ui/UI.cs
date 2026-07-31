@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Ui;
 
@@ -35,20 +36,8 @@ public class UI : ImUpdatable
             try
             {
                 Stream textStream = File.OpenRead(fileName);
-                JsonDocument document = JsonDocument.Parse(textStream);
-                JsonElement root = document.RootElement;
-                if (root.GetProperty("Title").GetString() != "menu")
-                {
-                    throw new JsonException($"Error loading {fileName}, attempted to load a json not titled with menu");
-                }
-                
-                List<UiElement> children = new();
-                foreach (JsonProperty prop in root.GetProperty("RootElement").EnumerateObject()) {
-                    children.Add(JsonSerializer.Deserialize<UiElement>(prop.Value));
-                }
-                UiElement rootElement = new("root", AnchorPoint.TopLeft, null, children);
-
-                menus.Add(root.GetProperty("ID").GetString(), rootElement);
+                menus.Add(Path.GetFileNameWithoutExtension(fileName), 
+                JsonSerializer.Deserialize<UiElement>(textStream));
                 count++;
             }
             catch (Exception ex)
@@ -58,10 +47,21 @@ public class UI : ImUpdatable
 
         }
         HandleWindowChange(this, EventArgs.Empty);
-
+        menus["mainMenu"].ActivateElement();
         Debug.WriteInfo($"Loaded {count} menus from {UIPath}");
     }
 
+    public string SerializeMenu(string menuName)
+    {
+        return SerializeMenu(menus[menuName]);
+    }
+    public static string SerializeMenu(UiElement element)
+    {
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        options.Converters.Add(new Vector2JsonConverter());
+
+        return JsonSerializer.Serialize(element, options);
+    }
     public void ActivateElement(string elementID)
     {
         try
@@ -87,7 +87,7 @@ public class UI : ImUpdatable
 
     public UiElement GetElement(string menuName, string searchPath)
     {
-        return menus[menuName].GetChild("root." + searchPath);
+        return menus[menuName].GetChild(searchPath);
     }
 
     public void HandleWindowChange(object sender, EventArgs args)
@@ -121,4 +121,49 @@ public class UI : ImUpdatable
         }
     }
     //TODO: implement this wrapper and also an animation handler one too
+}
+
+
+
+/// <summary>
+/// LLM generated via Google gemini due to simplicity and tedium:
+/// Vector2 jsonconverter as it otherwise doesn't work due to 
+/// </summary>
+public class Vector2JsonConverter : JsonConverter<Vector2>
+{
+    public override Vector2 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        float x = 0;
+        float y = 0;
+
+        if (reader.TokenType != JsonTokenType.StartObject)
+            throw new JsonException("Expected StartObject token for Vector2.");
+
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.EndObject)
+                return new Vector2(x, y);
+
+            if (reader.TokenType == JsonTokenType.PropertyName)
+            {
+                string propertyName = reader.GetString();
+                reader.Read(); // Move to the value
+
+                if (string.Equals(propertyName, "X", StringComparison.OrdinalIgnoreCase))
+                    x = reader.GetSingle();
+                else if (string.Equals(propertyName, "Y", StringComparison.OrdinalIgnoreCase))
+                    y = reader.GetSingle();
+            }
+        }
+
+        throw new JsonException("Unexpected end of JSON while reading Vector2.");
+    }
+
+    public override void Write(Utf8JsonWriter writer, Vector2 value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteNumber("X", value.X);
+        writer.WriteNumber("Y", value.Y);
+        writer.WriteEndObject();
+    }
 }
