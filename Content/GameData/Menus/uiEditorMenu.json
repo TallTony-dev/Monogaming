@@ -51,7 +51,7 @@
 
             "DrawBox": {
                 "X": 10,
-                "Y": 10,
+                "Y": -10,
                 "Width": 50,
                 "Height": 50
             },
@@ -95,7 +95,7 @@
 
             "DrawBox": {
                 "X": 60,
-                "Y": 10,
+                "Y": -10,
                 "Width": 50,
                 "Height": 50
             },
@@ -128,6 +128,85 @@
                     },
 
                     "Text": "Save File"
+                }
+            ]
+        },
+
+        {
+            "ElementType": "buttonElement",
+            "ID": "addElementButton",
+            "Anchor": "BottomLeft",
+
+            "DrawBox": {
+                "X": 120,
+                "Y": -10,
+                "Width": 50,
+                "Height": 50
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "UiEditor",
+                    "Args": {
+                        "UiCommand": "AddElement"
+                    }
+                }
+            ],
+
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "addButtonText",
+                    "Anchor": "Center",
+
+                    "DrawBox": {
+                        "X": 0,
+                        "Y": 0,
+                        "Width": 50,
+                        "Height": 32
+                    },
+
+                    "Text": "Add Element"
+                }
+            ]
+        },
+
+        {
+            "ElementType": "textInputElement",
+            "ID": "xPosElement",
+            "Anchor": "BottomLeft",
+
+            "DrawBox": {
+                "X": 180,
+                "Y": -10,
+                "Width": 50,
+                "Height": 50
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
+                }
+            },
+            "Children": [
+                {
+                    "ElementType": "textElement",
+                    "ID": "addButtonText",
+                    "Anchor": "Center",
+
+                    "DrawBox": {
+                        "X": 0,
+                        "Y": -30,
+                        "Width": 50,
+                        "Height": 32
+                    },
+
+                    "Text": "XPos"
                 }
             ]
         }

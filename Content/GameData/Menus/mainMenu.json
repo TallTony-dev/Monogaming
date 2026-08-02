@@ -49,8 +49,8 @@
             "ID": "uiEditorButton",
             "Anchor": "BottomRight",
             "DrawBox": {
-                "X": 10,
-                "Y": 10,
+                "X": -10,
+                "Y": -10,
                 "Width": 200,
                 "Height": 100
             },
@@ -92,7 +92,7 @@
             "Anchor": "BottomLeft",
             "DrawBox": {
                 "X": 10,
-                "Y": 10,
+                "Y": -10,
                 "Width": 200,
                 "Height": 100
             },

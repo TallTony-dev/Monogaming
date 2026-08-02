@@ -1,9 +1,11 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Apos.Input;
 using Microsoft.Xna.Framework;
 using Monogaming.Entities;
 using Monogaming.MapThings;
+using System.Reflection; //ruh roh raggy
 using Monogaming.TextureThings;
 using Monogaming.Ui;
 using NativeFileDialogNET;
@@ -19,6 +21,7 @@ public class UiEditor
     GameWindow windowRef;
     UiElement workingElement;
 
+    UiElement selected;
 
     private const int XPadding = 50;
     private const int YPadding = 60;
@@ -50,6 +53,24 @@ public class UiEditor
         DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
         return (result == DialogResult.Okay, output);
     }
+    private void AddBlankElementToSelected()
+    {
+        UiElement blank = new UiElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
+        
+        if (selected != null)
+        {
+            selected.Children.Add(blank);
+        }
+        else if (workingElement != null)
+        {
+            workingElement.Children.Add(blank);
+        }
+        else
+        {
+            workingElement = new UiElement("root", AnchorPoint.TopLeft, null, null);
+        }
+        workingElement = blank;
+    }
 
     public async void HandleCommand(JsonElement args)
     {
@@ -76,6 +97,9 @@ public class UiEditor
                 {
                     Debug.WriteInfo("Ui file save not ok");
                 }
+            break;
+            case ("AddElement"):
+                AddBlankElementToSelected();
             break;
             default:
             Debug.WriteWarn($"Fell out of ui editor command handling with {args}");
@@ -109,15 +133,80 @@ public class UiEditor
         innerBounds = new Rectangle((int)(XPadding * scale.X), (int)(YPadding * scale.Y),
         (int)((Camera.ScreenWidth - XPadding * 2) * scale.X), (int)((Camera.ScreenHeight - YPadding * 2) * scale.Y));
     }
+
+    private void SetFloatFromString(ref float f, string s)
+    {
+        try
+        {
+            f = Convert.ToSingle(s);
+        }
+        catch
+        {
+            Debug.WriteError($"Failed to parse {s} to float");
+        }
+    }
+
+    private void SelectElement(UiElement element)
+    {
+        if (element != null) {
+            ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "xPosElement")).
+            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().X, s));
+        }
+
+        selected = element;
+    }
+
+
+    ICondition select = new MouseCondition(MouseButton.LeftButton);
+    bool isDragging = false;
     public void Update(GameTime gameTime)
     {
-        workingElement?.Update(gameTime);
+        if (workingElement != null) {
+            // workingElement.Update(gameTime);
+
+            if (select.Pressed())
+            {
+                SelectElement(workingElement.GetTopCollision(InputHelper.NewMouse.Position.ToVector2()));
+                isDragging = true;
+            }
+            else if (isDragging && !select.Held())
+            {
+                isDragging = false;
+            }
+
+            if (selected != null)
+            {
+                //display some interaction window here to play with the properties
+                // selected.
+
+
+                if (isDragging)
+                {
+                    
+                    Vector2 innerScale = new Vector2(
+                    (float)Camera.ScreenWidth / innerBounds.Width, 
+                    (float)Camera.ScreenHeight / innerBounds.Height);
+                    selected.AdjustRealPos((InputHelper.NewMouse.Position - InputHelper.OldMouse.Position).ToVector2() / innerScale);
+                    // selected.AdjustRealPos(MeowGame.ScaledMouseDelta);
+                }
+
+            }
+
+            workingElement.UpdatePos(innerBounds);
+        }
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
         spriteBatch.Draw(Textures.BlankTexture, innerBounds, Color.White);
+        if (selected != null)
+        {
+            Rectangle rect = selected.ScaledDrawBox.AsRect();
+            rect.Inflate(2,2);
+            spriteBatch.Draw(Textures.BlankTexture, rect, Color.Black);
+        }
         workingElement?.Draw(spriteBatch);
+        
     }
 
 

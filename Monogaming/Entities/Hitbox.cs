@@ -6,6 +6,8 @@ namespace Monogaming.Entities;
 
 public class Hitbox
 {
+    private Vector2 _pos;
+
     [JsonIgnore]
     public Vector2 Center
     {
@@ -15,7 +17,7 @@ public class Hitbox
         }
     }
     [JsonInclude]
-    public Vector2 Pos { get; protected set; }
+    public Vector2 Pos { get => _pos; set => _pos = value; }
     public int Width { get; protected set; }
     public int Height { get; protected set; }
 
@@ -52,6 +54,10 @@ public class Hitbox
     public virtual void ChangePos(Vector2 deltaPos)
     {
         Pos += deltaPos;
+    }
+    public ref Vector2 GetPosRef()
+    {
+        return ref _pos;
     }
 
     public bool Intersects(Hitbox hitbox)

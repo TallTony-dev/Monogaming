@@ -28,7 +28,7 @@ public class TextureElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
-        if (ScaledDrawBox.Intersects(MeowGame.ScaledMousePos))
+        if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
         {
             if (click.Pressed(false))
             {

@@ -29,7 +29,9 @@ public class MeowGame : Game
     List<ImDrawable> activeDrawables = new();
     float timeSinceCleared = 0;
 
+    public static Vector2 OldScaledMousePos { get; private set; }
     public static Vector2 ScaledMousePos { get; private set; }
+    public static Vector2 ScaledMouseDelta { get; private set; }
 
 
     public MeowGame()
@@ -84,7 +86,9 @@ public class MeowGame : Game
             Exit();
         InputHelper.UpdateSetup();
 
+        OldScaledMousePos = ScaledMousePos;
         ScaledMousePos = InputHelper.NewMouse.Position.ToVector2() / camera.Scale;
+        ScaledMouseDelta = ScaledMousePos - OldScaledMousePos;
         gameState.Update(gameTime);
 
         float s = (float)gameTime.TotalGameTime.TotalSeconds;

@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using Apos.Input;
 using Monogaming.PlayerThings;
+using System.Linq;
 
 namespace Monogaming.Ui;
 
@@ -18,6 +19,7 @@ namespace Monogaming.Ui;
 [JsonDerivedType(typeof(TextureElement), typeDiscriminator: "textureElement")]
 [JsonDerivedType(typeof(TextElement), typeDiscriminator: "textElement")]
 [JsonDerivedType(typeof(ButtonElement), typeDiscriminator: "buttonElement")]
+[JsonDerivedType(typeof(TextInputElement), typeDiscriminator: "textInputElement")]
 
 public class UiElement : ImUpdatable
 {
@@ -51,7 +53,7 @@ public class UiElement : ImUpdatable
     }
     
 
-    public static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent) 
+    private static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent) 
     {
         Vector2 retPos = Vector2.Zero;
         if (anchor == AnchorPoint.Center)
@@ -64,7 +66,7 @@ public class UiElement : ImUpdatable
             if (((int)anchor & 1) == 1)
             {
                 //right anchored
-                retPos.X = parent.Width + parent.X - child.X - child.Width;
+                retPos.X = parent.Width + parent.X + child.X - child.Width;
             }
             else
             {
@@ -74,7 +76,7 @@ public class UiElement : ImUpdatable
             if ((int)anchor >= 2)
             {
                 //bottom anchored
-                retPos.Y = parent.Height + parent.Y - child.Y - child.Height;
+                retPos.Y = parent.Height + parent.Y + child.Y - child.Height;
             }
             else
             {
@@ -123,6 +125,16 @@ public class UiElement : ImUpdatable
 
     }
 
+    public void AdjustRealPos(Vector2 deltaOffset)
+    {
+        DrawBox.ChangePos(deltaOffset);
+        //ScaledDrawBox.ChangePos(deltaOffset);
+    }
+    public void SetRealPos(Vector2 pos)
+    {
+        DrawBox.SetPos(pos); 
+    }
+
     /// <summary>
     /// Recursively searches for a subelement, where path is dot seperated element IDs,
     /// eg "buttonPanel.startButton"
@@ -132,8 +144,29 @@ public class UiElement : ImUpdatable
         if (!string.IsNullOrEmpty(searchPath))
         {
             int dotIndex = searchPath.IndexOf('.');
-            return Children.Find(t => t.ID == searchPath.Substring(0, dotIndex))
-            .GetChild(searchPath.Substring(dotIndex + 1, searchPath.Length - dotIndex - 1));
+
+            UiElement found = null;
+            try {
+                if (dotIndex == -1)
+                {
+                    found = Children.Find(t => t.ID == searchPath.Substring(0, searchPath.Length));
+                }
+                else
+                {
+                    found = Children.Find(t => t.ID == searchPath.Substring(0, searchPath.Length))
+                    .GetChild(searchPath.Substring(dotIndex + 1, searchPath.Length - dotIndex - 1));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteError($"Failed to find element at path {searchPath} with exception {ex.Message} and children {string.Join(',',Children)}");
+            }
+
+            if (found == null)
+            {
+                Debug.WriteError($"Failed to find element at path {searchPath}");
+            }
+            return found;
         }
         else
         {
@@ -141,6 +174,26 @@ public class UiElement : ImUpdatable
         }
     }
 
+    /// <summary>
+    /// Runs on the assumption of no overlapping non familially related elements
+    /// Gets the element nearest the bottom of the tree that intersects a pos
+    /// </summary>
+    public UiElement GetTopCollision(Vector2 pos)
+    {
+        foreach (UiElement child in Children)
+        {
+            UiElement element = child.GetTopCollision(pos);
+            if (element != null)
+            {
+                return element;
+            }
+        }
+        if (ScaledDrawBox != null && ScaledDrawBox.Intersects(pos))
+        {
+            return this;
+        }
+        return null;
+    }
     public void ActivateElement()
     {
         IsActive = true;
