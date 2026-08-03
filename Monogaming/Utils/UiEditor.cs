@@ -83,6 +83,9 @@ public class UiEditor
             case("textInputElement"):
                 blank = new TextInputElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), "default", null);
             break;
+            case("dropDownElement"):
+                blank = new DropDownElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null, "default", null);
+            break;
             default:
                 blank = new UiElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
             break;
@@ -167,16 +170,66 @@ public class UiEditor
         }
     }
 
+    private string GetStringFromFloat(ref float f)
+    {
+        return MathF.Ceiling(f).ToString();
+    }
+    private bool SetIntFromString(ref int i, string s)
+    {
+        try
+        {
+            i = Convert.ToInt32(s);
+            return true;
+        }
+        catch
+        {
+            Debug.WriteError($"Failed to parse {s} to int");
+            return false;
+        }
+    }
+    private string GetStringFromInt(ref int i)
+    {
+        return i.ToString();
+    }
+    private bool SetStringFromString(ref string s, string setto)
+    {
+        s = setto;
+        return true;
+    }
+
     private void SelectElement(UiElement element)
     {
+        //mmmm yummy spaghetti sure hope i dont have to debug this
+        //also im only letting this slide cause its a dev tool
         if (element != null) {
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "xPosElement")).
-            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().X, s));
+            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().X, s), 
+            () => GetStringFromFloat(ref element.DrawBox.GetPosRef().X));
+
+            ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "yPosElement")).
+            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().Y, s), 
+            () => GetStringFromFloat(ref element.DrawBox.GetPosRef().Y));
+
+            ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "heightElement")).
+            BindString((s) => SetIntFromString(ref element.DrawBox.GetHeightRef(), s), 
+            () => GetStringFromInt(ref element.DrawBox.GetHeightRef()));
+
+            ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "widthElement")).
+            BindString((s) => SetIntFromString(ref element.DrawBox.GetWidthRef(), s), 
+            () => GetStringFromInt(ref element.DrawBox.GetWidthRef()));
+
+            ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "idElement")).
+            BindString((s) => { element.ID = s; return true; }, 
+            () => element.ID);
         }
 
         selected = element;
     }
 
+    private void DeleteElement(UiElement element)
+    {
+        workingElement.DeleteElement(element);
+    }
 
     ICondition select = new MouseCondition(MouseButton.LeftButton);
     ICondition copy = new AllCondition(
@@ -187,6 +240,10 @@ public class UiEditor
         new KeyboardCondition(Keys.V), 
         new KeyboardCondition(Keys.LeftControl)
     );
+    ICondition delete = new AllCondition(
+        new KeyboardCondition(Keys.Back), 
+        new KeyboardCondition(Keys.LeftControl)
+    );
 
     bool isDragging = false;
     public void Update(GameTime gameTime)
@@ -194,7 +251,7 @@ public class UiEditor
         if (workingElement != null) {
             // workingElement.Update(gameTime);
 
-            if (select.Pressed())
+            if (select.Pressed() && innerBounds.Contains(InputHelper.NewMouse.Position.ToVector2()))
             {
                 SelectElement(workingElement.GetTopCollision(InputHelper.NewMouse.Position.ToVector2()));
                 isDragging = true;
@@ -218,6 +275,12 @@ public class UiEditor
             {
                 //display some interaction window here to play with the properties
                 // selected.
+                if (delete.Pressed())
+                {
+                    DeleteElement(selected);
+                    return;
+                }
+
                 if (copy.Pressed())
                 {
                     copied = selected;

@@ -49,9 +49,7 @@ public class ButtonElement : TextureElement
     {
         base.Draw(spriteBatch);
         if (Text != null) {
-            Vector2 scale = ScaledDrawBox.Dims / Textures.MainFont.MeasureString(Text);
-            Vector2 offsetPt = (ScaledDrawBox.Pos + ScaledDrawBox.Dims / 2) - Textures.MainFont.MeasureString(Text) / 2 * scale;
-            spriteBatch.DrawString(Textures.MainFont, Text, offsetPt, Color.Gray, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            ScaledDrawBox.DrawStringInto(spriteBatch, Text);
         }
     }
 

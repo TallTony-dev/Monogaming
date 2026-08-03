@@ -30,8 +30,7 @@ public class TextElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        float scaleX = ScaledDrawBox.Width / Textures.MainFont.MeasureString(Text).X;
-        spriteBatch.DrawString(Textures.MainFont, Text, ScaledDrawBox.Pos, Color.BlueViolet, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
+        ScaledDrawBox.DrawStringInto(spriteBatch, Text);
         base.Draw(spriteBatch);
     }
 }

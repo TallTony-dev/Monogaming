@@ -1,12 +1,15 @@
 using System;
 using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
+using Monogaming.TextureThings;
 
 namespace Monogaming.Entities;
 
 public class Hitbox
 {
     private Vector2 _pos;
+    private int _width;
+    private int _height;
 
     [JsonIgnore]
     public Vector2 Center
@@ -20,8 +23,11 @@ public class Hitbox
     public Vector2 Pos { get => _pos; set => _pos = value; }
     [JsonIgnore]
     public Vector2 Dims { get => new Vector2(Width, Height); }
-    public int Width { get; protected set; }
-    public int Height { get; protected set; }
+
+
+
+    public int Width { get => _width; set => _width = value; }
+    public int Height { get => _height; set => _height = value; }
 
     public int X { get => (int)Pos.X; }
     public int Y { get => (int)Pos.Y; }
@@ -61,6 +67,14 @@ public class Hitbox
     {
         return ref _pos;
     }
+    public ref int GetWidthRef()
+    {
+        return ref _width;
+    }
+    public ref int GetHeightRef()
+    {
+        return ref _height;
+    }
 
     public bool Intersects(Hitbox hitbox)
     {
@@ -95,4 +109,10 @@ public class Hitbox
         return new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height);
     }
 
+    public void DrawStringInto(SpriteBatch spriteBatch, string text)
+    {
+        Vector2 scale = Dims / Textures.MainFont.MeasureString(text);
+        Vector2 offsetPt = (Pos + Dims / 2) - Textures.MainFont.MeasureString(text) / 2 * scale;
+        spriteBatch.DrawString(Textures.MainFont, text, offsetPt, Color.Gray, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+    }
 }

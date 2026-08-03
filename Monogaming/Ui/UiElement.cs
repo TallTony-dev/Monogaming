@@ -33,7 +33,7 @@ public class UiElement : ImUpdatable
     [JsonIgnore]
     public Hitbox ParentOffset { get; set; }
 
-    public string ID { get; private set; }
+    public string ID { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public AnchorPoint Anchor { get; private set; }
     public List<UiElement> Children { get; protected set; }
@@ -61,7 +61,23 @@ public class UiElement : ImUpdatable
     //     Children = e.Children.Select(t => new UiElement(t)).ToList();
     //     ScaledDrawBox = DrawBox;
     // }
-    
+
+    public bool DeleteElement(UiElement element)
+    {
+        foreach (UiElement child in Children)
+        {
+            if (UiElement.ReferenceEquals(element, child))
+            {
+                Children.Remove(child);
+                return true;
+            }
+            else
+            {
+                child.DeleteElement(element);
+            }
+        }
+        return false;
+    }
 
     private static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent) 
     {

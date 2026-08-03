@@ -16,6 +16,8 @@ public class TextInputElement : UiElement
     [JsonIgnore]
     private Func<string, bool> setVal;
     [JsonIgnore]
+    private Func<string> getVal;
+    [JsonIgnore]
     private bool isSelected;
     [JsonIgnore]
     private bool failedLastBind;
@@ -30,9 +32,10 @@ public class TextInputElement : UiElement
         this.Text = Text;
     }
 
-    public void BindString(Func<string, bool> setter)
+    public void BindString(Func<string, bool> setter, Func<string> getter)
     {
         setVal = setter;
+        getVal = getter;
     }
 
     public override void Update(GameTime gameTime)
@@ -79,6 +82,10 @@ public class TextInputElement : UiElement
                 }
             }
         }
+        else if (getVal != null)
+        {
+            buffer = getVal();
+        }
 
 
         base.Update(gameTime);
@@ -90,13 +97,11 @@ public class TextInputElement : UiElement
         spriteBatch.Draw(Textures.BlankTexture, ScaledDrawBox.AsRect(), color);
 
         if (!string.IsNullOrEmpty(buffer)) {
-            float scaleX = ScaledDrawBox.Width / Textures.MainFont.MeasureString(buffer).X;
-            spriteBatch.DrawString(Textures.MainFont, buffer, ScaledDrawBox.Pos, Color.BlueViolet, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
+            ScaledDrawBox.DrawStringInto(spriteBatch, buffer);
         }
         else
         {
-            float scaleX = ScaledDrawBox.Width / Textures.MainFont.MeasureString(Text).X;
-            spriteBatch.DrawString(Textures.MainFont, Text, ScaledDrawBox.Pos, Color.Gray, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
+            ScaledDrawBox.DrawStringInto(spriteBatch, Text);
         }
         base.Draw(spriteBatch);
     }
