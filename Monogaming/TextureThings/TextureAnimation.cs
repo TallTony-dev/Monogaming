@@ -33,6 +33,14 @@ public class TextureAnimation : ImUpdatable, ImTexture
     {
         return new TextureAnimation(animation, IsLooping);
     }
+    public AtlasTex GetFrame(int frame)
+    {
+        if (animation.Count > frame)
+        {
+            return animation[frame].tex;
+        }
+        return null;
+    }
 
     public void Draw(SpriteBatch batch, Vector2 pos)
     {

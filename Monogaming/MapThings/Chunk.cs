@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -10,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Entities;
 using Monogaming.Interfaces;
+using Monogaming.TextureThings;
 
 namespace Monogaming.MapThings;
 
@@ -29,10 +29,10 @@ public class Chunk
     //TODO: Fix how these are stored seperately, make a custom jsonConverter or something!
     [JsonInclude]
     [JsonPropertyName("Entities")]
-    Dictionary<string, JsonEntity> Entities;
+    List <JsonEntity> Entities;
 
     [JsonIgnore]
-    private Tile[,] tiles;
+    private Tile[,] _tiles;
 
     [JsonIgnore]
     private List<ImUpdatable> Updatables = new();
@@ -41,7 +41,7 @@ public class Chunk
 
     
     [JsonConstructor]
-    public Chunk(string MapName, int Width, int Height, Dictionary<string, JsonEntity> Entities, string[][] Tiles)
+    public Chunk(string MapName, int Width, int Height, List <JsonEntity> Entities, string[][] Tiles)
     {
         this.MapName = MapName;
         this.Width = Width;
@@ -54,16 +54,16 @@ public class Chunk
             throw new JsonException($"Bad tile length, width: {Width} height: {Height} but got array of width {Tiles.GetLength(0)} and max height {Tiles.Max(t => t.Length)}");
         }
 
-        tiles = new Tile[Width,Height];
+        _tiles = new Tile[Width,Height];
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
-                tiles[x,y] = TileDict.GetTileCopy(Tiles[x][y]);
+                _tiles[x,y] = TileDict.GetTileCopy(Tiles[x][y]);
             }
         }
 
-        foreach (JsonEntity je in Entities.Values)
+        foreach (JsonEntity je in Entities)
         {
             Vector2 tilePos = Map.TilePosToWorldPos(new Vector2(je.Pos[0], je.Pos[1]));
             Entity e = EntityDict.CreateEntity(je.ID, tilePos);
@@ -77,7 +77,7 @@ public class Chunk
     /// </summary>
     public Chunk(int width, int height)
     {
-        tiles = new Tile[width, height];
+        _tiles = new Tile[width, height];
     }
 
     // public void Serialize()
@@ -98,11 +98,97 @@ public class Chunk
     //     throw new NotImplementedException();
     // }
 
+    public void SettleTiles()
+    {
+        //ohhhh noooo its polynomial complexity whatever will we do :(
+        //this should run aot in the level editor so dont car :P
+
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {                
+                TileTex.TileTexType texTyp = GetTextureTypeForNeighbors(x,y);
+                _tiles[x,y].SetTileTex(texTyp);
+            }
+        }
+    }
+
+    private TileTex.TileTexType GetTextureTypeForNeighbors(int x, int y)
+    {
+        Tile tile = _tiles[x, y];
+        string id = tile.ID;
+
+        bool top = y == 0 || _tiles[x, y - 1].ID != id;
+        bool right = x == Width - 1 || _tiles[x + 1, y].ID != id;
+        bool bottom = y == Height - 1 || _tiles[x, y + 1].ID != id;
+        bool left = x == 0 || _tiles[x - 1, y].ID != id;
+
+        int mask = (top ? 1 : 0) | (right ? 2 : 0) | (bottom ? 4 : 0) | (left ? 8 : 0);
+        //llm here :(((( guys i swaer i just didnt wanna write this again cause i did it in another game ok sorey
+        TileTex.TileTexType t = mask switch
+        {
+            0 => TileTex.TileTexType.None,
+            1 => TileTex.TileTexType.Top,
+            2 => TileTex.TileTexType.Right,
+            3 => TileTex.TileTexType.TopRight,
+            4 => TileTex.TileTexType.Bottom,
+            5 => TileTex.TileTexType.TopBottom,
+            6 => TileTex.TileTexType.BottomRight,
+            7 => TileTex.TileTexType.TopRightBottom,
+            8 => TileTex.TileTexType.Left,
+            9 => TileTex.TileTexType.LeftTop,
+            10 => TileTex.TileTexType.LeftRight,
+            11 => TileTex.TileTexType.LeftRightTop,
+            12 => TileTex.TileTexType.LeftBottom,
+            13 => TileTex.TileTexType.LeftTopBottom,
+            14 => TileTex.TileTexType.LeftRightBottom,
+            _ => TileTex.TileTexType.AllSides,
+        };
+        if (t == TileTex.TileTexType.None) {
+            bool tl = y > 0 && x > 0 && _tiles[x - 1, y - 1].ID != id;
+            bool tr = y > 0 && x < Width - 1 && _tiles[x + 1, y - 1].ID != id;
+            bool bl = y < Height - 1 && x > 0 && _tiles[x - 1, y + 1].ID != id;
+            bool br = y < Height - 1 && x < Width - 1 && _tiles[x + 1, y + 1].ID != id;
+            int mask2 = (tl ? 1 : 0) | (tr ? 2 : 0) | (bl ? 4 : 0) | (br ? 8 : 0);
+            int sum = (tl ? 1 : 0) + (tr ? 1 : 0) + (bl ? 1 : 0) + (br ? 1 : 0);
+            if (sum != 1) {
+                return t;
+            }
+            else {
+                switch (mask2) {
+                    case(1): return TileTex.TileTexType.ExTopLeft;
+                    case(2): return TileTex.TileTexType.ExTopRight;
+                    case(4): return TileTex.TileTexType.ExBottomLeft;
+                    case(8): return TileTex.TileTexType.ExBottomRight;
+                }
+            }
+        }
+
+        return t;
+    }
+
+    public bool ChangeTile(int x, int y, Tile tile)
+    {
+        if (x > 0 && x < Width && y > 0 && y < Height)
+        {
+            _tiles[x,y] = tile;
+            return true;
+        }
+        return false;
+    }
+    public Tile GetTile(int x, int y)
+    {
+        if (x > 0 && x < Width && y > 0 && y < Height)
+        {
+            return _tiles[x,y];
+        }
+        return null;
+    }
     public void AddEntity(string EntityID, Vector2 pos)
     {
         (int x, int y) tilePos = Map.WorldPosToAbsTilePos(pos);
         JsonEntity entity = new JsonEntity(EntityID, new int[]{tilePos.x, tilePos.y});
-        Entities.Add(EntityID, entity);
+        Entities.Add(entity);
 
         Entity e = EntityDict.CreateEntity(EntityID, pos);
         Updatables.Add(e);
@@ -115,16 +201,16 @@ public class Chunk
         //topY might actuaclly be the bottom of the screen but whatevs lol
         (int leftX, int topY) = Map.WorldPosToAbsTilePos(screen.Pos);
         (int tileWidth, int tileHeight) = Map.WorldPosToAbsTilePos(new Vector2(screen.Width, screen.Height));
-        leftX = Math.Clamp(leftX, 0, tiles.GetLength(0));
-        topY = Math.Clamp(topY, 0, tiles.GetLength(1));
-        int rightX = Math.Clamp(leftX + tileWidth + 1, 0, tiles.GetLength(0));
-        int bottomY = Math.Clamp(topY + tileHeight, 0, tiles.GetLength(1));
+        leftX = Math.Clamp(leftX, 0, _tiles.GetLength(0));
+        topY = Math.Clamp(topY, 0, _tiles.GetLength(1));
+        int rightX = Math.Clamp(leftX + tileWidth + 1, 0, _tiles.GetLength(0));
+        int bottomY = Math.Clamp(topY + tileHeight, 0, _tiles.GetLength(1));
 
         for (int x = leftX; x < rightX; x++)
         {
             for (int y = topY; y < bottomY; y++)
             {
-                tiles[x,y].Draw(spriteBatch, Map.TilePosToWorldPos(new Vector2(x,y)));
+                _tiles[x,y].Draw(spriteBatch, Map.TilePosToWorldPos(new Vector2(x,y)));
             }
         }
         
@@ -141,7 +227,7 @@ public class Chunk
 
     public void Update(GameTime gameTime)
     {
-        foreach (Tile t in tiles)
+        foreach (Tile t in _tiles)
         {
             if (t.IsActive)
             {
@@ -169,8 +255,8 @@ public class Chunk
         {
             for (int y = (int)boxTilePos.Y - 1; y < boxTilePos.Y + 1; y++)
             {
-                if (x > 0 && x < tiles.Length && y > 0 && y < tiles.Length 
-                && !tiles[x,y].Walkable)
+                if (x > 0 && x < _tiles.Length && y > 0 && y < _tiles.Length 
+                && !_tiles[x,y].Walkable)
                 {
                     Hitbox tileBox = new Hitbox(Map.TilePosToWorldPos(new(x,y)), Map.TileDims, Map.TileDims);                    
                     collision += tileBox.GetCollision(box);

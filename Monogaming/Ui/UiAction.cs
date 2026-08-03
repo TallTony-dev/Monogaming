@@ -12,6 +12,7 @@ using Apos.Input;
 using Monogaming.PlayerThings;
 using System.Text.Json;
 using System.IO;
+using Monogaming.MapThings;
 
 namespace Monogaming.Ui;
 
@@ -54,6 +55,9 @@ public class UiAction
                 case ("EnterUiEditor"):
                     gameStateRef.EnterUiEditor();
                 break;
+                case ("EnterMapEditor"):
+                    gameStateRef.EnterMapEditor();
+                break;
                 case ("DeserializeUi"):
                     string menuName = Args.GetProperty("MenuName").GetString();
                     string outputPath = Args.GetProperty("OutputPath").GetString();
@@ -66,6 +70,9 @@ public class UiAction
                 break;
                 case ("UiEditor"):
                     gameStateRef.uiEditor.HandleCommand(Args);
+                break;
+                case ("Map"):
+                    gameStateRef.Map.HandleCommand(Args);
                 break;
                 default:
                 Debug.WriteWarn($"Fell out of dispatch ui command with name {CommandName}");

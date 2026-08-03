@@ -15,9 +15,9 @@ using Monogaming.PlayerThings;
 namespace Monogaming;
 
 
-public class SaveManager
+public static class SaveManager
 {
-    private Dictionary<string, bool> flags;
+    private static Dictionary<string, bool> flags;
 
 
 }

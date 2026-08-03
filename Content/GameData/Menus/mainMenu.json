@@ -59,6 +59,35 @@
         },
         {
             "ElementType": "buttonElement",
+            "ID": "tileMapEditorButton",
+            "Anchor": "BottomRight",
+            "DrawBox": {
+                "X": -10,
+                "Y": -110,
+                "Width": 200,
+                "Height": 100
+            },
+            "TextureHandler": {
+                "textures": {
+                    "Default": "buttonRock.Unpressed",
+                    "OnHover": "buttonRock.Unpressed"
+                }
+            },
+            "OnClickActions": [
+                {
+                    "CommandName": "EnterMapEditor"
+                },
+                {
+                    "CommandName": "DeactivateElement",
+                    "Args": "mainMenu"
+                }
+            ],
+
+            "Text": "Map Editor"
+        },
+
+        {
+            "ElementType": "buttonElement",
             "ID": "deserializingButton",
             "Anchor": "BottomLeft",
             "DrawBox": {

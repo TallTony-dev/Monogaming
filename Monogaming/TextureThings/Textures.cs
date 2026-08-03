@@ -31,14 +31,15 @@ public static class Textures
     private static Dictionary<string, AtlasTex> loadedAtlasTexs = new();
     
     private static Dictionary<string, TextureAnimation> loadedAnimatedTexs = new();
-    
+    private static Dictionary<string, TileTex> loadedTileTexs = new();
+
     public static bool TextureExists(string textureName)
     {
         return loadedAtlasTexs.ContainsKey(textureName) || 
         loadedAnimatedTexs.ContainsKey(textureName);
     }
     /// <summary>
-    /// Gets a reference to a loaded textureatlastex, or a copy of an animated texture
+    /// Gets a reference to a loaded textureatlastex or tile tex, or a copy of an animated texture
     /// </summary>
     public static ImTexture GetTexture(string textureName)
     {
@@ -51,6 +52,10 @@ public static class Textures
             else if (loadedAnimatedTexs.ContainsKey(textureName))
             {
                 return loadedAnimatedTexs[textureName].Copy();
+            }
+            else if (loadedTileTexs.ContainsKey(textureName))
+            {
+                return loadedTileTexs[textureName].Copy();
             }
             else
             {
@@ -109,15 +114,18 @@ public static class Textures
     }
     private static AtlasTex ParseTex(FrameInfo element, string texture2DKey)
     {
-        Rect badRect = element.Frame;
-        Rectangle rect = new Rectangle(
+        Rectangle rect = ConvertRect(element.Frame);
+        AtlasTex tex = new AtlasTex(loadedTextures2D[texture2DKey], rect);
+        return tex;
+    }
+    private static Rectangle ConvertRect(Rect badRect)
+    {
+        return new Rectangle(
             badRect.X,
             badRect.Y,
             badRect.W,
             badRect.H
         );
-        AtlasTex tex = new AtlasTex(loadedTextures2D[texture2DKey], rect);
-        return tex;
     }
 
 
@@ -128,17 +136,20 @@ public static class Textures
         BlankTexture = new Texture2D(graphics, 1, 1);
         BlankTexture.SetData(new[] { Color.White });
         
-        foreach(string path in Directory.EnumerateFiles(DefaultPath))
+        foreach(string path in Directory.EnumerateFiles(DefaultPath, "*.json"))
         {
             LoadTextures(content, path);
         }
+        foreach(string path in Directory.EnumerateFiles(DefaultPath + "Tiles/", "*.json"))
+        {
+            LoadTextures(content, path, true);
+        }
     }
 
-    private static void LoadTextures(ContentManager content, string path)
+    private static void LoadTextures(ContentManager content, string path, bool isTiles = false)
     {
         try
         {
-
             Stream textStream = File.OpenRead(path);
             JsonDocument document = JsonDocument.Parse(textStream);
             JsonElement root = document.RootElement;
@@ -191,18 +202,30 @@ public static class Textures
 
                 if (group.Count() > 1)
                 {
-                    List<(AtlasTex tex, float delay)> texs = new();
-                    
-                    foreach (var item in group)
-                    {
-                        //is ascending from previous ordering
-                        texs.Add((ParseTex(item.Value, title), item.Value.Duration));
+                    if (!isTiles) {
+                        List<(AtlasTex tex, float delay)> texs = new();
+                        
+                        foreach (var item in group)
+                        {
+                            //is ascending from previous ordering
+                            texs.Add((ParseTex(item.Value, title), item.Value.Duration));
+                        }
+
+                        loadedAnimatedTexs.Add($"{title}.{group.First().Key.texType}", 
+                        new TextureAnimation(texs));
+                        loadCount++;
                     }
-
-                    loadedAnimatedTexs.Add($"{title}.{group.First().Key.texType}", 
-                    new TextureAnimation(texs));
-                    loadCount++;
-
+                    else
+                    {
+                        List<Rectangle> sourceRects = new();
+                        foreach (var item in group)
+                        {
+                            sourceRects.Add(ConvertRect(item.Value.Frame));
+                        }
+                        loadedTileTexs.Add($"{group.First().Key.texType}", 
+                        new TileTex(loadedTextures2D[title], sourceRects));
+                        loadCount++;
+                    }
 
                 }
                 else

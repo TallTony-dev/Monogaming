@@ -14,7 +14,7 @@ public class Tile : ImUpdatable
     [JsonIgnore]
     public bool IsActive { get; private set; } = true;
     public bool Walkable { get; private set; }
-    public ImTexture Texture { get; private set; }
+    public TileTex Texture { get; private set; }
     public string TextureID { get; private set; }
     public string ID { get; private set; }
 
@@ -24,31 +24,36 @@ public class Tile : ImUpdatable
         this.ID = ID;
         this.TextureID = TextureID;
         this.Walkable = Walkable;
-        Texture = Textures.GetTexture(TextureID);
-    }
-    public Tile(ImTexture Texture, bool Walkable)
-    {
-        this.Texture = Texture;
-        this.Walkable = Walkable;
+        Texture = (TileTex)Textures.GetTexture(TextureID);
+        //Texture = Textures.GetFrameOfTexture(TextureID, 0);
     }
 
     public Tile Copy()
     {
-        return new Tile(Texture.Copy(), Walkable);
+        return new Tile(ID, TextureID, Walkable);
+    }
+
+    public void SetTileTex(TileTex.TileTexType ind)
+    {
+        if (Texture != null)
+        {
+            Texture.SetTileTex(ind);
+        }
     }
 
     public void Update(GameTime gameTime)
     {
-        if (Texture.IsAnimated)
-        {
-            var a = Texture as TextureAnimation;
-            a.Update(gameTime);
-        }
+        // if (Texture.IsAnimated)
+        // {
+        //     Texture.Update(gameTime);
+        // }
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 pos)
     {
-        Texture.Draw(spriteBatch, pos);
-        //Texture.Draw(spriteBatch, new Rectangle((int)pos.X, (int)pos.Y, Map.TileDims, Map.TileDims));
+        // Texture.Draw(spriteBatch, pos);
+        Texture.Draw(spriteBatch, new Rectangle((int)pos.X, (int)pos.Y, Map.TileDims, Map.TileDims));
     }
+
+
 }

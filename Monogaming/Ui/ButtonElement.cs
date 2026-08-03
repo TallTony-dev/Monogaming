@@ -19,7 +19,7 @@ public class ButtonElement : TextureElement
     [JsonIgnore]
     static ICondition click = new MouseCondition(MouseButton.LeftButton);
     public List<UiAction> OnClickActions { get; private set; }
-    public string Text { get; private set; }
+    public string Text { get; set; }
     
     [JsonConstructor]
     public ButtonElement(string ID, AnchorPoint Anchor, Hitbox drawBox, TextureHandler textureHandler, List<UiAction> OnClickActions, string Text, List<UiElement> Children) : 

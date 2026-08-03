@@ -51,6 +51,22 @@ public class Map
         }
     }
 
+    public async void HandleCommand(JsonElement Args)
+    {
+        switch (Args.GetProperty("UiCommand").GetString())
+        {
+            case ("SettleLoadedChunk"):
+                if (!isLoading)
+                {
+                    activeChunk?.SettleTiles();
+                }
+            break;
+            default:
+            Debug.WriteWarn("Fell out of Map command handler");
+            break;
+        }
+    }
+
     public static Vector2 TilePosToWorldPos(Vector2 tilePos)
     {
         return tilePos * TileDims;

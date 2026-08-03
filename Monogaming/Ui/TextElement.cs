@@ -14,7 +14,7 @@ namespace Monogaming.Ui;
 public class TextElement : UiElement
 {
     [JsonInclude]
-    protected string Text { get; private set; }
+    public string Text { get; set; }
 
     [JsonConstructor]
     public TextElement(string ID, AnchorPoint Anchor, Hitbox drawBox, string Text, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)

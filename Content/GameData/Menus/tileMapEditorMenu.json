@@ -1,0 +1,49 @@
+{
+  "ElementType": "baseElement",
+  "ID": "root",
+  "Anchor": "TopLeft",
+  "Children": [
+    {
+      "ElementType": "buttonElement",
+      "OnClickActions": [
+        {
+          "CommandName": "Map",
+          "Args": {
+            "UiCommand": "SettleLoadedChunk"
+          }
+        }
+      ],
+      "Text": "settle",
+      "TextureHandler": {
+        "CurrentTextureType": 0,
+        "textures": {
+          "Default": "buttonRock.Unpressed",
+          "OnHover": "buttonRock.Unpressed"
+        }
+      },
+      "ID": "settleElement",
+      "Anchor": "TopLeft",
+      "Children": [],
+      "DrawBox": {
+        "Width": 64,
+        "Height": 32,
+        "X": 0,
+        "Y": 327
+      }
+    },
+    {
+      "ElementType": "textInputElement",
+      "Text": "tileID",
+      "ID": "tileIDElement",
+      "Anchor": "TopLeft",
+      "Children": [],
+      "DrawBox": {
+        "Width": 64,
+        "Height": 32,
+        "X": 71,
+        "Y": 328
+      }
+    }
+  ],
+  "DrawBox": null
+}

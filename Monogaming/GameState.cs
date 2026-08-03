@@ -25,8 +25,10 @@ public class GameState
     public Player Player { get; private set; }
     CommandManager commandManager;
 
+
+
     public UiEditor uiEditor { get; private set; }
-    
+    public MapEditor mapEditor { get; private set; }
     
     State state = State.InMenus;
     bool isGameLogicPaused = false;
@@ -35,7 +37,10 @@ public class GameState
     public GameState(GameWindow window)
     {
         Ui = new UI(window);
+
         uiEditor = new (this, window);
+        mapEditor = new (this);
+
         window.ClientSizeChanged += Ui.HandleWindowChange;
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);
@@ -64,6 +69,13 @@ public class GameState
         isGameLogicPaused = true;
         Ui.ActivateElement("uiEditorMenu");
     }
+    
+    public void EnterMapEditor()
+    {
+        state = State.InMapEditor;
+        isGameLogicPaused = false;
+        Ui.ActivateElement("tileMapEditorMenu");
+    }
 
     public void Update(GameTime gameTime)
     {
@@ -80,7 +92,9 @@ public class GameState
             case State.InUiEditor:
                 uiEditor.Update(gameTime);
             break;
-
+            case State.InMapEditor:
+                mapEditor.Update(gameTime);
+            break;
             default:
             break;
         }
@@ -91,6 +105,9 @@ public class GameState
         switch (state)
         {
             case State.InUiEditor:
+                Map.Draw(spriteBatch, screen);
+            break;
+            case State.InMapEditor:
                 Map.Draw(spriteBatch, screen);
             break;
             case State.InGame:
@@ -112,5 +129,5 @@ public class GameState
     }
 
 
-    private enum State { InMenus, InGame, InUiEditor }
+    private enum State { InMenus, InGame, InUiEditor, InMapEditor }
 }

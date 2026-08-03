@@ -24,7 +24,7 @@ public class TextInputElement : UiElement
     [JsonIgnore]
     private string buffer;
     [JsonInclude]
-    public string Text { get; private set; } //Displays when nothing in buffer
+    public string Text { get; set; } //Displays when nothing in buffer
     
     [JsonConstructor]
     public TextInputElement(string ID, AnchorPoint Anchor, Hitbox drawBox, string Text, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)

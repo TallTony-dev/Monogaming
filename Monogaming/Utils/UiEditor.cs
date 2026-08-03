@@ -221,6 +221,26 @@ public class UiEditor
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "idElement")).
             BindString((s) => { element.ID = s; return true; }, 
             () => element.ID);
+
+            if (element is TextElement textElement)
+            {
+                ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "textEnterElement")).
+                BindString((s) => { textElement.Text = s; return true; }, 
+                () => textElement.Text);
+            }
+            else if (element is ButtonElement buttonElement)
+            {
+                ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "textEnterElement")).
+                BindString((s) => { buttonElement.Text = s; return true; }, 
+                () => buttonElement.Text);
+            }
+            else if (element is TextInputElement textInputElement)
+            {
+                ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "textEnterElement")).
+                BindString((s) => { textInputElement.Text = s; return true; }, 
+                () => textInputElement.Text);
+            }
+
         }
 
         selected = element;
