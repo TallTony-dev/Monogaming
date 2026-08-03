@@ -26,22 +26,7 @@
                 }
             ],
 
-            "Children": [
-                {
-                    "ElementType": "textElement",
-                    "ID": "startButtonText",
-                    "Anchor": "Center",
-
-                    "DrawBox": {
-                        "X": 0,
-                        "Y": 0,
-                        "Width": 64,
-                        "Height": 32
-                    },
-
-                    "Text": "Button2"
-                }
-            ]
+            "Text": "Bouton"
         },
         
         {
@@ -70,22 +55,7 @@
                 }
             ],
 
-            "Children": [
-                {
-                    "ElementType": "textElement",
-                    "ID": "loadButtonText",
-                    "Anchor": "Center",
-
-                    "DrawBox": {
-                        "X": 0,
-                        "Y": 0,
-                        "Width": 50,
-                        "Height": 32
-                    },
-
-                    "Text": "Load File"
-                }
-            ]
+            "Text": "Load File"
         },
 
         {
@@ -114,26 +84,11 @@
                 }
             ],
 
-            "Children": [
-                {
-                    "ElementType": "textElement",
-                    "ID": "saveButtonText",
-                    "Anchor": "Center",
-
-                    "DrawBox": {
-                        "X": 0,
-                        "Y": 0,
-                        "Width": 50,
-                        "Height": 32
-                    },
-
-                    "Text": "Save File"
-                }
-            ]
+            "Text": "Save File"
         },
 
         {
-            "ElementType": "buttonElement",
+            "ElementType": "dropDownElement",
             "ID": "addElementButton",
             "Anchor": "BottomLeft",
 
@@ -149,29 +104,66 @@
                     "OnHover": "buttonRock.Unpressed"
                 }
             },
-            "OnClickActions": [
-                {
-                    "CommandName": "UiEditor",
-                    "Args": {
-                        "UiCommand": "AddElement"
-                    }
-                }
-            ],
+            "Text": "Add Element",
 
             "Children": [
                 {
-                    "ElementType": "textElement",
-                    "ID": "addButtonText",
-                    "Anchor": "Center",
+                    "ElementType": "buttonElement",
+                    "ID": "addButton",
+                    "Anchor": "TopLeft",
 
                     "DrawBox": {
                         "X": 0,
-                        "Y": 0,
+                        "Y": -20,
                         "Width": 50,
-                        "Height": 32
+                        "Height": 20
+                    },
+                    "OnClickActions": [
+                        {
+                            "CommandName": "UiEditor",
+                            "Args": {
+                                "UiCommand": "AddElement",
+                                "Type": "buttonElement"
+                            }
+                        }
+                    ],
+                    "TextureHandler": {
+                        "textures": {
+                            "Default": "buttonRock.Unpressed",
+                            "OnHover": "buttonRock.Unpressed"
+                        }
                     },
 
-                    "Text": "Add Element"
+                    "Text": "Add Button"
+                },
+                {
+                    "ElementType": "buttonElement",
+                    "ID": "addButton",
+                    "Anchor": "TopLeft",
+
+                    "DrawBox": {
+                        "X": 0,
+                        "Y": -40,
+                        "Width": 50,
+                        "Height": 20
+                    },
+                    "OnClickActions": [
+                    {
+                            "CommandName": "UiEditor",
+                            "Args": {
+                                "UiCommand": "AddElement",
+                                "Type": "textInputElement"
+                            }
+                        }
+                    ],
+                    "TextureHandler": {
+                        "textures": {
+                            "Default": "buttonRock.Unpressed",
+                            "OnHover": "buttonRock.Unpressed"
+                        }
+                    },
+
+                    "Text": "Add Input"
                 }
             ]
         },
@@ -187,28 +179,14 @@
                 "Width": 50,
                 "Height": 50
             },
+            "Text": "XPos",
+            
             "TextureHandler": {
                 "textures": {
                     "Default": "buttonRock.Unpressed",
                     "OnHover": "buttonRock.Unpressed"
                 }
-            },
-            "Children": [
-                {
-                    "ElementType": "textElement",
-                    "ID": "addButtonText",
-                    "Anchor": "Center",
-
-                    "DrawBox": {
-                        "X": 0,
-                        "Y": -30,
-                        "Width": 50,
-                        "Height": 32
-                    },
-
-                    "Text": "XPos"
-                }
-            ]
+            }
         }
     ]
 }

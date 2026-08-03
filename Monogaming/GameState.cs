@@ -104,11 +104,11 @@ public class GameState
 
     public void DrawUI(SpriteBatch spriteBatch)
     {
-        Ui.Draw(spriteBatch);
         if (state == State.InUiEditor)
         {
             uiEditor.Draw(spriteBatch);
         }
+        Ui.Draw(spriteBatch);
     }
 
 

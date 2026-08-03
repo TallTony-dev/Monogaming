@@ -16,7 +16,7 @@ namespace Monogaming.TextureThings;
 public static class Textures
 {
 
-    private const string DefaultTextureID = "Sprite-0006.Idle";
+    public const string DefaultTextureID = "Sprite-0006.Idle";
 
     public static SpriteFont MainFont { get; private set; }
     public static Texture2D BlankTexture { get; private set; }

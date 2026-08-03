@@ -26,22 +26,7 @@
                 }
             ],
 
-            "Children": [
-                {
-                    "ElementType": "textElement",
-                    "ID": "startButtonText",
-                    "Anchor": "Center",
-
-                    "DrawBox": {
-                        "X": 0,
-                        "Y": 0,
-                        "Width": 64,
-                        "Height": 32
-                    },
-
-                    "Text": "Start"
-                }
-            ]
+            "Text": "Start"
         },
 
         {
@@ -70,21 +55,7 @@
                 }
             ],
 
-            "Children": [
-                {
-                    "ElementType": "textElement",
-                    "ID": "editorButtonText",
-                    "Anchor": "Center",
-                    "DrawBox": {
-                        "X": 0,
-                        "Y": 0,
-                        "Width": 64,
-                        "Height": 32
-                    },
-
-                    "Text": "Ui Editor"
-                }
-            ]
+            "Text": "Ui Editor"
         },
         {
             "ElementType": "buttonElement",
@@ -112,21 +83,7 @@
                 }
             ],
 
-            "Children": [
-                {
-                    "ElementType": "textElement",
-                    "ID": "editorButtonText",
-                    "Anchor": "Center",
-                    "DrawBox": {
-                        "X": 0,
-                        "Y": 0,
-                        "Width": 64,
-                        "Height": 32
-                    },
-
-                    "Text": "Serializer"
-                }
-            ]
+            "Text": "SerializerTest"
         }
     ]
 }

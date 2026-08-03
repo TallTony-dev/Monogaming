@@ -14,19 +14,23 @@ public class TextInputElement : UiElement
     [JsonIgnore]
     static ICondition click = new MouseCondition(MouseButton.LeftButton);
     [JsonIgnore]
-    private Action<string> setVal;
+    private Func<string, bool> setVal;
     [JsonIgnore]
     private bool isSelected;
     [JsonIgnore]
+    private bool failedLastBind;
+    [JsonIgnore]
     private string buffer;
+    [JsonInclude]
+    public string Text { get; private set; } //Displays when nothing in buffer
     
     [JsonConstructor]
-    public TextInputElement(string ID, AnchorPoint Anchor, Hitbox drawBox, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
+    public TextInputElement(string ID, AnchorPoint Anchor, Hitbox drawBox, string Text, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
     {
-        
+        this.Text = Text;
     }
 
-    public void BindString(Action<string> setter)
+    public void BindString(Func<string, bool> setter)
     {
         setVal = setter;
     }
@@ -52,17 +56,26 @@ public class TextInputElement : UiElement
                 if (c.Key == Keys.Back && !string.IsNullOrEmpty(buffer))
                 {
                     buffer = buffer.Remove(buffer.Length - 1);
+                    failedLastBind = false;
                 }
                 else if (c.Key == Keys.Enter)
                 {
                     if (setVal != null && setVal.Target != null)
                     {
-                        setVal(buffer);
+                        if (!setVal(buffer))
+                        {
+                            failedLastBind = true;
+                        }
+                    }
+                    else
+                    {
+                        failedLastBind = true;
                     }
                 }
                 else if (c.Key != Keys.Back)
                 {
                     buffer += c.Character;
+                    failedLastBind = false;
                 }
             }
         }
@@ -73,11 +86,17 @@ public class TextInputElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(Textures.BlankTexture, ScaledDrawBox.AsRect(), Color.White);
+        Color color = failedLastBind ? Color.Red : (isSelected ? Color.LightBlue : Color.White);
+        spriteBatch.Draw(Textures.BlankTexture, ScaledDrawBox.AsRect(), color);
 
         if (!string.IsNullOrEmpty(buffer)) {
             float scaleX = ScaledDrawBox.Width / Textures.MainFont.MeasureString(buffer).X;
             spriteBatch.DrawString(Textures.MainFont, buffer, ScaledDrawBox.Pos, Color.BlueViolet, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
+        }
+        else
+        {
+            float scaleX = ScaledDrawBox.Width / Textures.MainFont.MeasureString(Text).X;
+            spriteBatch.DrawString(Textures.MainFont, Text, ScaledDrawBox.Pos, Color.Gray, 0, Vector2.Zero, scaleX, SpriteEffects.None, 0);
         }
         base.Draw(spriteBatch);
     }

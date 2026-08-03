@@ -20,13 +20,14 @@ namespace Monogaming.Ui;
 [JsonDerivedType(typeof(TextElement), typeDiscriminator: "textElement")]
 [JsonDerivedType(typeof(ButtonElement), typeDiscriminator: "buttonElement")]
 [JsonDerivedType(typeof(TextInputElement), typeDiscriminator: "textInputElement")]
+[JsonDerivedType(typeof(DropDownElement), typeDiscriminator: "dropDownElement")]
 
 public class UiElement : ImUpdatable
 {
     [JsonIgnore]
-    public bool IsVisible { get; private set; } = false;
+    public bool IsVisible { get; protected set; } = false;
     [JsonIgnore]
-    public bool IsActive { get; private set; } = false;
+    public bool IsActive { get; protected set; } = false;
     [JsonIgnore]
     public Hitbox ScaledDrawBox { get; protected set; } //scaled to fit screen 
     [JsonIgnore]
@@ -51,6 +52,15 @@ public class UiElement : ImUpdatable
         this.Children = Children != null ? Children : new List<UiElement>();
         this.ScaledDrawBox = DrawBox;
     }
+
+    // public UiElement(UiElement e)
+    // {
+    //     Anchor = e.Anchor;
+    //     DrawBox = e.DrawBox;
+    //     ID = e.ID;
+    //     Children = e.Children.Select(t => new UiElement(t)).ToList();
+    //     ScaledDrawBox = DrawBox;
+    // }
     
 
     private static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent) 
@@ -125,6 +135,11 @@ public class UiElement : ImUpdatable
 
     }
 
+
+    public void RoundRealPos()
+    {
+        DrawBox.CeilPos();
+    }
     public void AdjustRealPos(Vector2 deltaOffset)
     {
         DrawBox.ChangePos(deltaOffset);
@@ -194,7 +209,7 @@ public class UiElement : ImUpdatable
         }
         return null;
     }
-    public void ActivateElement()
+    public virtual void ActivateElement()
     {
         IsActive = true;
         IsVisible = true;
@@ -204,7 +219,7 @@ public class UiElement : ImUpdatable
         }
     }
 
-    public void DeactivateElement()
+    public virtual void DeactivateElement()
     {
         IsActive = false;
         IsVisible = false;

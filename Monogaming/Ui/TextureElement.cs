@@ -22,7 +22,13 @@ public class TextureElement : UiElement
     [JsonConstructor]
     public TextureElement(string ID, AnchorPoint Anchor, Hitbox drawBox, TextureHandler TextureHandler, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
     {
-        this.TextureHandler = TextureHandler;
+        if (TextureHandler != null) {
+            this.TextureHandler = TextureHandler;
+        }
+        else
+        {
+            this.TextureHandler = new (TextureHandler.TextureType.Default, Textures.DefaultTextureID);
+        }
     }
 
 

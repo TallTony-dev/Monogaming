@@ -16,8 +16,10 @@ public class Hitbox
             return new Vector2(Pos.X + Width / 2, Pos.Y + Height / 2);
         }
     }
-    [JsonInclude]
+    [JsonIgnore]
     public Vector2 Pos { get => _pos; set => _pos = value; }
+    [JsonIgnore]
+    public Vector2 Dims { get => new Vector2(Width, Height); }
     public int Width { get; protected set; }
     public int Height { get; protected set; }
 
@@ -42,11 +44,11 @@ public class Hitbox
         Width = width;
         Height = height;
     }
-    public Hitbox(Rectangle rect)
-    {
-        
-    }
 
+    public void CeilPos()
+    {
+        Pos = Vector2.Ceiling(Pos);
+    }
     public virtual void SetPos(Vector2 pos)
     {
         Pos = pos;

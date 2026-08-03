@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Apos.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Monogaming.Entities;
 using Monogaming.MapThings;
 using System.Reflection; //ruh roh raggy
@@ -22,6 +23,7 @@ public class UiEditor
     UiElement workingElement;
 
     UiElement selected;
+    UiElement copied;
 
     private const int XPadding = 50;
     private const int YPadding = 60;
@@ -51,26 +53,43 @@ public class UiEditor
         .SaveFile();
         
         DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
-        return (result == DialogResult.Okay, output);
+        return (result == DialogResult.Okay, output + ".json");
     }
-    private void AddBlankElementToSelected()
+    private void AddElementToEditor(UiElement element)
     {
-        UiElement blank = new UiElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
-        
         if (selected != null)
         {
-            selected.Children.Add(blank);
+            selected.Children.Add(element);
         }
         else if (workingElement != null)
         {
-            workingElement.Children.Add(blank);
+            workingElement.Children.Add(element);
         }
-        else
+        else if (workingElement == null)
         {
             workingElement = new UiElement("root", AnchorPoint.TopLeft, null, null);
+            workingElement.Children.Add(element);
         }
-        workingElement = blank;
+        element.ActivateElement();
+        selected = element;
     }
+    private void AddBlankElementToSelected(string type)
+    {
+        UiElement blank;
+        switch (type) {
+            case("buttonElement"):
+                blank = new ButtonElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null, null, "button", null);
+            break;
+            case("textInputElement"):
+                blank = new TextInputElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), "default", null);
+            break;
+            default:
+                blank = new UiElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
+            break;
+        }
+        
+        AddElementToEditor(blank);
+    }   
 
     public async void HandleCommand(JsonElement args)
     {
@@ -99,7 +118,7 @@ public class UiEditor
                 }
             break;
             case ("AddElement"):
-                AddBlankElementToSelected();
+                AddBlankElementToSelected(args.GetProperty("Type").ToString());
             break;
             default:
             Debug.WriteWarn($"Fell out of ui editor command handling with {args}");
@@ -120,7 +139,7 @@ public class UiEditor
     {
         if (File.Exists(path))
         {
-            File.Move(path, path + ".bckp");
+            File.Move(path, path + ".bckp", true);
         }
         File.WriteAllText(path, UI.SerializeMenu(workingElement));
         Debug.WriteInfo($"Saved working menu to {path}");
@@ -134,15 +153,17 @@ public class UiEditor
         (int)((Camera.ScreenWidth - XPadding * 2) * scale.X), (int)((Camera.ScreenHeight - YPadding * 2) * scale.Y));
     }
 
-    private void SetFloatFromString(ref float f, string s)
+    private bool SetFloatFromString(ref float f, string s)
     {
         try
         {
             f = Convert.ToSingle(s);
+            return true;
         }
         catch
         {
             Debug.WriteError($"Failed to parse {s} to float");
+            return false;
         }
     }
 
@@ -158,6 +179,15 @@ public class UiEditor
 
 
     ICondition select = new MouseCondition(MouseButton.LeftButton);
+    ICondition copy = new AllCondition(
+        new KeyboardCondition(Keys.C), 
+        new KeyboardCondition(Keys.LeftControl)
+    );
+    ICondition paste = new AllCondition(
+        new KeyboardCondition(Keys.V), 
+        new KeyboardCondition(Keys.LeftControl)
+    );
+
     bool isDragging = false;
     public void Update(GameTime gameTime)
     {
@@ -172,17 +202,30 @@ public class UiEditor
             else if (isDragging && !select.Held())
             {
                 isDragging = false;
+                selected?.RoundRealPos();
+            }
+
+            if (paste.Pressed() && copied != null)
+            {
+                //I know there's probably a better way to do this but should be fine here
+                //Didnt wanna make a copy constructor for all the derived elements lolol :^)
+                string s = JsonSerializer.Serialize(copied);
+                AddElementToEditor(JsonSerializer.Deserialize<UiElement>(s));
+                Debug.WriteInfo("Pasted");
             }
 
             if (selected != null)
             {
                 //display some interaction window here to play with the properties
                 // selected.
-
+                if (copy.Pressed())
+                {
+                    copied = selected;
+                    Debug.WriteInfo("Copied");
+                }
 
                 if (isDragging)
                 {
-                    
                     Vector2 innerScale = new Vector2(
                     (float)Camera.ScreenWidth / innerBounds.Width, 
                     (float)Camera.ScreenHeight / innerBounds.Height);
