@@ -73,7 +73,7 @@ public class Camera
         {
             int width = (int)gameWindowRef.ClientBounds.Width;
             int height = (int)gameWindowRef.ClientBounds.Height;
-            return new Hitbox(new Vector2(prevTarget.X - width/2, prevTarget.Y - height/2), width, height);
+            return new Hitbox(new Vector2(prevTarget.X - width/2 / Scale, prevTarget.Y - height/2 / Scale), (int)(width / Scale), (int)(height / Scale));
         }
     }
 

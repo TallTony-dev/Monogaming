@@ -21,10 +21,11 @@ public class GameState
     //TODO: implement a game state system here to update things based off current state
 
     public UI Ui { get; private set; }
-    public Map Map { get; private set; } = new();
+    public Map Map { get; private set; }
     public Player Player { get; private set; }
     CommandManager commandManager;
 
+    public Camera cameraRef { get; private set; }
 
 
     public UiEditor uiEditor { get; private set; }
@@ -34,8 +35,10 @@ public class GameState
     bool isGameLogicPaused = false;
 
 
-    public GameState(GameWindow window)
+    public GameState(GameWindow window, ref Camera cameraRef)
     {
+        this.cameraRef = cameraRef;
+        Map = new Map(cameraRef);
         Ui = new UI(window);
 
         uiEditor = new (this, window);

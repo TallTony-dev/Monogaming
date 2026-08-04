@@ -15,9 +15,15 @@ public class Map
 
     //TODO: make this contain chunks and have a method for the chunks to communicate that
     //a new one should be moved to.
-
+    private Camera cameraRef;
     private Chunk activeChunk;
-    public bool isLoading { get; private set; } = false;
+    public bool isLoading { get; private set; } = true;
+
+    public Map(Camera cameraRef)
+    {
+        this.cameraRef = cameraRef;
+    }
+
 
     public async Task LoadChunkAsync(string fileName)
     {
@@ -67,6 +73,35 @@ public class Map
         }
     }
 
+    public (int x, int y) GetTileCoordAtScreenPos(Vector2 screenPos)
+    {  
+        Vector2 origin = cameraRef.Screen.Pos;
+        Vector2 screenOff = ScreenPosToWorldPos(screenPos);
+
+        (int x, int y) tilePos = WorldPosToAbsTilePos(origin + screenOff);
+        tilePos.x = Math.Clamp(tilePos.x, 0, activeChunk.Width);
+        tilePos.y = Math.Clamp(tilePos.y, 0, activeChunk.Height);
+        return tilePos;
+    }
+
+    /// <summary>
+    /// Returns null if the tile string doesnt exist
+    /// </summary>
+    public bool TrySetTileAtPos(int x, int y, string tile)
+    {
+        Tile t;
+        if ((t = TileDict.GetTileCopy(tile)) != null)
+        {
+            SetTileAtPos(x, y, t);
+            return true;
+        }
+        return false;
+    }   
+    private void SetTileAtPos(int x, int y, Tile tile)
+    {
+        activeChunk.ChangeTile(x, y, tile);
+    } 
+
     public static Vector2 TilePosToWorldPos(Vector2 tilePos)
     {
         return tilePos * TileDims;
@@ -80,9 +115,14 @@ public class Map
         Vector2 v = WorldPosToTilePos(worldPos);
         return ((int)v.X, (int)v.Y);
     }
-    public static Vector2 WorldPosToScreenPos(Vector2 pos)
+
+    public Vector2 WorldPosToScreenPos(Vector2 pos)
     {
-        return pos;
+        return pos * cameraRef.Scale;
+    }
+    public Vector2 ScreenPosToWorldPos(Vector2 pos)
+    {
+        return pos / cameraRef.Scale;
     }
 
 

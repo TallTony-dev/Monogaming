@@ -65,7 +65,7 @@ public class MeowGame : Game
         EntityDict.LoadEntities("coreEntities");
         TileDict.LoadTiles("coreTiles");
         
-        gameState = new(Window);
+        gameState = new(Window, ref camera);
         testEntity = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
         testEntity2 = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
         testEntity2.SetTexture(TextureHandler.TextureType.Walking);

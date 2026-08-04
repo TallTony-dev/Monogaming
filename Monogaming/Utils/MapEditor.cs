@@ -20,12 +20,13 @@ public class MapEditor
 {
     GameState gameStateRef;
     string placedTileID;
+    bool failedLastPlace;
 
 
     public MapEditor(GameState gameState)
     {
         gameStateRef = gameState;
-        
+
         ((TextInputElement)gameStateRef.Ui.GetElement("tileMapEditorMenu", "tileIDElement")).
         BindString((s) => { placedTileID = s; return true; }, 
         () => placedTileID);
@@ -47,7 +48,7 @@ public class MapEditor
     }
     
 
-    ICondition select = new MouseCondition(MouseButton.LeftButton);
+    ICondition click = new MouseCondition(MouseButton.LeftButton);
     ICondition copy = new AllCondition(
         new KeyboardCondition(Keys.C), 
         new KeyboardCondition(Keys.LeftControl)
@@ -64,7 +65,20 @@ public class MapEditor
 
     public void Update(GameTime gameTime)
     {
-       
+        Map m = gameStateRef.Map;
+        if (!m.isLoading)
+        {
+            Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();
+            (int x, int y) mouseTPos = m.GetTileCoordAtScreenPos(mPos);
+
+            if (click.Held())
+            {
+                bool b = m.TrySetTileAtPos(mouseTPos.x, mouseTPos.y, placedTileID);
+                Debug.WriteInfo($"Tried to set tile at {mouseTPos} to {placedTileID} with {b}");
+            }
+
+        }
+
     }
 
     public void Draw(SpriteBatch spriteBatch)

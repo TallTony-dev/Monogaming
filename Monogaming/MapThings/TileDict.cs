@@ -20,7 +20,11 @@ public static class TileDict
 
     public static Tile GetTileCopy(string tileID)
     {
-        return loadedTiles[tileID].Copy();
+        if (tileID != null && loadedTiles.ContainsKey(tileID))
+        {
+            return loadedTiles[tileID].Copy();
+        }
+        return null;
     }
 
     public static void LoadTiles(string fileName)

@@ -100,9 +100,6 @@ public class Chunk
 
     public void SettleTiles()
     {
-        //ohhhh noooo its polynomial complexity whatever will we do :(
-        //this should run aot in the level editor so dont car :P
-
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
@@ -124,7 +121,7 @@ public class Chunk
         bool left = x == 0 || _tiles[x - 1, y].ID != id;
 
         int mask = (top ? 1 : 0) | (right ? 2 : 0) | (bottom ? 4 : 0) | (left ? 8 : 0);
-        //llm here :(((( guys i swaer i just didnt wanna write this again cause i did it in another game ok sorey
+        //llm here for this switch :(((( guys i swaer i just didnt wanna write this again cause i did it in another game ok sorey
         TileTex.TileTexType t = mask switch
         {
             0 => TileTex.TileTexType.None,
@@ -144,6 +141,7 @@ public class Chunk
             14 => TileTex.TileTexType.LeftRightBottom,
             _ => TileTex.TileTexType.AllSides,
         };
+        //end llm lol it forgot to do the next part so i had to do it again anyways ;P
         if (t == TileTex.TileTexType.None) {
             bool tl = y > 0 && x > 0 && _tiles[x - 1, y - 1].ID != id;
             bool tr = y > 0 && x < Width - 1 && _tiles[x + 1, y - 1].ID != id;
@@ -169,9 +167,10 @@ public class Chunk
 
     public bool ChangeTile(int x, int y, Tile tile)
     {
-        if (x > 0 && x < Width && y > 0 && y < Height)
+        if (x >= 0 && x < Width && y >= 0 && y < Height)
         {
             _tiles[x,y] = tile;
+            Tiles[x][y] = tile.ID;
             return true;
         }
         return false;
@@ -199,12 +198,14 @@ public class Chunk
     {
         //decode which tiles are on screen here :p
         //topY might actuaclly be the bottom of the screen but whatevs lol
+
+        //TODO: make this more optimized cause i lowkey just bandaided it with a couple +2s
         (int leftX, int topY) = Map.WorldPosToAbsTilePos(screen.Pos);
         (int tileWidth, int tileHeight) = Map.WorldPosToAbsTilePos(new Vector2(screen.Width, screen.Height));
         leftX = Math.Clamp(leftX, 0, _tiles.GetLength(0));
         topY = Math.Clamp(topY, 0, _tiles.GetLength(1));
-        int rightX = Math.Clamp(leftX + tileWidth + 1, 0, _tiles.GetLength(0));
-        int bottomY = Math.Clamp(topY + tileHeight, 0, _tiles.GetLength(1));
+        int rightX = Math.Clamp(leftX + tileWidth + 2, 0, _tiles.GetLength(0));
+        int bottomY = Math.Clamp(topY + tileHeight + 2, 0, _tiles.GetLength(1));
 
         for (int x = leftX; x < rightX; x++)
         {
