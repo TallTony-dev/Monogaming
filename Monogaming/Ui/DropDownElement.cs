@@ -22,8 +22,6 @@ namespace Monogaming.Ui;
 public class DropDownElement : TextureElement
 {
     [JsonIgnore]
-    static ICondition click = new MouseCondition(MouseButton.LeftButton);
-    [JsonIgnore]
     private bool isMenuOpen = false;
 
     public string Text { get; private set; }
@@ -38,7 +36,7 @@ public class DropDownElement : TextureElement
     {
         base.Update(gameTime);
 
-        if (click.Pressed())
+        if (InputConditions.click.Pressed())
         {
             if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)) 
             {
@@ -48,7 +46,7 @@ public class DropDownElement : TextureElement
                 }
                 isMenuOpen = true;
             }
-            else// if (!Children.Any(t => t.ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)))
+            else if (!Children.Any(t => t.ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)))
             {
                 foreach (UiElement element in Children)
                 {
@@ -73,10 +71,17 @@ public class DropDownElement : TextureElement
         base.DeactivateElement();
     }
 
-    public override void ActivateElement()
+    public override void ActivateElement(bool force = false)
     {
         IsActive = true;
         IsVisible = true;
+        if (force)
+        {
+            foreach (var child in Children)
+            {
+                child.ActivateElement(force);
+            }
+        }
     }
 
 }

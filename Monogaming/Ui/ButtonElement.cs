@@ -10,14 +10,13 @@ using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using Apos.Input;
 using Monogaming.PlayerThings;
+using Monogaming;
 using System.Linq;
 
 namespace Monogaming.Ui;
 
 public class ButtonElement : TextureElement
 {
-    [JsonIgnore]
-    static ICondition click = new MouseCondition(MouseButton.LeftButton);
     public List<UiAction> OnClickActions { get; private set; }
     public string Text { get; set; }
     
@@ -33,7 +32,7 @@ public class ButtonElement : TextureElement
     {
         if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
         {
-            if (click.Pressed())
+            if (InputConditions.click.Pressed())
             {
                 foreach (UiAction action in OnClickActions)
                 {

@@ -26,10 +26,10 @@ public class Chunk
     private string[][] Tiles;
 
 
-    //TODO: Fix how these are stored seperately, make a custom jsonConverter or something!
+    //TODO: Fix how these are stored seperately cause it sucks lol, make a custom jsonConverter or something!
     [JsonInclude]
     [JsonPropertyName("Entities")]
-    List <JsonEntity> Entities;
+    List <JsonEntity> Entities = new();
 
     [JsonIgnore]
     private Tile[,] _tiles;
@@ -38,16 +38,16 @@ public class Chunk
     private List<ImUpdatable> Updatables = new();
     [JsonIgnore]
     private List<ImDrawable> Drawables = new();
-
+    [JsonIgnore]
+    private List<ImCollidable> Collidables = new();
     
     [JsonConstructor]
-    public Chunk(string MapName, int Width, int Height, List <JsonEntity> Entities, string[][] Tiles)
+    public Chunk(string MapName, int Width, int Height, string[][] Tiles, List<JsonEntity> Entities)
     {
         this.MapName = MapName;
         this.Width = Width;
         this.Height = Height;
         this.Tiles = Tiles;
-        this.Entities = Entities;
 
         if (Tiles.GetLength(0) != Width || Tiles.Any(t => t.Length != Height))
         {
@@ -65,10 +65,7 @@ public class Chunk
 
         foreach (JsonEntity je in Entities)
         {
-            Vector2 tilePos = Map.TilePosToWorldPos(new Vector2(je.Pos[0], je.Pos[1]));
-            Entity e = EntityDict.CreateEntity(je.ID, tilePos);
-            Updatables.Add(e);
-            Drawables.Add(e);
+            AddEntity(je.ID, je.Pos);
         }
     }
 
@@ -107,6 +104,14 @@ public class Chunk
                 TileTex.TileTexType texTyp = GetTextureTypeForNeighbors(x,y);
                 _tiles[x,y].SetTileTex(texTyp);
             }
+        }
+    }
+
+    public void SettleEntities() 
+    {
+        Entities.Clear();
+        foreach (Entity e in Updatables) {
+            Entities.Add(new JsonEntity(e.ID, e.DrawBox.Pos));
         }
     }
 
@@ -175,23 +180,34 @@ public class Chunk
         }
         return false;
     }
-    public Tile GetTile(int x, int y)
-    {
-        if (x > 0 && x < Width && y > 0 && y < Height)
-        {
-            return _tiles[x,y];
-        }
-        return null;
+    // public Tile GetTile(int x, int y)
+    // {
+    //     if (x > 0 && x < Width && y > 0 && y < Height)
+    //     {
+    //         return _tiles[x,y];
+    //     }
+    //     return null;
+    // }
+    public Entity GetTopEntityCollision(Vector2 worldPos) {
+        return (Entity)Collidables.Find(t => (t.DrawBox.Intersects(worldPos)) && t is Entity);
     }
+    
     public void AddEntity(string EntityID, Vector2 pos)
     {
-        (int x, int y) tilePos = Map.WorldPosToAbsTilePos(pos);
-        JsonEntity entity = new JsonEntity(EntityID, new int[]{tilePos.x, tilePos.y});
-        Entities.Add(entity);
+        if (EntityDict.Contains(EntityID)) {
+            JsonEntity entity = new JsonEntity(EntityID, pos);
+            Entities.Add(entity);
 
-        Entity e = EntityDict.CreateEntity(EntityID, pos);
-        Updatables.Add(e);
-        Drawables.Add(e);
+            Entity e = EntityDict.CreateEntity(EntityID, pos);
+            Updatables.Add(e);
+            Drawables.Add(e);
+            Collidables.Add(e);
+        }
+    }
+    public void RemoveEntity(Entity e) {
+        Updatables.Remove(e);
+        Drawables.Remove(e);
+        Collidables.Remove(e);
     }
 
     public void Draw(SpriteBatch spriteBatch, Hitbox screen)
@@ -273,13 +289,13 @@ public class Chunk
     public struct JsonEntity
     {
         [JsonInclude]
-        public string ID;
+        public string ID { get; set; }
         [JsonInclude]
-        public int[] Pos;
+        public Vector2 Pos { get; set; }
 
 
         [JsonConstructor]
-        public JsonEntity(string ID, int[] Pos)
+        public JsonEntity(string ID, Vector2 Pos)
         {
             this.ID = ID;
             this.Pos = Pos;

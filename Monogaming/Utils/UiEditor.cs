@@ -134,7 +134,7 @@ public class UiEditor
         Stream textStream = File.OpenRead(path);
         workingElement = JsonSerializer.Deserialize<UiElement>(textStream);
         workingElement.UpdatePos(innerBounds);
-        workingElement.ActivateElement();
+        workingElement.ActivateElement(true);
         Debug.WriteInfo($"Loaded menu from {path}");
     }
 
@@ -251,38 +251,24 @@ public class UiEditor
         workingElement.DeleteElement(element);
     }
 
-    ICondition select = new MouseCondition(MouseButton.LeftButton);
-    ICondition copy = new AllCondition(
-        new KeyboardCondition(Keys.C), 
-        new KeyboardCondition(Keys.LeftControl)
-    );
-    ICondition paste = new AllCondition(
-        new KeyboardCondition(Keys.V), 
-        new KeyboardCondition(Keys.LeftControl)
-    );
-    ICondition delete = new AllCondition(
-        new KeyboardCondition(Keys.Back), 
-        new KeyboardCondition(Keys.LeftControl)
-    );
-
     bool isDragging = false;
     public void Update(GameTime gameTime)
     {
         if (workingElement != null) {
             // workingElement.Update(gameTime);
 
-            if (select.Pressed() && innerBounds.Contains(InputHelper.NewMouse.Position.ToVector2()))
+            if (InputConditions.click.Pressed() && innerBounds.Contains(InputHelper.NewMouse.Position.ToVector2()))
             {
                 SelectElement(workingElement.GetTopCollision(InputHelper.NewMouse.Position.ToVector2()));
                 isDragging = true;
             }
-            else if (isDragging && !select.Held())
+            else if (isDragging && !InputConditions.click.Held())
             {
                 isDragging = false;
                 selected?.RoundRealPos();
             }
 
-            if (paste.Pressed() && copied != null)
+            if (InputConditions.paste.Pressed() && copied != null)
             {
                 //I know there's probably a better way to do this but should be fine here
                 //Didnt wanna make a copy constructor for all the derived elements lolol :^)
@@ -295,13 +281,13 @@ public class UiEditor
             {
                 //display some interaction window here to play with the properties
                 // selected.
-                if (delete.Pressed())
+                if (InputConditions.delete.Pressed())
                 {
                     DeleteElement(selected);
                     return;
                 }
 
-                if (copy.Pressed())
+                if (InputConditions.copy.Pressed())
                 {
                     copied = selected;
                     Debug.WriteInfo("Copied");

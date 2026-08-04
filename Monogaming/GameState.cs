@@ -50,7 +50,7 @@ public class GameState
         
         UiAction.GlobalInit(this);
 
-        _ = Map.LoadChunkAsync("baseMap");
+        _ = Map.LoadChunkAsync("./GameData/Chunks/baseMap.json");
     }
 
     public void EnterMainGame()

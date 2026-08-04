@@ -50,6 +50,12 @@ public class Hitbox
         Width = width;
         Height = height;
     }
+    public Hitbox(Hitbox hitbox)
+    {
+        Pos = hitbox.Pos;
+        Width = hitbox.Width;
+        Height = hitbox.Height;
+    }
 
     public void CeilPos()
     {
@@ -113,6 +119,6 @@ public class Hitbox
     {
         Vector2 scale = Dims / Textures.MainFont.MeasureString(text);
         Vector2 offsetPt = (Pos + Dims / 2) - Textures.MainFont.MeasureString(text) / 2 * scale;
-        spriteBatch.DrawString(Textures.MainFont, text, offsetPt, Color.Gray, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+        spriteBatch.DrawString(Textures.MainFont, text, offsetPt, Color.Indigo, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
     }
 }

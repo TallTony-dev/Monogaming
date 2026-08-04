@@ -10,6 +10,7 @@
         },
         "Name": "Test Entity",
         "ID": "core_testEntity",
+        "IsSolid": false,
         "TextureHandler": {
             "textures": {
                 "Default": "Sprite-0006.Idle",

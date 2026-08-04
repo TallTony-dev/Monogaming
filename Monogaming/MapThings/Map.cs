@@ -1,10 +1,9 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Entities;
 using System;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Monogaming.Ui;
 
 namespace Monogaming.MapThings;
 
@@ -12,9 +11,6 @@ public class Map
 {
     public static readonly int TileDims = 32;
 
-
-    //TODO: make this contain chunks and have a method for the chunks to communicate that
-    //a new one should be moved to.
     private Camera cameraRef;
     private Chunk activeChunk;
     public bool isLoading { get; private set; } = true;
@@ -25,20 +21,36 @@ public class Map
     }
 
 
-    public async Task LoadChunkAsync(string fileName)
+    public async Task LoadChunkAsync(string path)
     {
         try {
             isLoading = true;
-            string path = "./GameData/Chunks/" + fileName + ".json";
 
             Stream textStream = File.OpenRead(path);
-            activeChunk = await JsonSerializer.DeserializeAsync<Chunk>(textStream);
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            options.Converters.Add(new Vector2JsonConverter());
+            activeChunk = await JsonSerializer.DeserializeAsync<Chunk>(textStream, options);
+            
             isLoading = false;
         }
         catch (Exception ex)
         {
-            Debug.WriteError($"Failed to load chunk {fileName} with error {ex.Message}");
+            Debug.WriteError($"Failed to load chunk {Path.GetFileName(path)} with error {ex.Message}");
         }
+    }
+
+
+    /// <summary>
+    /// Null if not available
+    /// </summary>
+    public Chunk GetLoadedChunk()
+    {
+        if (!isLoading)
+        {
+            return activeChunk;
+        }
+        return null;
     }
 
     public void Update(GameTime gameTime)
@@ -57,31 +69,15 @@ public class Map
         }
     }
 
-    public async void HandleCommand(JsonElement Args)
-    {
-        switch (Args.GetProperty("UiCommand").GetString())
-        {
-            case ("SettleLoadedChunk"):
-                if (!isLoading)
-                {
-                    activeChunk?.SettleTiles();
-                }
-            break;
-            default:
-            Debug.WriteWarn("Fell out of Map command handler");
-            break;
-        }
-    }
-
-    public (int x, int y) GetTileCoordAtScreenPos(Vector2 screenPos)
+    public (int x, int y, bool offscreen) GetTileCoordAtScreenPos(Vector2 screenPos)
     {  
-        Vector2 origin = cameraRef.Screen.Pos;
-        Vector2 screenOff = ScreenPosToWorldPos(screenPos);
+        Vector2 screen = ScreenPosToWorldPos(screenPos);
 
-        (int x, int y) tilePos = WorldPosToAbsTilePos(origin + screenOff);
+        (int x, int y) tilePos = WorldPosToAbsTilePos(screen);
+        (int ix, int iy) old = tilePos;
         tilePos.x = Math.Clamp(tilePos.x, 0, activeChunk.Width);
         tilePos.y = Math.Clamp(tilePos.y, 0, activeChunk.Height);
-        return tilePos;
+        return (tilePos.x, tilePos.y, tilePos != old);
     }
 
     /// <summary>
@@ -102,6 +98,14 @@ public class Map
         activeChunk.ChangeTile(x, y, tile);
     } 
 
+    public void SettleLoadedChunk()
+    {
+        if (!isLoading)
+        {
+            activeChunk?.SettleTiles();
+        }
+    }
+
     public static Vector2 TilePosToWorldPos(Vector2 tilePos)
     {
         return tilePos * TileDims;
@@ -118,11 +122,11 @@ public class Map
 
     public Vector2 WorldPosToScreenPos(Vector2 pos)
     {
-        return pos * cameraRef.Scale;
+        return (pos - cameraRef.Screen.Pos) * cameraRef.Scale;
     }
     public Vector2 ScreenPosToWorldPos(Vector2 pos)
     {
-        return pos / cameraRef.Scale;
+        return pos / cameraRef.Scale + cameraRef.Screen.Pos;
     }
 
 

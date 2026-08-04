@@ -62,6 +62,14 @@ public class TextureHandler
     {
         currentTexture.Draw(batch, dest);
     }
+    public void Draw(SpriteBatch batch, Vector2 pos, Color color)
+    {
+        currentTexture.Draw(batch, pos, color);
+    }
+    public void Draw(SpriteBatch batch, Rectangle dest, Color color)
+    {
+        currentTexture.Draw(batch, dest, color);
+    }
 
     public void SetTexture(TextureType textureType)
     {

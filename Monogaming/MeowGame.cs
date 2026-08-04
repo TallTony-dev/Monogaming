@@ -92,7 +92,7 @@ public class MeowGame : Game
         gameState.Update(gameTime);
 
         float s = (float)gameTime.TotalGameTime.TotalSeconds;
-        testEntity.SetDrawPos(new Vector2(200 * MathF.Sin(s + 10), 
+        testEntity.SetPos(new Vector2(200 * MathF.Sin(s + 10), 
         100 * MathF.Sin(s + 10) + 100 * MathF.Cos(s / 2)));
 
         foreach (ImUpdatable e in activeUpdatables)

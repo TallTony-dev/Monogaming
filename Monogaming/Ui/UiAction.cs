@@ -72,7 +72,7 @@ public class UiAction
                     gameStateRef.uiEditor.HandleCommand(Args);
                 break;
                 case ("Map"):
-                    gameStateRef.Map.HandleCommand(Args);
+                    gameStateRef.mapEditor.HandleCommand(Args);
                 break;
                 default:
                 Debug.WriteWarn($"Fell out of dispatch ui command with name {CommandName}");

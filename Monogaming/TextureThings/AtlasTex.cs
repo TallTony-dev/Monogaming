@@ -36,5 +36,13 @@ public class AtlasTex : ImTexture
     {
         batch.Draw(Texture, dest, SourceRect, Color.White);
     }
+    public void Draw(SpriteBatch batch, Vector2 pos, Color color)
+    {
+        batch.Draw(Texture, pos, SourceRect, color);
+    }
+    public void Draw(SpriteBatch batch, Rectangle dest, Color color)
+    {
+        batch.Draw(Texture, dest, SourceRect, color);
+    }
 
 }

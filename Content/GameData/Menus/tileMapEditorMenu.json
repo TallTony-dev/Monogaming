@@ -43,6 +43,152 @@
         "X": 71,
         "Y": 328
       }
+    },
+    {
+      "ElementType": "buttonElement",
+      "OnClickActions": [
+        {
+          "CommandName": "Map",
+          "Args": {
+            "UiCommand": "SaveLoadedChunk"
+          }
+        }
+      ],
+      "Text": "save",
+      "TextureHandler": {
+        "CurrentTextureType": 0,
+        "textures": {
+          "Default": "buttonRock.Unpressed",
+          "OnHover": "buttonRock.Unpressed"
+        }
+      },
+      "ID": "saveElement",
+      "Anchor": "TopLeft",
+      "Children": [],
+      "DrawBox": {
+        "Width": 64,
+        "Height": 32,
+        "X": 575,
+        "Y": 0
+      }
+    },
+    {
+      "ElementType": "buttonElement",
+      "OnClickActions": [
+        {
+          "CommandName": "Map",
+          "Args": {
+            "UiCommand": "LoadChunk"
+          }
+        }
+      ],
+      "Text": "load",
+      "TextureHandler": {
+        "CurrentTextureType": 0,
+        "textures": {
+          "Default": "buttonRock.Unpressed",
+          "OnHover": "buttonRock.Unpressed"
+        }
+      },
+      "ID": "loadElement",
+      "Anchor": "TopLeft",
+      "Children": [],
+      "DrawBox": {
+        "Width": 64,
+        "Height": 32,
+        "X": 575,
+        "Y": 32
+      }
+    },
+    {
+      "ElementType": "buttonElement",
+      "OnClickActions": [
+        {
+          "CommandName": "Map",
+          "Args": {
+            "UiCommand": "ToggleDraw"
+          }
+        }
+      ],
+      "Text": "toggle draw",
+      "TextureHandler": {
+        "CurrentTextureType": 0,
+        "textures": {
+          "Default": "buttonRock.Unpressed",
+          "OnHover": "buttonRock.Unpressed"
+        }
+      },
+      "ID": "toggleDrawElement",
+      "Anchor": "TopLeft",
+      "Children": [],
+      "DrawBox": {
+        "Width": 64,
+        "Height": 32,
+        "X": 511,
+        "Y": 0
+      }
+    },
+    {
+      "ElementType": "dropDownElement",
+      "Text": "Add",
+      "TextureHandler": {
+        "CurrentTextureType": 0,
+        "textures": {
+          "Default": "buttonRock.Unpressed",
+          "OnHover": "buttonRock.Unpressed"
+        }
+      },
+      "ID": "addElement",
+      "Anchor": "TopLeft",
+      "Children": [
+        {
+          "ElementType": "buttonElement",
+          "OnClickActions": [
+            {
+              "CommandName": "Map",
+              "Args": {
+                "UiCommand": "AddEntity"
+              }
+            }
+          ],
+          "Text": "add entity",
+          "TextureHandler": {
+            "CurrentTextureType": 0,
+            "textures": {
+              "Default": "buttonRock.Unpressed",
+              "OnHover": "buttonRock.Unpressed"
+            }
+          },
+          "ID": "addEntityElement",
+          "Anchor": "TopLeft",
+          "Children": [],
+          "DrawBox": {
+            "Width": 64,
+            "Height": 32,
+            "X": 0,
+            "Y": -32
+          }
+        },
+        {
+          "ElementType": "textInputElement",
+          "Text": "entityID",
+          "ID": "entityIDElement",
+          "Anchor": "TopLeft",
+          "Children": [],
+          "DrawBox": {
+            "Width": 64,
+            "Height": 32,
+            "X": 64,
+            "Y": -32
+          }
+        }
+      ],
+      "DrawBox": {
+        "Width": 64,
+        "Height": 32,
+        "X": 144,
+        "Y": 327
+      }
     }
   ],
   "DrawBox": null

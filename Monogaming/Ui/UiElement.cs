@@ -32,6 +32,8 @@ public class UiElement : ImUpdatable
     public Hitbox ScaledDrawBox { get; protected set; } //scaled to fit screen 
     [JsonIgnore]
     public Hitbox ParentOffset { get; set; }
+    [JsonIgnore]
+    public Color DrawColor { get; set; } = Color.White;
 
     public string ID { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -184,13 +186,13 @@ public class UiElement : ImUpdatable
                 }
                 else
                 {
-                    found = Children.Find(t => t.ID == searchPath.Substring(0, searchPath.Length))
+                    found = Children.Find(t => t.ID == searchPath.Substring(0, dotIndex))
                     .GetChild(searchPath.Substring(dotIndex + 1, searchPath.Length - dotIndex - 1));
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteError($"Failed to find element at path {searchPath} with exception {ex.Message} and children {string.Join(',',Children)}");
+                Debug.WriteError($"Failed to find element at path {searchPath} with exception {ex.Message} and children {string.Join(',',Children.Select(t => t.ID))}");
             }
 
             if (found == null)
@@ -225,13 +227,13 @@ public class UiElement : ImUpdatable
         }
         return null;
     }
-    public virtual void ActivateElement()
+    public virtual void ActivateElement(bool force = false)
     {
         IsActive = true;
         IsVisible = true;
         foreach (UiElement child in Children)
         {
-            child.ActivateElement();
+            child.ActivateElement(force);
         }
     }
 

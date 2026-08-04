@@ -12,8 +12,6 @@ using Monogaming;
 public class TextInputElement : UiElement
 {
     [JsonIgnore]
-    static ICondition click = new MouseCondition(MouseButton.LeftButton);
-    [JsonIgnore]
     private Func<string, bool> setVal;
     [JsonIgnore]
     private Func<string> getVal;
@@ -40,7 +38,7 @@ public class TextInputElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
-        if (click.Pressed())
+        if (InputConditions.click.Pressed())
         {
             if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
             {

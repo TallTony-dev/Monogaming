@@ -43,6 +43,14 @@ public class TileTex : ImTexture
     {
         batch.Draw(Texture, dest, SourceRects[(int)currentType], Color.White);
     }
+    public void Draw(SpriteBatch batch, Vector2 pos, Color color)
+    {
+        batch.Draw(Texture, pos, SourceRects[(int)currentType], color);
+    }
+    public void Draw(SpriteBatch batch, Rectangle dest, Color color)
+    {
+        batch.Draw(Texture, dest, SourceRects[(int)currentType], color);
+    }
     public enum TileTexType 
     { AllSides = 0, LeftTopBottom, TopBottom, TopRightBottom, ExBottomRight, ExBottomLeft,
     LeftRightTop, LeftTop, Top, TopRight, ExTopRight, ExTopLeft, 

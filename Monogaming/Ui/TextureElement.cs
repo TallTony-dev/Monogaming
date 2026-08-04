@@ -14,8 +14,6 @@ namespace Monogaming.Ui;
 
 public class TextureElement : UiElement
 {
-    [JsonIgnore]
-    static ICondition click = new MouseCondition(MouseButton.LeftButton);
     [JsonInclude]
     protected TextureHandler TextureHandler { get; private set; }
 
@@ -36,7 +34,7 @@ public class TextureElement : UiElement
     {
         if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
         {
-            if (click.Pressed(false))
+            if (InputConditions.click.Pressed(false))
             {
                 TextureHandler.SetTexture(TextureHandler.TextureType.OnClick);
             }
@@ -57,7 +55,7 @@ public class TextureElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        TextureHandler.Draw(spriteBatch, ScaledDrawBox.AsRect());
+        TextureHandler.Draw(spriteBatch, ScaledDrawBox.AsRect(), DrawColor);
         base.Draw(spriteBatch);
     }
 }

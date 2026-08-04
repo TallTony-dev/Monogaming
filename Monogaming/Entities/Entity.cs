@@ -15,13 +15,14 @@ namespace Monogaming.Entities;
 
 [JsonDerivedType(typeof(Entity), typeDiscriminator: "entity")]
 
-public class Entity : ImDrawable, ImUpdatable
+public class Entity : ImDrawable, ImUpdatable, ImCollidable
 {   
     [JsonIgnore]
     public bool IsVisible { get; private set; } = true;
     [JsonIgnore]
     public bool IsActive { get; private set; } = true; // determines if should be updated
-    
+    public bool IsSolid { get; private set; } = true;
+
     public Hitbox DrawBox { get; private set; }
 
     public string Name { get; private set; }
@@ -29,24 +30,20 @@ public class Entity : ImDrawable, ImUpdatable
     public TextureHandler TextureHandler { get; private set; }
 
 
-    public Entity(Vector2 startPos, int drawWidth, int drawHeight, TextureHandler handler)
-    {
-        DrawBox = new Hitbox(startPos, drawWidth, drawHeight);
-        TextureHandler = handler;
-    }
-
     [JsonConstructor]
-    public Entity(string name, string id, Hitbox drawBox, TextureHandler textureHandler)
+    public Entity(string name, string id, bool IsSolid, Hitbox drawBox, TextureHandler textureHandler)
     {
         Name = name;
         ID = id;
+        this.IsSolid = IsSolid;
         DrawBox = drawBox;
         TextureHandler = textureHandler;
     }
 
     public virtual Entity CopyToPos(Vector2 pos)
     {
-        return new Entity(pos, DrawBox.Width, DrawBox.Height, TextureHandler.Copy());
+        Hitbox newBox = new Hitbox(pos, DrawBox.Width, DrawBox.Height);
+        return new Entity(Name, ID, IsSolid, newBox, TextureHandler.Copy());
     }
 
     public virtual void Update(GameTime gameTime)
@@ -62,15 +59,13 @@ public class Entity : ImDrawable, ImUpdatable
     }
 
     //TEMPTEMPTEMP
-    public virtual void SetDrawPos(Vector2 pos)
+    public void SetPos(Vector2 pos)
     {
         //should be private
         DrawBox.SetPos(pos);
     }
-
-    public virtual void UpdateDrawPos(Vector2 deltaPos)
+    public void AdjustPos(Vector2 deltaPos)
     {
-        //should be private
         DrawBox.ChangePos(deltaPos);
     }
 

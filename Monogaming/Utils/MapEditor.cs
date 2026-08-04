@@ -10,6 +10,7 @@ using System.Reflection; //ruh roh raggy
 using Monogaming.TextureThings;
 using Monogaming.Ui;
 using NativeFileDialogNET;
+using Monogaming.Interfaces;
 
 namespace Monogaming.Utils;
 /// <summary>
@@ -19,71 +20,139 @@ namespace Monogaming.Utils;
 public class MapEditor
 {
     GameState gameStateRef;
-    string placedTileID;
-    bool failedLastPlace;
 
+    bool isDrawing = false;
+
+    string placedTileID;
+    string placedEntityID;
+
+    Entity selectedEntity;
+    bool isDragging;
 
     public MapEditor(GameState gameState)
     {
         gameStateRef = gameState;
 
         ((TextInputElement)gameStateRef.Ui.GetElement("tileMapEditorMenu", "tileIDElement")).
-        BindString((s) => { placedTileID = s; return true; }, 
-        () => placedTileID);
+        BindString((s) => { placedTileID = s; return true; }, () => placedTileID);
+
+        ((TextInputElement)gameStateRef.Ui.GetElement("tileMapEditorMenu", "addElement.entityIDElement")).
+        BindString((s) => { placedEntityID = s; return true; }, () => placedEntityID);
     }
 
     private static async Task<(bool ok,string path)> AskUserOpenFile()
     {
         using var selectFileDialog = new NativeFileDialog()
         .SelectFile();
-        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
+        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Chunks");
         return (result == DialogResult.Okay, output);
     }
     private static async Task<(bool ok,string path)> AskUserSaveFile()
     {
         using var selectFileDialog = new NativeFileDialog()
         .SaveFile();
-        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
+        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Chunks");
         return (result == DialogResult.Okay, output + ".json");
     }
-    
 
-    ICondition click = new MouseCondition(MouseButton.LeftButton);
-    ICondition copy = new AllCondition(
-        new KeyboardCondition(Keys.C), 
-        new KeyboardCondition(Keys.LeftControl)
-    );
-    ICondition paste = new AllCondition(
-        new KeyboardCondition(Keys.V), 
-        new KeyboardCondition(Keys.LeftControl)
-    );
-    ICondition delete = new AllCondition(
-        new KeyboardCondition(Keys.Back), 
-        new KeyboardCondition(Keys.LeftControl)
-    );
-
+    public async void HandleCommand(JsonElement Args)
+    {
+        switch (Args.GetProperty("UiCommand").GetString())
+        {
+            case ("SettleLoadedChunk"):
+                gameStateRef.Map.SettleLoadedChunk();
+            break;
+            case ("SaveLoadedChunk"):
+                (bool ok, string path) = await AskUserSaveFile();
+                if (ok)
+                {
+                    TrySaveLoadedChunk(path);
+                }
+            break;
+            case ("AddEntity"):
+                gameStateRef.Map.GetLoadedChunk()?.AddEntity(placedEntityID, Vector2.Zero);
+            break;
+            case ("LoadChunk"):
+                (bool ok2, string path2) = await AskUserOpenFile();
+                if (ok2)
+                {
+                    await gameStateRef.Map.LoadChunkAsync(path2);
+                }
+            break;
+            case ("ToggleDraw"):
+                isDrawing = !isDrawing;
+            break;
+            default:
+                Debug.WriteWarn("Fell out of Map command handler");
+            break;
+        }
+    }
 
     public void Update(GameTime gameTime)
     {
+        gameStateRef.Ui.GetElement("tileMapEditorMenu", "toggleDrawElement").
+        DrawColor = isDrawing ? Color.Green : Color.Red;
+
+
+
         Map m = gameStateRef.Map;
         if (!m.isLoading)
         {
             Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();
-            (int x, int y) mouseTPos = m.GetTileCoordAtScreenPos(mPos);
+            Vector2 mWorldPos = m.ScreenPosToWorldPos(mPos);
+            (int x, int y, bool offscreen) mouseTPos = m.GetTileCoordAtScreenPos(mPos);
 
-            if (click.Held())
+            if (isDrawing && !mouseTPos.offscreen) {
+                if (InputConditions.click.Held())
+                {
+                    m.TrySetTileAtPos(mouseTPos.x, mouseTPos.y, placedTileID);
+                }
+            }
+            else
             {
-                bool b = m.TrySetTileAtPos(mouseTPos.x, mouseTPos.y, placedTileID);
-                Debug.WriteInfo($"Tried to set tile at {mouseTPos} to {placedTileID} with {b}");
+                if (InputConditions.click.Pressed())
+                {
+                    selectedEntity = m.GetLoadedChunk()?.GetTopEntityCollision(mWorldPos);
+                    isDragging = true;
+                }
+                else if (isDragging && !InputConditions.click.Held())
+                {
+                    isDragging = false;
+                    m.GetLoadedChunk()?.SettleEntities();
+                }
+
+
+
+                if (isDragging && selectedEntity != null)
+                {
+                    selectedEntity.DrawBox.ChangePos(InputHelper.NewMouse.Position.ToVector2() - InputHelper.OldMouse.Position.ToVector2());
+                }
             }
 
         }
 
     }
 
-    public void Draw(SpriteBatch spriteBatch)
-    {
+    // public void Draw(SpriteBatch spriteBatch)
+    // {
         
+    // }
+
+    private void TrySaveLoadedChunk(string path)
+    {
+        Chunk chunk = gameStateRef.Map.GetLoadedChunk();
+        if (chunk != null) {
+            if (File.Exists(path))
+            {
+                File.Move(path, path + ".bckp", true);
+            }
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            options.Converters.Add(new Vector2JsonConverter());
+            File.WriteAllText(path, JsonSerializer.Serialize(chunk, options));
+
+            Debug.WriteInfo($"Saved loaded chunk to {path}");
+        }
     }
 
 
