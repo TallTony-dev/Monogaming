@@ -11,7 +11,7 @@ public class Camera
 
     private float trackSpeed;
 
-    public const int ScreenWidth = 640;
+    public const int ScreenWidth = 640; // I think at this point its just ui width lol
     public const int ScreenHeight = ScreenWidth / 16 * 9;
 
     private float _scale = 1f;
