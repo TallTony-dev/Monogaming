@@ -83,11 +83,13 @@ public class GameState
     public void Update(GameTime gameTime)
     {
         Ui.Update(gameTime);
+
+        Chunk currentChunk = Map.GetLoadedChunk();
         
         //you should have something here that stops if theres a transition in progress
-        if (!isGameLogicPaused)
+        if (!isGameLogicPaused && currentChunk != null)
         {
-            Player.Update(gameTime, this);
+            Player.Update(gameTime, currentChunk, Map);
             Map.Update(gameTime);
         }
         switch (state)

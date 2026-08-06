@@ -16,6 +16,8 @@ namespace Monogaming.PlayerThings;
 
 public class Player
 {
+    private const int InteractDistance = 40;
+
     public Body body { get; private set; } = new(Vector2.Zero, Map.TileDims, Map.TileDims, 10f);
     private InputManager inputManager = new();
     public TextureHandler TextureHandler { get; private set; }
@@ -32,12 +34,12 @@ public class Player
         TextureHandler = textureHandler;
     }
 
-    public void Update(GameTime gameTime, GameState gameState)
+    public void Update(GameTime gameTime, Chunk currentChunk, Map map)
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         Vector2 moveDir = inputManager.GetMovementDir();
         body.AddVelocity(50 * moveDir * dt * MoveSpeed / (body.Velocity.Length() * 0.002f + 0.5f));
-        body.Update(gameTime, null);
+        body.Update(gameTime, currentChunk);
 
         TextureHandler.Update(gameTime);
         if (body.IsWalking)
@@ -49,6 +51,19 @@ public class Player
             TextureHandler.SetTexture(TextureHandler.TextureType.Idle);
         }
 
+
+        Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();
+        Vector2 mWorldPos = map.ScreenPosToWorldPos(mPos);
+        if (InputConditions.click.Pressed())
+        {
+            InteractableEntity clickedOn = currentChunk.GetTopCollision<InteractableEntity>(mWorldPos);
+            if (clickedOn != null && 
+            (clickedOn.DrawBox.Center - body.Center).LengthSquared() < InteractDistance * InteractDistance)
+            //omg wow so optimized that saved like 5 cpu cycles no way
+            {
+                clickedOn.Interact();
+            }
+        }
     }
 
     public void Draw(SpriteBatch batch)

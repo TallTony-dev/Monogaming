@@ -3,7 +3,7 @@
     "EntityBookName": "Core",
 
     "testEntity": {
-        "EntityType": "entity",
+        "EntityType": "interactableEntity",
         "DrawBox": {
             "Width": 100,
             "Height": 100

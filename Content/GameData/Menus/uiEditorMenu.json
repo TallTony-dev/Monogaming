@@ -183,6 +183,64 @@
             "X": 0,
             "Y": -60
           }
+        },
+        {
+          "ElementType": "buttonElement",
+          "OnClickActions": [
+            {
+              "CommandName": "UiEditor",
+              "Args": {
+                "UiCommand": "AddElement",
+                "Type": "inventoryElement"
+              }
+            }
+          ],
+          "Text": "Add Inventory",
+          "TextureHandler": {
+            "CurrentTextureType": 0,
+            "textures": {
+              "Default": "buttonRock.Unpressed",
+              "OnHover": "buttonRock.Unpressed"
+            }
+          },
+          "ID": "addInventory",
+          "Anchor": "TopLeft",
+          "Children": [],
+          "DrawBox": {
+            "Width": 50,
+            "Height": 20,
+            "X": 0,
+            "Y": -80
+          }
+        },
+        {
+          "ElementType": "buttonElement",
+          "OnClickActions": [
+            {
+              "CommandName": "UiEditor",
+              "Args": {
+                "UiCommand": "AddElement",
+                "Type": "windowElement"
+              }
+            }
+          ],
+          "Text": "Add Window",
+          "TextureHandler": {
+            "CurrentTextureType": 0,
+            "textures": {
+              "Default": "buttonRock.Unpressed",
+              "OnHover": "buttonRock.Unpressed"
+            }
+          },
+          "ID": "addWindow",
+          "Anchor": "TopLeft",
+          "Children": [],
+          "DrawBox": {
+            "Width": 50,
+            "Height": 20,
+            "X": 0,
+            "Y": -100
+          }
         }
       ],
       "DrawBox": {

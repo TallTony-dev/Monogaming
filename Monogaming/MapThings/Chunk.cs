@@ -191,6 +191,12 @@ public class Chunk
     public Entity GetTopEntityCollision(Vector2 worldPos) {
         return (Entity)Collidables.Find(t => (t.DrawBox.Intersects(worldPos)) && t is Entity);
     }
+    /// <summary>
+    /// Gets the top item in collidables of type T that intersects with a pos
+    /// </summary>
+    public T GetTopCollision<T>(Vector2 worldPos) {
+        return (T)Collidables.Find(t => (t.DrawBox.Intersects(worldPos)) && t is T);
+    }
     
     public void AddEntity(string EntityID, Vector2 pos)
     {

@@ -11,21 +11,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace Monogaming.Ui;
 
 public class UI : ImUpdatable
 {
+    //trying something new here, will see how it goes
+    public static UI LiveUI { get; private set; }
+
     public bool IsVisible { get; private set; } = true;
     public bool IsActive { get; private set; } = true;
     Dictionary<string, UiElement> menus = new();
 
+    List<UiElement> popups = new();
+
     private GameWindow gameWindowRef;
 
     private const string UIPath = "./GameData/Menus/";
+    private const string PopupsUIPath = "./GameData/Menus/Popups/";
     public UI(GameWindow windowRef)
     {
         gameWindowRef = windowRef;
+        LiveUI = this;
 
         //add menus here cause i dont wanna do more json lol
         //haha suck it we're doing more json lolol enjoy scalability loser
@@ -102,13 +110,38 @@ public class UI : ImUpdatable
         }
     }
 
+    public void AddPopup(string fileName)
+    {
+        try
+        {
+            Stream textStream = File.OpenRead(PopupsUIPath + fileName);
+            UiElement element = JsonSerializer.Deserialize<UiElement>(textStream);
+            popups.Add(element);
+            element.ActivateElement(true);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteError($"Failed to load popup {fileName} with error {ex.Message}");
+        }
+    }
+
     public void Update(GameTime gameTime)
     {
+        foreach (UiElement element in popups)
+        {
+            element.Update(gameTime);
+        }
+        //remove ones, children because theres a root element, this sucks i know lol
+        popups.RemoveAll(t => t.Children.Any(t => t.ShouldRemove));
+
         foreach (UiElement menu in menus.Values)
         {
             if (menu.IsActive)
             {
                 menu.Update(gameTime);
+                if (menu.Children.Any(t => t.ShouldRemove)) {
+                    menus.Remove(menus.First(t => t.Value == menu).Key);
+                }
             }
         }
     }
@@ -121,6 +154,10 @@ public class UI : ImUpdatable
             {
                 menu.Draw(spriteBatch);
             }
+        }
+        foreach (UiElement element in popups)
+        {
+            element.Draw(spriteBatch);
         }
     }
     //TODO: implement this wrapper and also an animation handler one too

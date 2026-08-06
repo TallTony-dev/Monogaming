@@ -21,6 +21,7 @@ namespace Monogaming.Ui;
 [JsonDerivedType(typeof(ButtonElement), typeDiscriminator: "buttonElement")]
 [JsonDerivedType(typeof(TextInputElement), typeDiscriminator: "textInputElement")]
 [JsonDerivedType(typeof(DropDownElement), typeDiscriminator: "dropDownElement")]
+[JsonDerivedType(typeof(WindowElement), typeDiscriminator: "windowElement")]
 
 public class UiElement : ImUpdatable
 {
@@ -34,6 +35,9 @@ public class UiElement : ImUpdatable
     public Hitbox ParentOffset { get; set; }
     [JsonIgnore]
     public Color DrawColor { get; set; } = Color.White;
+    [JsonIgnore]
+    public bool ShouldRemove { get; protected set; } = false;
+
 
     public string ID { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -115,13 +119,12 @@ public class UiElement : ImUpdatable
         return new Hitbox(retPos, child.Width, child.Height);
     }
 
-    public void UpdatePos(Rectangle window)
+    public virtual void UpdatePos(Rectangle window)
     {
         if (DrawBox != null) {
             int ScreenWidth = Camera.ScreenWidth;
             int ScreenHeight = Camera.ScreenHeight;
             Rectangle realWindow = window;
-
 
             Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight);
 

@@ -62,12 +62,12 @@ public class Body : Hitbox
             float dt = i >= PhysicsTimeStep ? PhysicsTimeStep : i;
 
             Pos += Velocity * dt;
-            // Vector2 collision = chunk.Collides(this);
-            // Pos += collision;
-            // if (collision.LengthSquared() > 0)
-            // {
-            //     Collided = true;
-            // }
+            Vector2 collision = chunk.GetCollision(this);
+            Pos += collision;
+            if (collision.LengthSquared() > 0)
+            {
+                Collided = true;
+            }
             i -= dt;
         } while (i > 0);
 

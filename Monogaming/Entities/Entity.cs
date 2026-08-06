@@ -14,7 +14,8 @@ namespace Monogaming.Entities;
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "EntityType")]
 
 [JsonDerivedType(typeof(Entity), typeDiscriminator: "entity")]
-
+[JsonDerivedType(typeof(InteractableEntity), typeDiscriminator: "interactableEntity")]
+[JsonDerivedType(typeof(InventoryEntity), typeDiscriminator: "inventoryEntity")]
 public class Entity : ImDrawable, ImUpdatable, ImCollidable
 {   
     [JsonIgnore]
@@ -50,7 +51,6 @@ public class Entity : ImDrawable, ImUpdatable, ImCollidable
     {
         TextureHandler.Update(gameTime);
     }
-
 
     //SHOULD BE PROTECTED
     public void SetTexture(TextureHandler.TextureType type)

@@ -76,6 +76,8 @@ public class UiEditor
     private void AddBlankElementToSelected(string type)
     {
         UiElement blank;
+
+        //lol ts sucks
         switch (type) {
             case("buttonElement"):
                 blank = new ButtonElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null, null, "button", null);
@@ -85,6 +87,12 @@ public class UiEditor
             break;
             case("dropDownElement"):
                 blank = new DropDownElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null, "default", null);
+            break;
+            case("inventoryElement"):
+                blank = new InventoryElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
+            break;
+            case("windowElement"):
+                blank = new WindowElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
             break;
             default:
                 blank = new UiElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
