@@ -5,6 +5,7 @@ using Monogaming.TextureThings;
 using Monogaming.Ui;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Monogaming.Ui.Windows;
 
 
 namespace Monogaming.Entities;
@@ -30,7 +31,7 @@ public class InteractableEntity : Entity
     /// </summary>
     public virtual void Interact()
     {
-        UI.LiveUI.AddPopup("oneButtonPopup.json");
+        UI.LiveUI.AddPopup(new TwoButtonWindow(new Hitbox(100, 100, 140, 200), "TestTextlolol", "butt1", "butt2"));
     }
 
 

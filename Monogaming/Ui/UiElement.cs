@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using Apos.Input;
 using Monogaming.PlayerThings;
+using Monogaming.Ui.Windows;
 using System.Linq;
 
 namespace Monogaming.Ui;
@@ -35,8 +36,6 @@ public class UiElement : ImUpdatable
     public Hitbox ParentOffset { get; set; }
     [JsonIgnore]
     public Color DrawColor { get; set; } = Color.White;
-    [JsonIgnore]
-    public bool ShouldRemove { get; protected set; } = false;
 
 
     public string ID { get; set; }

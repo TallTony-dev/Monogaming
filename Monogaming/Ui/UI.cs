@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
-using System.Runtime.Intrinsics.X86;
+using Monogaming.Ui.Windows;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using System.IO;
@@ -24,12 +24,13 @@ public class UI : ImUpdatable
     public bool IsActive { get; private set; } = true;
     Dictionary<string, UiElement> menus = new();
 
-    List<UiElement> popups = new();
+    List<WindowElement> windows = new();
 
     private GameWindow gameWindowRef;
 
     private const string UIPath = "./GameData/Menus/";
-    private const string PopupsUIPath = "./GameData/Menus/Popups/";
+    //gonna try just doing this in code via classes otherwise it becomes a binding mess
+    // private const string PopupsUIPath = "./GameData/Menus/Popups/";
     public UI(GameWindow windowRef)
     {
         gameWindowRef = windowRef;
@@ -108,40 +109,49 @@ public class UI : ImUpdatable
         {
             element.UpdatePos(bounds);
         }
+        foreach (WindowElement element in windows) {
+            element.UpdatePos(bounds);
+        }
     }
 
-    public void AddPopup(string fileName)
-    {
-        try
-        {
-            Stream textStream = File.OpenRead(PopupsUIPath + fileName);
-            UiElement element = JsonSerializer.Deserialize<UiElement>(textStream);
-            popups.Add(element);
-            element.ActivateElement(true);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteError($"Failed to load popup {fileName} with error {ex.Message}");
-        }
+    // public void AddPopup(string fileName)
+    // {
+    //     try
+    //     {
+    //         Stream textStream = File.OpenRead(PopupsUIPath + fileName);
+    //         UiElement element = JsonSerializer.Deserialize<UiElement>(textStream);
+    //         popups.Add(element);
+    //         element.ActivateElement(true);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Debug.WriteError($"Failed to load popup {fileName} with error {ex.Message}");
+    //     }
+    // }
+
+    public void AddPopup (WindowElement popup) {
+        windows.Add(popup);
+        popup.ActivateElement();
+        Rectangle bounds = gameWindowRef.ClientBounds;
+        bounds.X = 0;
+        bounds.Y = 0;
+        popup.UpdatePos(bounds);
     }
 
     public void Update(GameTime gameTime)
     {
-        foreach (UiElement element in popups)
+        foreach (WindowElement element in windows)
         {
             element.Update(gameTime);
         }
         //remove ones, children because theres a root element, this sucks i know lol
-        popups.RemoveAll(t => t.Children.Any(t => t.ShouldRemove));
+        windows.RemoveAll(t => t.ShouldRemove);
 
         foreach (UiElement menu in menus.Values)
         {
             if (menu.IsActive)
             {
                 menu.Update(gameTime);
-                if (menu.Children.Any(t => t.ShouldRemove)) {
-                    menus.Remove(menus.First(t => t.Value == menu).Key);
-                }
             }
         }
     }
@@ -155,7 +165,7 @@ public class UI : ImUpdatable
                 menu.Draw(spriteBatch);
             }
         }
-        foreach (UiElement element in popups)
+        foreach (UiElement element in windows)
         {
             element.Draw(spriteBatch);
         }

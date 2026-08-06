@@ -62,7 +62,7 @@ public class TextureAnimation : ImUpdatable, ImTexture
     
     public void Update(GameTime gameTime)
     {
-        if (IsLooping || loopCount != 1) {
+        if (IsLooping || loopCount < 1) {
             passedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
             if (passedTime > animation[currentIndex].delay)
             {

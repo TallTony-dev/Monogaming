@@ -6,16 +6,18 @@ using System.Collections.Generic;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
 using Microsoft.Xna.Framework.Content;
-using Monogaming.Ui;
 using System.Text.Json.Serialization;
 using Monogaming.Items;
 using Apos.Input;
-using Monogaming;
+
+namespace Monogaming.Ui.Windows;
+
+
 
 public class WindowElement : UiElement
 {
 
-    const int TopBarHeight = 20;
+    protected const int TopBarHeight = 20;
     const int CloseButtonPadding = 1;
     const int CloseButtonWidth = 30;
 
@@ -25,6 +27,9 @@ public class WindowElement : UiElement
     private Hitbox topBar;
     [JsonIgnore]
     private Hitbox closeButton;
+
+    [JsonIgnore]
+    public bool ShouldRemove { get; protected set; } = false;
 
 
     [JsonConstructor]

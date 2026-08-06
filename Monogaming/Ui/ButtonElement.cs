@@ -17,6 +17,9 @@ namespace Monogaming.Ui;
 
 public class ButtonElement : TextureElement
 {
+    [JsonIgnore]
+    public bool WasClicked { get; private set; }
+
     public List<UiAction> OnClickActions { get; private set; }
     public string Text { get; set; }
     
@@ -30,6 +33,7 @@ public class ButtonElement : TextureElement
 
     public override void Update(GameTime gameTime)
     {
+        WasClicked = false;
         if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
         {
             if (InputConditions.click.Pressed())
@@ -38,6 +42,7 @@ public class ButtonElement : TextureElement
                 {
                     action.DispatchCommand();
                 }
+                WasClicked = true;
             }
         }
 
