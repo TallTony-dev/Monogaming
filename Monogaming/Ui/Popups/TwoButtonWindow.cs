@@ -21,10 +21,13 @@ public class TwoButtonWindow : WindowElement
 
     ButtonElement kid1;
     ButtonElement kid2;
-    
+    Action b1action;
+    Action b2action;
 
-    public TwoButtonWindow(Hitbox drawBox, string Text, string button1Text, string button2Text) : base("twoButtonElement", AnchorPoint.TopLeft, drawBox, null)
+    public TwoButtonWindow(Hitbox drawBox, string Text, string button1Text, string button2Text, Action button1Action, Action button2Action) : base("twoButtonElement", AnchorPoint.TopLeft, drawBox, null)
     {
+        b1action = button1Action;
+        b2action = button2Action;
         Hitbox textBox = new Hitbox(new Vector2(TextPadding, TopBarHeight + TextPadding), drawBox.Width, drawBox.Height - TopBarHeight - TextPadding * 2 - ButtonHeight - ButtonPadding * 2);
         Hitbox h1 = new Hitbox(new Vector2(ButtonPadding, drawBox.Height - ButtonPadding - ButtonHeight), drawBox.Width / 3 - ButtonPadding, ButtonHeight);
         Hitbox h2 = new Hitbox(new Vector2(ButtonPadding + drawBox.Width * 2 / 3 - ButtonPadding, drawBox.Height - ButtonPadding - ButtonHeight), drawBox.Width / 3 - ButtonPadding, ButtonHeight);
@@ -38,12 +41,21 @@ public class TwoButtonWindow : WindowElement
         Children = new List<UiElement>() { kid1, kid2, new TextElement("text", AnchorPoint.TopLeft, textBox, Text, null) };
         
     }
-
-    public override void UpdatePos(Rectangle window)
+    public TwoButtonWindow(string Text, string button1Text, string button2Text, Action button1Action, Action button2Action)
+    : this(new Hitbox(100, 100, 140, 200), Text, button1Text, button2Text, button1Action, button2Action)
     {
-        base.UpdatePos(window);
-
+        
     }
+    
+    public void SetButtonOneAction(Action action)
+    {
+        b1action = action;
+    }
+    public void SetButtonTwoAction(Action action)
+    {
+        b2action = action;
+    }
+
 
     public override void Update(GameTime gameTime)
     {        
@@ -52,7 +64,11 @@ public class TwoButtonWindow : WindowElement
         {
             if (kid1.WasClicked)
             {
-                
+                b1action?.Invoke();
+            }
+            else if (kid2.WasClicked)
+            {
+                b2action?.Invoke();
             }
         }
     }

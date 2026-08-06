@@ -16,7 +16,7 @@ namespace Monogaming.Ui.Windows;
 
 public class WindowElement : UiElement
 {
-
+    
     protected const int TopBarHeight = 20;
     const int CloseButtonPadding = 1;
     const int CloseButtonWidth = 30;
@@ -34,7 +34,7 @@ public class WindowElement : UiElement
 
     [JsonConstructor]
     public WindowElement(string ID, AnchorPoint Anchor, Hitbox drawBox, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
-    { 
+    {
         topBar = new Hitbox(drawBox.Pos, drawBox.Width, TopBarHeight);
         closeButton = new Hitbox(drawBox.Pos + new Vector2(CloseButtonPadding), CloseButtonWidth, TopBarHeight - CloseButtonPadding * 2);
     }

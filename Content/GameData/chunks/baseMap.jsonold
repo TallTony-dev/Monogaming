@@ -1,0 +1,125 @@
+{
+    "Title": "chunk",
+    "MapName": "baseMap",
+
+    "Width": 36,
+    "Height": 10,
+
+    "Entities": [
+        {
+            "ID": "core_testEntity",
+            "Pos": {
+                "X": 10,
+                "Y": 0
+            }
+        }
+    ],
+
+    "Tiles": [
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_grass","core_grass","core_grass","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],[
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],[
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],[
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ],
+        [
+            "core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel","core_gravel"
+        ]
+    ]
+}

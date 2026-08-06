@@ -86,7 +86,7 @@ public class Camera
         graphicsRef = graphics;
     }
 
-    public void Update(GameTime t, Vector2 trackingPos, bool snapToPos = true)
+    public void Update(GameTime t, Vector2 trackingPos, bool snapToPos = false)
     {
         //Scale = 1 + MathF.Sin((float)t.TotalGameTime.TotalSeconds) * 0.5f;
         if (!snapToPos) {

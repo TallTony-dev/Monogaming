@@ -17,8 +17,9 @@ namespace Monogaming.PlayerThings;
 public class Player
 {
     private const int InteractDistance = 40;
+    private const int ColliderDiff = 2;
 
-    public Body body { get; private set; } = new(Vector2.Zero, Map.TileDims, Map.TileDims, 10f);
+    public Body body { get; private set; } = new(Vector2.Zero, Map.TileDims - ColliderDiff * 2, Map.TileDims - ColliderDiff * 2, 10f);
     private InputManager inputManager = new();
     public TextureHandler TextureHandler { get; private set; }
 
@@ -38,7 +39,7 @@ public class Player
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         Vector2 moveDir = inputManager.GetMovementDir();
-        body.AddVelocity(50 * moveDir * dt * MoveSpeed / (body.Velocity.Length() * 0.002f + 0.5f));
+        body.AddVelocity(50 * moveDir * dt * MoveSpeed / (body.velocity.Length() * 0.002f + 0.5f));
         body.Update(gameTime, currentChunk);
 
         TextureHandler.Update(gameTime);
@@ -68,7 +69,12 @@ public class Player
 
     public void Draw(SpriteBatch batch)
     {
-        TextureHandler.Draw(batch, body.AsRect());
+        Rectangle rect = body.AsRect();
+        rect.X -= ColliderDiff;
+        rect.Y -= ColliderDiff;
+        rect.Width += ColliderDiff * 2;
+        rect.Height += ColliderDiff * 2;
+        TextureHandler.Draw(batch, rect);
     }
 
 }

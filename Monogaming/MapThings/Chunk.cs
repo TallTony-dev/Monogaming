@@ -266,30 +266,52 @@ public class Chunk
         }
     }
 
-    /// <summary>
-    /// Returns the vector out if collides, otherwise returns Vector2.Zero
-    /// </summary>
+    
     public Vector2 GetCollision(Hitbox box)
     {
         Vector2 boxTilePos = Map.WorldPosToTilePos(box.Pos);
-        Vector2 collision = Vector2.Zero;
+        boxTilePos.Round();
+        Vector2 closest = Vector2.Zero;
+        Vector2 closestPen = Vector2.Zero;
 
-        for (int x = (int)boxTilePos.X - 1; x < boxTilePos.X + 1; x++)
+        int maxX = _tiles.GetLength(0);
+        int maxY = _tiles.GetLength(1);
+
+        for (int x = (int)boxTilePos.X - 1; x <= (int)boxTilePos.X + 1; x++)
         {
-            for (int y = (int)boxTilePos.Y - 1; y < boxTilePos.Y + 1; y++)
+            for (int y = (int)boxTilePos.Y - 1; y <= (int)boxTilePos.Y + 1; y++)
             {
-                if (x > 0 && x < _tiles.Length && y > 0 && y < _tiles.Length 
+                if (x >= 0 && x < maxX && y >= 0 && y < maxY
                 && !_tiles[x,y].Walkable)
                 {
-                    Hitbox tileBox = new Hitbox(Map.TilePosToWorldPos(new(x,y)), Map.TileDims, Map.TileDims);                    
-                    collision += tileBox.GetCollision(box);
+                    Hitbox tileBox = new Hitbox(Map.TilePosToWorldPos(new(x,y)), Map.TileDims, Map.TileDims);
+                    if (tileBox.Intersects(box)) {
+                        Vector2 pt = tileBox.GetClosestPointTo(box);
+
+                        Vector2 pen = box.GetClosestPointTo(tileBox) - pt;
+
+                        if (closest.X == 0 || Math.Abs(pen.X) > Math.Abs(closestPen.X))
+                        {
+                            closest.X = pt.X;
+                            closestPen.X = pen.X;
+                        }
+                        if (closest.Y == 0 || Math.Abs(pen.Y) > Math.Abs(closestPen.Y))
+                        {
+                            closest.Y = pt.Y;
+                            closestPen.Y = pen.Y;
+                        }
+                    }
                 }
             }
         }
 
         //maybe check if theres any collidable entities here too!!
-
-        return collision;
+        Vector2 delta = box.Center - closest;
+        // if (delta.X > delta.Y)
+        // {
+        //     closest.X
+        // }
+        return closest;
     }
 
     public struct JsonEntity

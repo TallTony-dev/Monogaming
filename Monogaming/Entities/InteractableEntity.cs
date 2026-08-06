@@ -31,7 +31,11 @@ public class InteractableEntity : Entity
     /// </summary>
     public virtual void Interact()
     {
-        UI.LiveUI.AddPopup(new TwoButtonWindow(new Hitbox(100, 100, 140, 200), "TestTextlolol", "butt1", "butt2"));
+        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2", 
+        null, 
+        () => Debug.WriteInfo("Pressed butt"));
+        
+        UI.LiveUI.AddPopup(popup);
     }
 
 

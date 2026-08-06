@@ -6,6 +6,11 @@
         "ID": "core_gravel",
         "TextureID": "testTile",
         "Walkable": true
+    },
+    "grass": {
+        "ID": "core_grass",
+        "TextureID": "TileTwo",
+        "Walkable": false
     }
 
 

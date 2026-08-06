@@ -12,8 +12,8 @@ public class Body : Hitbox
 
     private static readonly float PhysicsTimeStep = 0.05f;
     private static readonly float WalkingEpsilon = 0.1f;
-
-    public Vector2 Velocity { get; private set; }= Vector2.Zero;
+    [JsonIgnore]
+    public Vector2 velocity = Vector2.Zero;
 
     public float Damping { get; private set; } = 0.7f;
 
@@ -46,9 +46,9 @@ public class Body : Hitbox
         Collided = false;
         float i = (float)gameTime.ElapsedGameTime.TotalSeconds;
         
-        Velocity -= Velocity * Damping * i;
+        velocity -= velocity * Damping * i;
 
-        if (Velocity.Length() > WalkingEpsilon)
+        if (velocity.Length() > WalkingEpsilon)
         {
             IsWalking = true;
         }
@@ -61,11 +61,27 @@ public class Body : Hitbox
         {
             float dt = i >= PhysicsTimeStep ? PhysicsTimeStep : i;
 
-            Pos += Velocity * dt;
+            Pos += velocity * dt;
             Vector2 collision = chunk.GetCollision(this);
-            Pos += collision;
+
             if (collision.LengthSquared() > 0)
             {
+                Vector2 delta = Pos - collision;
+                Pos = collision;
+
+                if (delta.LengthSquared() > 0)
+                {
+                    Vector2 normal = Vector2.Normalize(delta);
+                    if (Math.Abs(normal.X) > Math.Abs(normal.Y))
+                    {
+                        velocity.X = 0f;
+                    }
+                    else
+                    {
+                        velocity.Y = 0f;
+                    }
+                }
+
                 Collided = true;
             }
             i -= dt;
@@ -75,7 +91,7 @@ public class Body : Hitbox
 
     public void AddVelocity(Vector2 vel)
     {
-        Velocity += vel;
+        velocity += vel;
     }
 
 

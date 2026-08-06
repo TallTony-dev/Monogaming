@@ -96,18 +96,22 @@ public class Hitbox
         return Pos.X < pos.X && Pos.X + Width > pos.X && Pos.Y < pos.Y && Pos.Y + Height > pos.Y;
     }
 
-    /// <summary>
-    /// returns the vector out for the passed in hitbox
-    /// </summary>
-    public Vector2 GetCollision(Hitbox hitbox)
+    
+    public Vector2 GetClosestPointTo(Hitbox hitbox)
     {
-        Vector2 otherPos = hitbox.Pos;
-        Vector2 otherMax = otherPos + new Vector2(hitbox.Width, hitbox.Height);
-        Vector2 max = Pos + new Vector2(Width, Height);
-
-        throw new NotImplementedException();
-
-
+        Vector2 delta = Center - hitbox.Center;
+        Vector2 val = hitbox.Pos;
+        if (Math.Abs(delta.X) >= Math.Abs(delta.Y))
+        {
+            bool isOtherOnLeftSide = Math.Abs(Pos.X + Width - hitbox.Pos.X) >= Math.Abs(hitbox.Pos.X + hitbox.Width - Pos.X);
+            val.X = Pos.X + (isOtherOnLeftSide ? -hitbox.Width : Width);
+        }
+        if (Math.Abs(delta.X) <= Math.Abs(delta.Y))
+        {
+            bool isOtherOnTopSide = Math.Abs(Pos.Y + Height - hitbox.Pos.Y) >= Math.Abs(hitbox.Pos.Y + hitbox.Height - Pos.Y);
+            val.Y = Pos.Y + (isOtherOnTopSide ? -hitbox.Height : Height);
+        }
+        return val;
     }
 
     public Rectangle AsRect()
