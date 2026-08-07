@@ -1,5 +1,12 @@
-- Implement Inventory element that can reference player inventory
+- Maybe refactor to use Monogame.Aseprite instead of my system because its better lol
 
+
+- Implement 2d array to store entities that should be locked to coords
+- Implement Inventory element that can reference player inventory
+- Implement tranferring items between inventories
+- Implement processing entities that take in items and transform/craft them into something else based off recipes
+- Implement belts or similar that can link processing entities to each other or to inventories
+- Implement 'digital' storage that links processing entities to a central device
 
 Completed:
 - Implement Level Editor

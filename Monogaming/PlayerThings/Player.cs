@@ -60,10 +60,13 @@ public class Player
             InteractableEntity clickedOn = currentChunk.GetTopCollision<InteractableEntity>(mWorldPos);
             if (clickedOn != null && 
             (clickedOn.DrawBox.Center - body.Center).LengthSquared() < InteractDistance * InteractDistance)
-            //omg wow so optimized that saved like 5 cpu cycles no way
             {
                 clickedOn.Interact();
             }
+
+            currentChunk.AddEntity("core_testTileEntity", body.Pos);
+
+
         }
     }
 

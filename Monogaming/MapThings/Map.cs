@@ -105,7 +105,10 @@ public class Map
             activeChunk?.SettleTiles();
         }
     }
-
+    public static Vector2 TilePosToWorldPos(int x, int y)
+    {
+        return new Vector2(x,y) * TileDims;
+    }
     public static Vector2 TilePosToWorldPos(Vector2 tilePos)
     {
         return tilePos * TileDims;
@@ -117,7 +120,7 @@ public class Map
     public static (int x, int y) WorldPosToAbsTilePos(Vector2 worldPos)
     {
         Vector2 v = WorldPosToTilePos(worldPos);
-        return ((int)v.X, (int)v.Y);
+        return ((int)MathF.Round(v.X), (int)MathF.Round(v.Y));
     }
 
     public Vector2 WorldPosToScreenPos(Vector2 pos)

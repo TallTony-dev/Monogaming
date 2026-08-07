@@ -12,13 +12,20 @@ public static class ItemDict
     
     public static Item GetNewItem(string itemID)
     {
-        Item i = items[itemID];
-        return i.Copy();
+        return GetNewItem(itemID, 1);
     }
     public static Item GetNewItem(string itemID, int count)
     {
-        Item i = items[itemID];
-        return i.Copy(count);
+        if (items.ContainsKey(itemID))
+        {
+            Item i = items[itemID];
+            return i.Copy(count);
+        }
+        else
+        {
+            Debug.WriteError($"Tried to get non existent/loaded item {itemID}");
+            return null;
+        }
     }
     public static bool ContainsItem(string itemID)
     {

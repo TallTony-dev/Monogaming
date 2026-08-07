@@ -16,6 +16,8 @@ namespace Monogaming.TextureThings;
 public static class Textures
 {
 
+    //wow this was all unnessecary and i couldve just used https://github.com/AristurtleDev/monogame-aseprite );
+
     public const string DefaultTextureID = "Sprite-0006.Idle";
 
     public static SpriteFont MainFont { get; private set; }

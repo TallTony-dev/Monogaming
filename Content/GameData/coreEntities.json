@@ -18,5 +18,29 @@
                 "Walking": "Sprite-0006.Walk"
             }
         }
+    },
+    "testTileEntity": {
+        "EntityType": "tileEntity",
+        "Name": "Test Tile Entity",
+        "ID": "core_testTileEntity",
+        "Width": 1,
+        "Height": 1,
+        "Inventory": {
+            "MaxStackSize": 1,
+            "MaxStackCount": 1,
+            "Items": [
+                {
+                    "ItemID": "core_iron",
+                    "Count": 5
+                }
+            ]
+        },
+        "TextureHandler": {
+            "textures": {
+                "Default": "Sprite-0006.Idle",
+                "Idle": "Sprite-0006.Idle",
+                "Walking": "Sprite-0006.Walk"
+            }
+        }
     }
 }

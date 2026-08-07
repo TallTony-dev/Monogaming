@@ -7,6 +7,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Monogaming.Entities;
 
 namespace Monogaming.Items;
 
@@ -17,11 +18,11 @@ public class Inventory
     public int MaxStackCount { get; private set; }
     [JsonIgnore]
     public List<Item> Items { get; private set; }
-
+    [JsonInclude]
     [JsonPropertyName("Items")]
     public JsonItem[] SerializedItems
     {
-        get => Items.Select(t => new JsonItem(t.TypeID, t.Count)).ToArray();
+        get => Items.Select(t => new JsonItem(t.ID, t.Count)).ToArray();
     }
 
     [JsonConstructor]
@@ -30,6 +31,16 @@ public class Inventory
         this.MaxStackSize = MaxStackSize;
         this.MaxStackCount = MaxStackCount;
         this.Items = SerializedItems.Select(t => ItemDict.GetNewItem(t.ItemID, t.Count)).ToList();
+    }
+
+    public Inventory Copy()
+    {
+        JsonItem[] cpy = new JsonItem[SerializedItems.Length];
+        for (int i = 0; i < SerializedItems.Length; i++)
+        {
+            cpy[i] = new JsonItem(SerializedItems[i].ItemID, SerializedItems[i].Count);
+        }
+        return new Inventory(MaxStackSize, MaxStackCount, cpy);
     }
 
     public struct JsonItem
@@ -46,9 +57,19 @@ public class Inventory
         public int Count;
     }
 
+    public void TryTransferAllItemsFrom(Inventory toTakeFrom)
+    {
+        for (int i = toTakeFrom.Items.Count() - 1; i >= 0; i--)
+        {
+            AddItem(toTakeFrom.Items[i]);
+        }
+        toTakeFrom.CheckEmpty();
+    }
+
     /// <summary>
     /// Adds items to inventory, note that the count of the item object added
     /// can be greater than MaxStackCount. Returns false on fail to add all
+    /// WARNING: MODIFIES STATE OF ITEM
     /// </summary>
     public bool AddItem(Item item)
     {
@@ -116,6 +137,23 @@ public class Inventory
         return false;
     }
 
+    public List<ItemEntity> GetDroppedEntities(Hitbox pos)
+    {
+        //wowow linq so pretty
+        return Items.Select(t => new ItemEntity(new Hitbox(pos), t)).ToList();
+    }
+
+    public void CheckEmpty()
+    {
+        for (int i = Items.Count() - 1; i >= 0; i--)
+        {
+            if (Items[i].Count == 0)
+            {
+                Items.RemoveAt(i);
+            }
+        }
+    }
+ 
     public int GetCountOfItem(string id)
     {
         int count = 0;

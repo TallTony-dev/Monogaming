@@ -12,7 +12,7 @@ namespace Monogaming.Items;
 public class Item
 {
     public string Name { get; private set; } //what this item is called
-    public string TypeID { get; private set; } //describes the type of item this is
+    public string ID { get; private set; } //describes the type of item this is
     public string Category { get; private set; }
     public int Count { get; private set; } = 1;
 
@@ -20,23 +20,23 @@ public class Item
     ImTexture Texture;
 
     [JsonConstructor]
-    public Item(string name, string typeID, string category, string textureID, int count = 1)
+    public Item(string name, string ID, string category, string textureID, int count = 1)
     {
         TextureID = textureID;
         Texture = Textures.GetTexture(textureID);
         Name = name;
-        TypeID = typeID;
+        this.ID = ID;
         Category = category;
         Count = count;
     }
     
     public Item Copy()
     {
-        return new Item(Name, TypeID, Category, TextureID, Count);
+        return new Item(Name, ID, Category, TextureID, Count);
     }
     public Item Copy(int count)
     {
-        return new Item(Name, TypeID, Category, TextureID, count);
+        return new Item(Name, ID, Category, TextureID, count);
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 pos)
@@ -61,11 +61,11 @@ public class Item
     #region EqualityHelpers
     public bool IDEqual(Item i)
     {        
-        return i.TypeID == TypeID;
+        return i.ID == ID;
     }
     public bool IDEqual(string s)
     {        
-        return s == TypeID;
+        return s == ID;
     }
     /// <summary>
     /// Checks if the called on object has a greater count than the param object
