@@ -37,6 +37,15 @@ public class TileEntity : InventoryEntity
         //if multiblock then disable somehow probably
     }
 
+
+    /// <summary>
+    /// Updates this tile with a 'tick', maybe doesn't need to be called every frame
+    /// </summary>
+    public virtual void UpdateTile(TileEntity[,] state, int myx, int myy, float passedSecs)
+    {
+        
+    }
+
     /// <summary>
     /// Player can call this to do something of some sort
     /// </summary>

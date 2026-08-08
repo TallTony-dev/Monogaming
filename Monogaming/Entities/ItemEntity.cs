@@ -13,12 +13,23 @@ public class ItemEntity : InteractableEntity
 {
     public Item Item { get; private set; }
 
+    const float Damping = 6f;
+    Vector2 randKindaUnitVec;
 
     [JsonConstructor]
-    public ItemEntity(Hitbox DrawBox, Item Item) :
+    public ItemEntity(Hitbox DrawBox, Item Item, bool anim = false) :
     base(Item.Name, Item.ID, false, DrawBox, new TextureHandler(TextureHandler.TextureType.Default, Item.TextureID))
     {
         this.Item = Item;
+        //this isn't actually a unit vector, but having both be random might lead to better look anyways
+        if (anim) 
+        {
+            randKindaUnitVec = new Vector2((float)Random.Shared.NextDouble() * 2 - 1,(float)Random.Shared.NextDouble() * 2 - 1);
+        }
+        else
+        {
+            randKindaUnitVec = Vector2.Zero;
+        }
     }
 
     public override Entity CopyToPos(Vector2 pos)
@@ -33,6 +44,13 @@ public class ItemEntity : InteractableEntity
     public override void Interact()
     {
         
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+        DrawBox.ChangePos(randKindaUnitVec);
+        randKindaUnitVec -= randKindaUnitVec * Damping * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch, Hitbox screen)

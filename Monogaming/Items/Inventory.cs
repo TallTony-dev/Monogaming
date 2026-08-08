@@ -140,7 +140,7 @@ public class Inventory
     public List<ItemEntity> GetDroppedEntities(Hitbox pos)
     {
         //wowow linq so pretty
-        return Items.Select(t => new ItemEntity(new Hitbox(pos), t)).ToList();
+        return Items.Select(t => new ItemEntity(new Hitbox(pos), t, true)).ToList();
     }
 
     public void CheckEmpty()

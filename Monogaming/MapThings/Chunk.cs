@@ -44,6 +44,11 @@ public class Chunk
     [JsonIgnore]
     private List<ImCollidable> Collidables = new();
     
+
+    private const float TileUpdateTickLength = 0.1f;
+    private float timeSinceUpdatedTiles = 0;
+
+
     [JsonConstructor]
     public Chunk(string MapName, int Width, int Height, string[][] Tiles, List<JsonEntity> Entities)
     {
@@ -66,6 +71,7 @@ public class Chunk
                 _tiles[x,y] = TileDict.GetTileCopy(Tiles[x][y]);
             }
         }
+        SettleTiles();
 
         foreach (JsonEntity je in Entities)
         {
@@ -82,24 +88,6 @@ public class Chunk
         _tileEntities = new TileEntity[width, height];
     }
 
-    // public void Serialize()
-    // {
-    //     string path = fileRoot + fileName + ".json";
-    //     string bckupPath = fileRoot + fileName + "_bckup.json";
-    //     //dont delete current backup yet
-    //     File.Copy(path, bckupPath + "_temp");
-    //     //then delete current
-    //     File.Delete(bckupPath);
-    //     //then move new to old spot
-    //     File.Move(bckupPath + "_temp", bckupPath);
-    //     //at this point, the last chunk file is in bckup file so safe to delete old
-    //     File.Delete(path);
-    //     //open new file for writing!
-    //     FileStream stream = File.OpenWrite(path);
-
-    //     throw new NotImplementedException();
-    // }
-
     public void SettleTiles()
     {
         for (int x = 0; x < Width; x++)
@@ -112,6 +100,9 @@ public class Chunk
         }
     }
 
+    /// <summary>
+    /// To be used after moving entities after they spawn in 
+    /// </summary>
     public void SettleEntities() 
     {
         Entities.Clear();
@@ -243,7 +234,7 @@ public class Chunk
         {
             toAddTo.TryTransferAllItemsFrom(prev.Inventory);
         }
-        Hitbox pos = new (Map.TilePosToWorldPos(x, y), 12, 12);
+        Hitbox pos = new (prev.DrawBox.Center + new Vector2(-6,-6), 12, 12);
         var dropped = prev.Inventory.GetDroppedEntities(pos);
         Updatables.AddRange(dropped);
         Drawables.AddRange(dropped);
@@ -268,10 +259,11 @@ public class Chunk
         //topY might actuaclly be the bottom of the screen but whatevs lol
 
         //TODO: make this more optimized cause i lowkey just bandaided it with a couple +2s
+        //actually its pretty chill theres like an extra two layers being drawn because abstilepos rounds but thats ok
         (int leftX, int topY) = Map.WorldPosToAbsTilePos(screen.Pos);
         (int tileWidth, int tileHeight) = Map.WorldPosToAbsTilePos(new Vector2(screen.Width, screen.Height));
-        leftX = Math.Clamp(leftX, 0, _tiles.GetLength(0));
-        topY = Math.Clamp(topY, 0, _tiles.GetLength(1));
+        leftX = Math.Clamp(leftX - 1, 0, _tiles.GetLength(0));
+        topY = Math.Clamp(topY - 1, 0, _tiles.GetLength(1));
         int rightX = Math.Clamp(leftX + tileWidth + 2, 0, _tiles.GetLength(0));
         int bottomY = Math.Clamp(topY + tileHeight + 2, 0, _tiles.GetLength(1));
 
@@ -296,6 +288,7 @@ public class Chunk
 
     public void Update(GameTime gameTime)
     {
+        timeSinceUpdatedTiles += (float)gameTime.ElapsedGameTime.TotalSeconds;
         foreach (Tile t in _tiles)
         {
             if (t.IsActive)
@@ -309,6 +302,21 @@ public class Chunk
             {
                 i.Update(gameTime);    
             }
+        }
+        if (timeSinceUpdatedTiles > TileUpdateTickLength)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    TileEntity e = _tileEntities[x,y];
+                    if (e != null && e.IsActive)
+                    {
+                        e.UpdateTile(_tileEntities, x, y, timeSinceUpdatedTiles);
+                    }
+                }
+            }
+            timeSinceUpdatedTiles = 0;
         }
     }
 

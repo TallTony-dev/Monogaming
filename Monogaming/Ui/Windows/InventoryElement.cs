@@ -10,7 +10,9 @@ using Monogaming.Ui;
 using System.Text.Json.Serialization;
 using Monogaming.Items;
 
-public class InventoryElement : UiElement
+namespace Monogaming.Ui.Windows;
+
+public class InventoryElement : WindowElement
 {
     [JsonIgnore]
     Inventory boundInventory;
