@@ -34,5 +34,10 @@ public class InventoryEntity : InteractableEntity
         
     }
 
+    public override void Update(GameTime gameTime)
+    {
+        Inventory.Update(gameTime);
+        base.Update(gameTime);
+    }
 
 }

@@ -76,7 +76,7 @@ public class Entity : ImDrawable, ImUpdatable, ImCollidable
     {
         if (screen.Intersects(DrawBox))
         {
-            TextureHandler.Draw(spriteBatch, DrawBox.AsRect());
+            TextureHandler.Draw(spriteBatch, DrawBox.ToRect());
         }
     }
 }

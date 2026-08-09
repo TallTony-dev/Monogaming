@@ -43,6 +43,7 @@ public class TextInputElement : UiElement
             if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
             {
                 isSelected = true;
+                InputConditions.click.Consume();
             }
             else
             {
@@ -92,7 +93,7 @@ public class TextInputElement : UiElement
     public override void Draw(SpriteBatch spriteBatch)
     {
         Color color = failedLastBind ? Color.Red : (isSelected ? Color.LightBlue : Color.White);
-        spriteBatch.Draw(Textures.BlankTexture, ScaledDrawBox.AsRect(), color);
+        spriteBatch.Draw(Textures.BlankTexture, ScaledDrawBox.ToRect(), color);
 
         if (!string.IsNullOrEmpty(buffer)) {
             ScaledDrawBox.DrawStringInto(spriteBatch, buffer);

@@ -9,7 +9,8 @@
     "iron": {
         "ID": "core_iron",
         "Category": "materials",
-        "TextureID": "Sprite-0006.Idle"
+        "TextureID": "Sprite-0006.Idle",
+        "PlacedEntityID": "core_testTileEntity"
     },
     "ore": {
         "ID": "core_ore",

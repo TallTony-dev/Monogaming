@@ -89,12 +89,6 @@ public class UiEditor
             case("dropDownElement"):
                 blank = new DropDownElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null, "default", null);
             break;
-            case("inventoryElement"):
-                blank = new InventoryElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
-            break;
-            case("windowElement"):
-                blank = new WindowElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
-            break;
             default:
                 blank = new UiElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
             break;
@@ -322,7 +316,7 @@ public class UiEditor
         spriteBatch.Draw(Textures.BlankTexture, innerBounds, Color.White);
         if (selected != null)
         {
-            Rectangle rect = selected.ScaledDrawBox.AsRect();
+            Rectangle rect = selected.ScaledDrawBox.ToRect();
             rect.Inflate(2,2);
             spriteBatch.Draw(Textures.BlankTexture, rect, Color.Black);
         }

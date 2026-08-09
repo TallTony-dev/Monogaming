@@ -18,12 +18,20 @@ public class Inventory
     public int MaxStackCount { get; private set; }
     [JsonIgnore]
     public List<Item> Items { get; private set; }
+    
+    [JsonIgnore]
+    public bool HasChanged { get; private set; }
+
+
     [JsonInclude]
     [JsonPropertyName("Items")]
     public JsonItem[] SerializedItems
     {
         get => Items.Select(t => new JsonItem(t.ID, t.Count)).ToArray();
     }
+
+    [JsonIgnore]
+    public int StackCount { get => Items.Count(); }
 
     [JsonConstructor]
     public Inventory(int MaxStackSize, int MaxStackCount, JsonItem[] SerializedItems)
@@ -104,6 +112,8 @@ public class Inventory
             }
         // }
 
+        HasChanged = true;
+
         if (item.Count != 0)
         {
             return false;
@@ -130,6 +140,7 @@ public class Inventory
                 }
             }
         }
+        HasChanged = true;
         if (toRemove == 0)
         {
             return true;
@@ -167,12 +178,12 @@ public class Inventory
         return count;
     }
 
-    // public void Update(GameTime gameTime)
-    // {
-    //     //update items here in case any are animated?
+    public void Update(GameTime gameTime)
+    {
+        //update items here in case any are animated?
+        HasChanged = false;
 
-
-    // }
+    }
 
     const int ItemPadding = 10;
     const int MaxItemDisplaySize = 40;

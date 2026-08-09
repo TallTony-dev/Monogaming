@@ -10,6 +10,8 @@ using Monogaming.TextureThings;
 using Monogaming.Items;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Monogaming.Ui;
+using Monogaming.Ui.Windows;
 
 namespace Monogaming.PlayerThings;
 
@@ -66,13 +68,20 @@ public class Player
 
             currentChunk.AddEntity("core_testTileEntity", body.Pos);
 
-
         }
+
+        if (InputConditions.openInventory.Pressed())
+        {
+            UI.LiveUI.AddPopup(new InventoryWindow(Inventory, 
+            new Hitbox(new Vector2 (Camera.ScreenWidth / 3, Camera.ScreenHeight / 3), Camera.ScreenWidth / 3, Camera.ScreenHeight / 3)));
+        }
+
+        Inventory.Update(gameTime);
     }
 
     public void Draw(SpriteBatch batch)
     {
-        Rectangle rect = body.AsRect();
+        Rectangle rect = body.ToRect();
         rect.X -= ColliderDiff;
         rect.Y -= ColliderDiff;
         rect.Width += ColliderDiff * 2;

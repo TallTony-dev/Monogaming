@@ -20,13 +20,13 @@ public class UI : ImUpdatable
     //trying something new here, will see how it goes
     public static UI LiveUI { get; private set; }
 
-    public bool IsVisible { get; private set; } = true;
+    public float UiScale { get; private set; } = 1.5f;
     public bool IsActive { get; private set; } = true;
     Dictionary<string, UiElement> menus = new();
 
     List<WindowElement> windows = new();
 
-    private GameWindow gameWindowRef;
+    public GameWindow gameWindowRef { get; private set; }
 
     private const string UIPath = "./GameData/Menus/";
     //gonna try just doing this in code via classes otherwise it becomes a binding mess
@@ -102,9 +102,7 @@ public class UI : ImUpdatable
     public void HandleWindowChange(object sender, EventArgs args)
     {
         //tell elements to update their sizes to match new window
-        Rectangle bounds = gameWindowRef.ClientBounds;
-        bounds.X = 0;
-        bounds.Y = 0;
+        Rectangle bounds = gameWindowRef.ClientBounds with { X = 0, Y = 0 };
         foreach (UiElement element in menus.Values)
         {
             element.UpdatePos(bounds);
@@ -132,9 +130,7 @@ public class UI : ImUpdatable
     public void AddPopup (WindowElement popup) {
         windows.Add(popup);
         popup.ActivateElement();
-        Rectangle bounds = gameWindowRef.ClientBounds;
-        bounds.X = 0;
-        bounds.Y = 0;
+        Rectangle bounds = gameWindowRef.ClientBounds with { X = 0, Y = 0 };
         popup.UpdatePos(bounds);
     }
 

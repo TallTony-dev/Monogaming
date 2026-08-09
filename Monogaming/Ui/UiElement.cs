@@ -44,7 +44,7 @@ public class UiElement : ImUpdatable
     public List<UiElement> Children { get; protected set; }
     [JsonInclude]
     [JsonPropertyName("DrawBox")]
-    public Hitbox DrawBox { get; private set; } // the actual pos (offset from anchor) as defined by Camera.ScreenWidth/Height
+    public Hitbox DrawBox { get; set; } // the actual pos (offset from anchor) as defined by Camera.ScreenWidth/Height
 
 
 
@@ -125,24 +125,22 @@ public class UiElement : ImUpdatable
             int ScreenHeight = Camera.ScreenHeight;
             Rectangle realWindow = window;
 
-            Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight);
+            Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight) * UI.LiveUI.UiScale;
 
-            Hitbox scaled = new Hitbox(DrawBox.Pos * scale, (int)(DrawBox.Width * scale.X), (int)(DrawBox.Height * scale.Y));
+            Hitbox scaled = new Hitbox(DrawBox.Pos * scale, (int)(DrawBox.Width * UI.LiveUI.UiScale), (int)(DrawBox.Height * UI.LiveUI.UiScale));
 
             if (ParentOffset == null) {
                 ScaledDrawBox = OffsetHitbox(Anchor, scaled, realWindow);
             }
             else
             {
-                ScaledDrawBox = OffsetHitbox(Anchor, scaled, ParentOffset.AsRect());
+                ScaledDrawBox = OffsetHitbox(Anchor, scaled, ParentOffset.ToRect());
             }
         }
         // else
         // {
         //     ScaledDrawBox = new Hitbox(window.ClientBounds);
         // }
-
-        
 
         foreach (UiElement child in this.Children)
         {
@@ -164,10 +162,16 @@ public class UiElement : ImUpdatable
     {
         DrawBox.ChangePos(deltaOffset);
         //ScaledDrawBox.ChangePos(deltaOffset);
+        UpdatePos(UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 });
     }
     public void SetRealPos(Vector2 pos)
     {
         DrawBox.SetPos(pos); 
+    }
+    public void AdjustRealDims(Vector2 delta)
+    {
+        DrawBox.ChangeDims(delta);
+        UpdatePos(UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 });
     }
 
     /// <summary>

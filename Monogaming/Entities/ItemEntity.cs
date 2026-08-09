@@ -56,7 +56,7 @@ public class ItemEntity : InteractableEntity
     public override void Draw(SpriteBatch spriteBatch, Hitbox screen)
     {
         base.Draw(spriteBatch, screen);
-        Item.Draw(spriteBatch, DrawBox.AsRect());
+        Item.Draw(spriteBatch, DrawBox);
     }
 
 

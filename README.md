@@ -29,3 +29,5 @@ Potential future opimizations:
 - Have tilemap be drawn lazily to a rendertarget too cause currently its pretty rough for no reason
 - Optimize how/when chunks, ui menus, and textures are loaded
 
+Name ideas:
+NASC (NASC Ain't a Survival Craft OR Not Another Survival Craft)

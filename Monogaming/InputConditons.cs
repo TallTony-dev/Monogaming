@@ -5,7 +5,6 @@ namespace Monogaming;
 
 public static class InputConditions
 {
-    
     public static ICondition click = new MouseCondition(MouseButton.LeftButton);
     public static ICondition copy = new AllCondition(
         new KeyboardCondition(Keys.C), 
@@ -19,7 +18,10 @@ public static class InputConditions
         new KeyboardCondition(Keys.Back), 
         new KeyboardCondition(Keys.LeftControl)
     );
-
+    public static ICondition openInventory = new AnyCondition(
+        new KeyboardCondition(Keys.E),
+        new GamePadCondition(GamePadButton.X, 0)
+    );
     public static ICondition Left = new AnyCondition(
         new KeyboardCondition(Keys.A),
         new KeyboardCondition(Keys.Left),

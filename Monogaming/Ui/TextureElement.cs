@@ -55,7 +55,7 @@ public class TextureElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        TextureHandler.Draw(spriteBatch, ScaledDrawBox.AsRect(), DrawColor);
+        TextureHandler.Draw(spriteBatch, ScaledDrawBox.ToRect(), DrawColor);
         base.Draw(spriteBatch);
     }
 }

@@ -7,6 +7,7 @@ namespace Monogaming.Entities;
 
 public class Hitbox
 {
+    private const int TextDrawXOffset = 3;
     private Vector2 _pos;
     private int _width;
     private int _height;
@@ -69,6 +70,11 @@ public class Hitbox
     {
         Pos += deltaPos;
     }
+    public virtual void ChangeDims(Vector2 deltaDims)
+    {
+        Width += (int)deltaDims.X;
+        Height += (int)deltaDims.Y;
+    }
     public ref Vector2 GetPosRef()
     {
         return ref _pos;
@@ -114,15 +120,21 @@ public class Hitbox
         return val;
     }
 
-    public Rectangle AsRect()
+    public Rectangle ToRect()
     {
         return new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height);
     }
 
-    public void DrawStringInto(SpriteBatch spriteBatch, string text)
+    public void DrawStringInto(SpriteBatch spriteBatch, string text, float size = 0.7f)
     {
-        Vector2 scale = Dims / Textures.MainFont.MeasureString(text);
-        Vector2 offsetPt = (Pos + Dims / 2) - Textures.MainFont.MeasureString(text) / 2 * scale;
+        Vector2 paddedDims = Dims - new Vector2(TextDrawXOffset * 2, 0);
+        var stringLen = Textures.MainFont.MeasureString(text);
+
+        Vector2 scale = paddedDims / stringLen;
+        // scale.Y = scale.X;
+        scale = Vector2.Min(new Vector2(size), scale);
+
+        Vector2 offsetPt = Pos + Dims / 2 + new Vector2(TextDrawXOffset, 0) - stringLen / 2 * scale;
         spriteBatch.DrawString(Textures.MainFont, text, offsetPt, Color.Indigo, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
     }
 }
