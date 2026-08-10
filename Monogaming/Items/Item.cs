@@ -13,8 +13,8 @@ namespace Monogaming.Items;
 
 public class Item : ImDrawable
 {
-    private const int TextOffset = 22;
-    private const int TextHeightOffset = 5;
+    private const int TextOffset = 40;
+    private const int TextHeightOffset = 20;
     private const int TextWidth = 30;
     private const int TextHeight = 20;
 

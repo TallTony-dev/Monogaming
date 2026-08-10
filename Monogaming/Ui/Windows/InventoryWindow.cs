@@ -15,7 +15,7 @@ namespace Monogaming.Ui.Windows;
 public class InventoryWindow : WindowElement
 {
     private Inventory boundInventory;
-    private Item playerHeldItem;
+    private Item SelectedItem { get => (Item)sonion.SelectedItem; }
 
     ScrollBoxElement sonion;
 

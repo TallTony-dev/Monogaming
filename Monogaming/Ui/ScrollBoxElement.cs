@@ -51,11 +51,18 @@ public class ScrollBoxElement : UiElement
         UpdateHitboxes();
     }
 
+    private int GetItemWidth()
+    {
+        return Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
+    }
+    
+
     private void UpdateHitboxes()
     {
         ItemBoxes.Clear();
         Rectangle toDrawIn = ScaledDrawBox.ToRect();
-        int itemWidth = Math.Clamp(toDrawIn.Width / PrefItemsPerRow + ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
+        toDrawIn.Width -= ScrollBarWidth + ScrollBarPadding * 2;
+        int itemWidth = GetItemWidth();
         int itemsPerRow = toDrawIn.Width / itemWidth;
 
         int xPerItem = itemWidth + ItemPadding;
@@ -64,7 +71,7 @@ public class ScrollBoxElement : UiElement
 
         int maxScrollY = Math.Max(0, rowCount * xPerItem - ScaledDrawBox.Height);
 
-        int iOff = (int)(maxScrollY / (float)xPerItem * scrollPosNorm);
+        float iOff = maxScrollY / (float)xPerItem * scrollPosNorm;
 
         for (int i = 0; i < rowCount; i++) 
         {
@@ -140,7 +147,10 @@ public class ScrollBoxElement : UiElement
 
         //TODO: DONT REPEAT YOURSELF DINGUS
         Rectangle toDrawIn = ScaledDrawBox.ToRect();
-        int itemWidth = Math.Clamp(toDrawIn.Width / PrefItemsPerRow + ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
+        toDrawIn.Width -= ScrollBarWidth + ScrollBarPadding * 2;
+        spriteBatch.Draw(Textures.BlankTexture, toDrawIn, Color.BlanchedAlmond);
+
+        int itemWidth = GetItemWidth();
         int itemsPerRow = toDrawIn.Width / itemWidth;
 
         int xPerItem = itemWidth + ItemPadding;
@@ -150,7 +160,7 @@ public class ScrollBoxElement : UiElement
         int maxScrollY = Math.Max(0, rowCount * xPerItem - ScaledDrawBox.Height);
 
         int firstRowInd = (int)(maxScrollY / (float)xPerItem * scrollPosNorm);
-        int lastRowInd = Math.Min(rowCount, (int)MathF.Ceiling(ScaledDrawBox.Height / xPerItem) + firstRowInd);
+        int lastRowInd = Math.Min(rowCount, (int)MathF.Ceiling(ScaledDrawBox.Height / xPerItem) + firstRowInd + 2);
         for (int i = firstRowInd; i < lastRowInd; i++) 
         {
             for (int j = 0; j < itemsPerRow; j++)

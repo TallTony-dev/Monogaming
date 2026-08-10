@@ -22,6 +22,8 @@ public class WindowElement : UiElement
     protected const int TopBarHeight = 20;
     const int CloseButtonPadding = 1;
     const int CloseButtonWidth = 30;
+    const int MinWidth = 100;
+    const int MinHeight = 60;
 
 
     private ImTexture backTex = Textures.GetTexture("buttonRock.Unpressed");
@@ -46,7 +48,7 @@ public class WindowElement : UiElement
     {
         //putting the window border above scaledbox
         Vector2 off = new Vector2(0, TopBarHeight);
-        bottomRight = new Hitbox(ScaledDrawBox.Pos + ScaledDrawBox.Dims, 30, 30);
+        bottomRight = new Hitbox(ScaledDrawBox.Pos + ScaledDrawBox.Dims, 20, 20);
         topBar = new Hitbox(ScaledDrawBox.Pos - off, ScaledDrawBox.Width, TopBarHeight);
         closeButton = new Hitbox(ScaledDrawBox.Pos - off + new Vector2(CloseButtonPadding), CloseButtonWidth, TopBarHeight - CloseButtonPadding * 2);
     }
@@ -64,7 +66,14 @@ public class WindowElement : UiElement
         var realWindow = UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 };
         Vector2 scale = new Vector2((float)Camera.ScreenWidth / realWindow.Width, (float)Camera.ScreenHeight / realWindow.Height);
         Vector2 val = deltaDim * scale / UI.LiveUI.UiScale;
+
+        var current = DrawBox.Dims;
+        Vector2 after = val + current;
+        after = Vector2.Max(after, new Vector2(MinWidth, MinHeight));
+        val = after - current;
+
         AdjustRealDims(val);
+
         foreach (var child in Children)
         {
             child.AdjustRealDims(val);
@@ -81,6 +90,14 @@ public class WindowElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
+        if (bottomRight.Intersects(InputHelper.NewMouse.Position))
+        {
+            Mouse.SetCursor(MouseCursor.SizeNWSE);
+        }
+        else
+        {
+            Mouse.SetCursor(MouseCursor.Arrow);
+        }
         //TODO: have drag logic here and make sure to update pos properly
         if (InputConditions.click.Pressed())
         {
@@ -106,12 +123,10 @@ public class WindowElement : UiElement
         {
             if (InputConditions.click.Held())
             {
-                Mouse.SetCursor(MouseCursor.SizeNWSE);
                 ResizeWindow(MouseCondition.PointerDelta.ToVector2());
             }
             else
             {
-                Mouse.SetCursor(MouseCursor.Arrow);
                 isBottomRightDragged = false;
             }
         }
