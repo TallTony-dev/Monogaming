@@ -27,17 +27,17 @@ public class ScrollBoxElement : UiElement
     private const int MaxItemWidth = 60;
     private const int PrefItemsPerRow = 6;
 
-    private List<ImDrawable> Items;
-    private List<(Hitbox box, ImDrawable item)> ItemBoxes = new();
+    private List<ImItem> Items;
+    private List<(Hitbox box, ImItem item)> ItemBoxes = new();
     [JsonIgnore]
-    public ImDrawable SelectedItem { get; private set; }
+    public ImItem SelectedItem { get; private set; }
 
     bool isBeingDragged = false;
     TextureHandler scollTex;
     Hitbox scrollBar;
     float scrollPosNorm = 0;
     
-    public ScrollBoxElement(string ID, AnchorPoint Anchor, TextureHandler scollTex, Hitbox drawBox, List<ImDrawable> items) : 
+    public ScrollBoxElement(string ID, AnchorPoint Anchor, TextureHandler scollTex, Hitbox drawBox, List<ImItem> items) : 
     base(ID, Anchor, drawBox, null)
     {
         Items = items;
@@ -45,7 +45,7 @@ public class ScrollBoxElement : UiElement
         UpdateHitboxes();
     }
 
-    public void SetItems(List<ImDrawable> items)
+    public void SetItems(List<ImItem> items)
     {
         Items = items;
         UpdateHitboxes();
@@ -130,7 +130,7 @@ public class ScrollBoxElement : UiElement
             InputConditions.click.Consume();
             SelectedItem = null;
 
-            (Hitbox box, ImDrawable item) intersect;
+            (Hitbox box, ImItem item) intersect;
             if ((intersect = ItemBoxes.FirstOrDefault(t => t.box.Intersects(InputHelper.NewMouse.Position))) != default)
             {
                 SelectedItem = intersect.item;
@@ -170,8 +170,9 @@ public class ScrollBoxElement : UiElement
                 {
                     break;
                 }
-                (Hitbox box, ImDrawable item) = ItemBoxes[ind];
-                item.Draw(spriteBatch, box);
+                (Hitbox box, ImItem item) = ItemBoxes[ind];
+
+                item.Draw(spriteBatch, box, Rectangle.Intersect(toDrawIn, box.ToRect()));
             }
         }
 

@@ -36,6 +36,19 @@ public class AtlasTex : ImTexture
     {
         batch.Draw(Texture, dest, SourceRect, Color.White);
     }
+    public void Draw(SpriteBatch batch, Rectangle dest, Rectangle mask)
+    {
+        Rectangle newSrc = SourceRect;
+        Rectangle drawSpot = Rectangle.Intersect(dest, mask);
+        Vector2 scale = new Vector2((float)mask.Width / dest.Width, (float)mask.Height / dest.Height);
+
+        newSrc.Width = (int)(newSrc.Width * scale.X);
+        newSrc.Height = (int)(newSrc.Height * scale.Y); 
+        newSrc.X = (mask.X - dest.X) * SourceRect.Width / dest.Width;
+        newSrc.Y = (mask.Y - dest.Y) * SourceRect.Height / dest.Height;
+
+        batch.Draw(Texture, drawSpot, newSrc, Color.White);
+    }
     public void Draw(SpriteBatch batch, Vector2 pos, Color color)
     {
         batch.Draw(Texture, pos, SourceRect, color);

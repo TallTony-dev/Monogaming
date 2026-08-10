@@ -27,7 +27,7 @@ public class InventoryWindow : WindowElement
         boundInventory = inventory;
 
         sonion = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
-         new Hitbox(0, TopOffset, drawBox.Width, drawBox.Height - TopOffset), inventory.Items.ConvertAll(t => (ImDrawable)t));
+         new Hitbox(0, TopOffset, drawBox.Width, drawBox.Height - TopOffset), inventory.Items.ConvertAll(t => (ImItem)t));
 
         Children.Add(sonion);
     }
@@ -38,7 +38,7 @@ public class InventoryWindow : WindowElement
     {
         if (boundInventory.HasChanged)
         {
-            sonion.SetItems(boundInventory.Items.ConvertAll(t => (ImDrawable)t));
+            sonion.SetItems(boundInventory.Items.ConvertAll(t => (ImItem)t));
         }
 
         base.Update(gameTime);

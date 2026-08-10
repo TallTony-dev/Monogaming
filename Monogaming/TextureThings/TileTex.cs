@@ -43,6 +43,11 @@ public class TileTex : ImTexture
     {
         batch.Draw(Texture, dest, SourceRects[(int)currentType], Color.White);
     }
+    public void Draw(SpriteBatch batch, Rectangle dest, Rectangle mask)
+    {
+        throw new NotImplementedException();
+        //lol
+    }
     public void Draw(SpriteBatch batch, Vector2 pos, Color color)
     {
         batch.Draw(Texture, pos, SourceRects[(int)currentType], color);

@@ -11,7 +11,7 @@ using Monogaming.Entities;
 
 namespace Monogaming.Items;
 
-public class Item : ImDrawable
+public class Item : ImItem
 {
     private const int TextOffset = 40;
     private const int TextHeightOffset = 20;
@@ -60,7 +60,17 @@ public class Item : ImDrawable
             textBox.DrawStringInto(spriteBatch, Count.ToString());
         }
     }
-
+    public void Draw(SpriteBatch spriteBatch, Hitbox box, Rectangle mask)
+    {
+        Texture.Draw(spriteBatch, box.ToRect(), mask);
+        if (Count > 1) {
+            Hitbox textBox = new Hitbox(box.Pos + new Vector2(box.Width - TextOffset, box.Height - TextHeightOffset),
+            TextWidth, TextHeight);
+            if (mask.Contains(textBox.ToRect())) {
+                textBox.DrawStringInto(spriteBatch, Count.ToString());
+            }
+        }
+    }   
 
     public void AddTo(int count)
     {

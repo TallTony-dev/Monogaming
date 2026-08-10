@@ -50,6 +50,10 @@ public class TextureAnimation : ImUpdatable, ImTexture
     {
         animation[currentIndex].tex.Draw(batch, dest);
     }
+    public void Draw(SpriteBatch batch, Rectangle dest, Rectangle mask)
+    {
+        animation[currentIndex].tex.Draw(batch, dest, mask);
+    }
     public void Draw(SpriteBatch batch, Vector2 pos, Color color)
     {
         animation[currentIndex].tex.Draw(batch, pos, color);
