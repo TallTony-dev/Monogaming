@@ -20,14 +20,15 @@ public class InventoryWindow : WindowElement
     ScrollBoxElement sonion;
 
     //can be used to facilitate other things like a sort button or smth
-    private const int TopOffset = 20;
+    private const int TopOffset = 10;
+    private const int ScrollBoxPadding = 3;
 
     public InventoryWindow(Inventory inventory, Hitbox drawBox) : base(AnchorPoint.TopLeft, drawBox, null)
     {
         boundInventory = inventory;
 
         sonion = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
-         new Hitbox(0, TopOffset, drawBox.Width, drawBox.Height - TopOffset), inventory.Items.ConvertAll(t => (ImItem)t));
+         new Hitbox(ScrollBoxPadding, 0, drawBox.Width - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inventory.Items.ConvertAll(t => (ImItem)t));
 
         Children.Add(sonion);
     }

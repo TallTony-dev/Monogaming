@@ -25,6 +25,8 @@ public static class Textures
 
     public static Texture2D BlankTexture { get; private set; }
 
+    private static GraphicsDevice graphicsRef;
+
     /// <summary>
     /// Has actual loaded texture handles
     /// </summary>
@@ -42,6 +44,23 @@ public static class Textures
         return loadedAtlasTexs.ContainsKey(textureName) || 
         loadedAnimatedTexs.ContainsKey(textureName);
     }
+
+
+    public static void SetRenderTarget(RenderTarget2D target)
+    {
+        graphicsRef.SetRenderTarget(target);
+        graphicsRef.Clear(Color.Transparent);
+    }
+    public static void ResetRanderTarget()
+    {
+        graphicsRef.SetRenderTarget(null);
+    }
+    public static RenderTarget2D GetRenderTarget2D(int width, int height)
+    {
+        return new RenderTarget2D(graphicsRef, width, height);
+    }
+
+
     /// <summary>
     /// Gets a reference to a loaded textureatlastex or tile tex, or a copy of an animated texture
     /// </summary>
@@ -136,6 +155,7 @@ public static class Textures
     const string DefaultPath = "./GameData/Textures/";
     public static void Initialize(ContentManager content, GraphicsDevice graphics)
     {
+        graphicsRef = graphics;
         MainFont = content.Load<SpriteFont>("PixelFont");
         MainFontBold = content.Load<SpriteFont>("PixelFontBold");
         BlankTexture = new Texture2D(graphics, 1, 1);

@@ -55,7 +55,6 @@ public class ScrollBoxElement : UiElement
     {
         return Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
     }
-    
 
     private void UpdateHitboxes()
     {
@@ -145,9 +144,20 @@ public class ScrollBoxElement : UiElement
     {
         base.Draw(spriteBatch);
 
-        //TODO: DONT REPEAT YOURSELF DINGUS
         Rectangle toDrawIn = ScaledDrawBox.ToRect();
         toDrawIn.Width -= ScrollBarWidth + ScrollBarPadding * 2;
+
+        GraphicsDevice graphicsDevice = spriteBatch.GraphicsDevice;
+        Rectangle previousScissor = graphicsDevice.ScissorRectangle;
+
+        spriteBatch.End();
+        //LLM: use scissor state here (it did it wrong and i had to debug anyways)
+        graphicsDevice.ScissorRectangle = toDrawIn;
+        spriteBatch.Begin(
+            samplerState: SamplerState.PointClamp,
+            blendState: BlendState.AlphaBlend,
+            rasterizerState: new RasterizerState { ScissorTestEnable = true });
+
         spriteBatch.Draw(Textures.BlankTexture, toDrawIn, Color.BlanchedAlmond);
 
         int itemWidth = GetItemWidth();
@@ -172,11 +182,16 @@ public class ScrollBoxElement : UiElement
                 }
                 (Hitbox box, ImItem item) = ItemBoxes[ind];
 
-                item.Draw(spriteBatch, box, Rectangle.Intersect(toDrawIn, box.ToRect()));
+                item.Draw(spriteBatch, box);
             }
         }
 
+        spriteBatch.End();
+        graphicsDevice.ScissorRectangle = previousScissor;
+        spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: null);
+
         scollTex.Draw(spriteBatch, scrollBar.ToRect());
+
     }
 
 }
