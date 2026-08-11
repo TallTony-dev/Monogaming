@@ -1,19 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Monogaming.Interfaces;
+using Monogaming.Entities;
 
 namespace Monogaming.Items;
 
-public class Recipe
+public class Recipe : ImItem
 {
     //string in list is id or an expression for getting ids, int is count
-    public List<(string, int)> Ingredients { get; private set; } 
-    public List<(string, int)> Outputs { get; private set; }
+    public List<Item> Ingredients { get; private set; } 
+    public List<Item> Outputs { get; private set; }
     public float RecipeDifficulty { get; private set; } //could be time, could be nothing
     public string RecipeWorkbench { get; private set; }
     public string RecipeName { get; private set; }
     
-    public Recipe(List<(string, int)> ingredients, List<(string, int)> outputs, 
+    public Recipe(List<Item> ingredients, List<Item> outputs, 
     string recipeName, string workbench, float recipeDifficulty = 0)
     {
         Ingredients = ingredients;
@@ -27,9 +29,9 @@ public class Recipe
     public bool CanCraft(Inventory inventory)
     {
         int count = 0;
-        foreach ((string s, int cnt) in Ingredients)
+        foreach (Item i in Ingredients)
         {
-            if (inventory.GetCountOfItem(s) >= cnt)
+            if (inventory.GetCountOfItem(i.ID) >= i.Count)
             {
                 count++;
             }
@@ -43,11 +45,25 @@ public class Recipe
             return false;
         }
 
-        foreach ((string s, int cnt) in Ingredients)
+        foreach (Item i in Ingredients)
         {
-            inventory.RemoveItem(s, cnt);
+            inventory.RemoveItem(i.ID, i.Count);
         }
         return true;
     }
 
+    public void Draw(SpriteBatch spriteBatch, Hitbox box)
+    {
+        if (Outputs.Count > 0)
+        {
+            Outputs[0].Draw(spriteBatch, box);
+        }
+    }
+    public void Draw(SpriteBatch spriteBatch, Hitbox box, Color color)
+    {
+        if (Outputs.Count > 0)
+        {
+            Outputs[0].Draw(spriteBatch, box, color);
+        }
+    }
 }

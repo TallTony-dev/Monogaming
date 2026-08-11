@@ -13,15 +13,15 @@ public static class RecipeBook
     private static Dictionary<string, Recipe> recipeList = new();
 
 
-    public static List<(bool canCraft, Recipe recipe)> GetAvaliableRecipes(Save save, Inventory inv)
+    public static List<(Recipe recipe, bool canCraft)> GetAvaliableRecipes(Save save, Inventory inv)
     {
         List<Recipe> list = recipeList.Values.ToList();
-        List<(bool canCraft, Recipe recipe)> retval = new();
+        List<(Recipe recipe, bool canCraft)> retval = new();
         foreach (Recipe r in list)
         {
-            if (r.Ingredients.Any(t => save.IsItemFound(t.Item1)))
+            if (r.Ingredients.Any(t => save.IsItemFound(t.ID)))
             {
-                retval.Add((r.CanCraft(inv), r));
+                retval.Add((r, r.CanCraft(inv)));
             }
         }
         return retval;
@@ -55,7 +55,7 @@ public static class RecipeBook
                         string workbench = recipe.GetProperty("Workbench").GetString();
                         float difficulty = recipe.GetProperty("Difficulty").GetSingle();
 
-                        List<(string, int)> ingredients = new();
+                        List<Item> ingredients = new();
                         foreach (var property in recipe.GetProperty("Ingredients").EnumerateObject())
                         {
                             string itemID = property.Name;
@@ -64,10 +64,10 @@ public static class RecipeBook
                                 Debug.WriteWarn($"Cannot find any loaded item with id {itemID}");
                             }
                             int itemCount = property.Value.GetInt32();
-                            ingredients.Add((itemID, itemCount));
+                            ingredients.Add(ItemDict.GetNewItem(itemID, itemCount));
                         }
 
-                        List<(string, int)> outputs = new();
+                        List<Item> outputs = new();
                         foreach (var property in recipe.GetProperty("Outputs").EnumerateObject())
                         {
                             string itemID = property.Name;
@@ -76,7 +76,7 @@ public static class RecipeBook
                                 Debug.WriteWarn($"Cannot find any loaded item with id {itemID}");
                             }
                             int itemCount = property.Value.GetInt32();
-                            ingredients.Add((itemID, itemCount));
+                            ingredients.Add(ItemDict.GetNewItem(itemID, itemCount));
                         }
 
                         recipeList.Add(obj.Name, new Recipe(ingredients, outputs, obj.Name, workbench, difficulty));

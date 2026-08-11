@@ -26,15 +26,15 @@ public class InventoryWindow : WindowElement
     ScrollBoxElement sonion;
 
     //can be used to facilitate other things like a sort button or smth
-    private const int TopOffset = 10;
+    private const int TopOffset = 20;
     private const int ScrollBoxPadding = 3;
 
-    public InventoryWindow(Inventory inventory, Hitbox drawBox) : base(AnchorPoint.TopLeft, drawBox, null)
+    public InventoryWindow(Inventory inventory, Hitbox drawBox, string id = "inventoryElement") : base(AnchorPoint.TopLeft, drawBox, null, id)
     {
         BoundInventory = inventory;
 
         sonion = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
-         new Hitbox(ScrollBoxPadding, 0, drawBox.Width - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inventory.Items.ConvertAll(t => (ImItem)t));
+         new Hitbox(ScrollBoxPadding, 0, drawBox.Width - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inventory.Items.ConvertAll(t => ((ImItem)t, false)));
 
         Children.Add(sonion);
     }
@@ -45,24 +45,17 @@ public class InventoryWindow : WindowElement
     {
         if (BoundInventory.HasChanged)
         {
-            sonion.SetItems(BoundInventory.Items.ConvertAll(t => (ImItem)t));
+            sonion.SetItems(BoundInventory.Items.ConvertAll(t => ((ImItem)t, false)));
         }
         
         base.Update(gameTime);
 
-        if (prevSelected != SelectedItem && SelectedItem != null)
-        {
-            isDraggingItem = true;
-            draggedItem.item = SelectedItem;
-            draggedItem.box = sonion.GetNewHitboxForItem(SelectedItem);
-        }
+
         if (isDraggingItem)
         {
-            if (InputConditions.click.Held())
+            if (InputConditions.click.Held(false))
             {
                 draggedItem.box.ChangePos(MouseCondition.PointerDelta.ToVector2());
-
-                
             }
             else
             {
@@ -80,16 +73,23 @@ public class InventoryWindow : WindowElement
                 }
             }
         }
+        
+        if (prevSelected != SelectedItem && SelectedItem != null)
+        {
+            isDraggingItem = true;
+            draggedItem.item = SelectedItem;
+            draggedItem.box = sonion.GetNewHitboxForItem(SelectedItem);
+        }
 
         prevSelected = SelectedItem;
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
+        base.Draw(spriteBatch);
         if (isDraggingItem)
         {
             draggedItem.item.Draw(spriteBatch, draggedItem.box);
         }
-        base.Draw(spriteBatch);
     }
 }

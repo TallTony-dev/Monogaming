@@ -14,9 +14,9 @@ using System.Text.Json;
 using System.IO;
 using Monogaming.MapThings;
 
-namespace Monogaming.Ui;
+namespace Monogaming;
 
-public class UiAction
+public class Command
 {
     [JsonIgnore]
     public static GameState gameStateRef { get; private set; }
@@ -31,7 +31,7 @@ public class UiAction
     public JsonElement Args { get; private set; } //maybe just one int lolol
 
     [JsonConstructor]
-    public UiAction(string CommandName, JsonElement Args)
+    public Command(string CommandName, JsonElement Args)
     {
         this.CommandName = CommandName;
         this.Args = Args;
@@ -58,15 +58,11 @@ public class UiAction
                 case ("EnterMapEditor"):
                     gameStateRef.EnterMapEditor();
                 break;
-                case ("DeserializeUi"):
-                    string menuName = Args.GetProperty("MenuName").GetString();
-                    string outputPath = Args.GetProperty("OutputPath").GetString();
-                    if (File.Exists(outputPath)) {
-                        File.Move(outputPath, outputPath + ".bckp");
-                        Debug.WriteInfo($"Moved old file at {outputPath} to .bckp");
-                    }
-                    Debug.WriteInfo($"Serialized menu {menuName} to {outputPath}");
-                    File.WriteAllText(outputPath, gameStateRef.Ui.SerializeMenu(menuName));
+                case ("EnterLoadMenu"):
+                    gameStateRef.EnterLoadMenu();
+                break;
+                case ("LoadSave"):
+                    gameStateRef.LoadSave(Args.GetProperty("SaveName").GetString());
                 break;
                 case ("UiEditor"):
                     gameStateRef.uiEditor.HandleCommand(Args);

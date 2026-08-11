@@ -57,29 +57,32 @@ public class Player
 
         Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();
         Vector2 mWorldPos = map.ScreenPosToWorldPos(mPos);
-        if (InputConditions.click.Pressed())
+        if (InputConditions.click.Pressed(false))
         {
             InteractableEntity clickedOn = currentChunk.GetTopCollision<InteractableEntity>(mWorldPos);
+
             if (clickedOn != null && 
             (clickedOn.DrawBox.Center - body.Center).LengthSquared() < InteractDistance * InteractDistance)
             {
                 clickedOn.Interact();
+                InputConditions.click.Consume();
             }
 
             currentChunk.AddEntity("core_testTileEntity", body.Pos);
-
         }
 
-        if (InputConditions.openInventory.Pressed())
+        if (InputConditions.openInventory.Pressed() && !UI.LiveUI.ContainsPopupWithID("playerInventory"))
         {
             UI.LiveUI.AddPopup(new InventoryWindow(Inventory, 
-            new Hitbox(new Vector2 (Camera.ScreenWidth / 3, Camera.ScreenHeight / 3), Camera.ScreenWidth / 3, Camera.ScreenHeight / 3)));
+            new Hitbox(new Vector2 (Camera.ScreenWidth / 3, Camera.ScreenHeight / 3), Camera.ScreenWidth / 2, Camera.ScreenHeight / 2)
+            , "playerInventory"));
         }
 
         if (Inventory.HasChanged && GameState.ActiveSave != null)
         {
             foreach (Item i in Inventory.Items)
             {
+                //this is about as cheap/cheaper than checking and then setting
                 GameState.ActiveSave.SetItemFound(i.ID);
             }
         }

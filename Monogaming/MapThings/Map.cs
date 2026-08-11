@@ -11,13 +11,15 @@ public class Map
 {
     public static readonly int TileDims = 32;
 
+    private GameState gameStateref;
     private Camera cameraRef;
     private Chunk activeChunk;
     public bool isLoading { get; private set; } = true;
 
-    public Map(Camera cameraRef)
+    public Map(Camera cameraRef, GameState gameState)
     {
         this.cameraRef = cameraRef;
+        gameStateref = gameState;
     }
 
 
@@ -30,6 +32,13 @@ public class Map
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             options.Converters.Add(new Vector2JsonConverter());
+
+            if (activeChunk != null) {
+                gameStateref.Save(GameState.ActiveSave.Name);
+            }
+
+            //TransitionManager.AddTransition(new SlideLeftTransition(() => !isLoading))
+
             activeChunk = await JsonSerializer.DeserializeAsync<Chunk>(textStream, options);
             
             isLoading = false;

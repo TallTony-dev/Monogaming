@@ -20,14 +20,14 @@ public class ButtonElement : TextureElement
     [JsonIgnore]
     public bool WasClicked { get; private set; }
 
-    public List<UiAction> OnClickActions { get; private set; }
+    public List<Command> OnClickActions { get; private set; }
     public string Text { get; set; }
     
     [JsonConstructor]
-    public ButtonElement(string ID, AnchorPoint Anchor, Hitbox drawBox, TextureHandler textureHandler, List<UiAction> OnClickActions, string Text, List<UiElement> Children) : 
+    public ButtonElement(string ID, AnchorPoint Anchor, Hitbox drawBox, TextureHandler textureHandler, List<Command> OnClickActions, string Text, List<UiElement> Children) : 
     base(ID, Anchor, drawBox, textureHandler, Children)
     {
-        this.OnClickActions = OnClickActions == null? new List<UiAction>() : OnClickActions;
+        this.OnClickActions = OnClickActions == null? new List<Command>() : OnClickActions;
         this.Text = Text;
     }
 
@@ -38,7 +38,7 @@ public class ButtonElement : TextureElement
         {
             if (InputConditions.click.Pressed())
             {
-                foreach (UiAction action in OnClickActions)
+                foreach (Command action in OnClickActions)
                 {
                     action.DispatchCommand();
                 }

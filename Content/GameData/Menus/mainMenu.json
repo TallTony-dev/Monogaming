@@ -22,11 +22,15 @@
             },
             "OnClickActions": [
                 {
-                    "CommandName": "EnterMainGame"
+                    "CommandName": "EnterLoadMenu"
+                },
+                {
+                    "CommandName": "DeactivateElement",
+                    "Args": "mainMenu"
                 }
             ],
 
-            "Text": "Start"
+            "Text": "Load"
         },
 
         {
@@ -84,35 +88,6 @@
             ],
 
             "Text": "Map Editor"
-        },
-
-        {
-            "ElementType": "buttonElement",
-            "ID": "deserializingButton",
-            "Anchor": "BottomLeft",
-            "DrawBox": {
-                "X": 10,
-                "Y": -10,
-                "Width": 200,
-                "Height": 100
-            },
-            "TextureHandler": {
-                "textures": {
-                    "Default": "buttonRock.Unpressed",
-                    "OnHover": "buttonRock.Unpressed"
-                }
-            },
-            "OnClickActions": [
-                {
-                    "CommandName": "DeserializeUi",
-                    "Args": {
-                        "OutputPath": "./GameData/outputUI.json",
-                        "MenuName": "mainMenu"
-                    }
-                }
-            ],
-
-            "Text": "SerializerTest"
         }
     ]
 }

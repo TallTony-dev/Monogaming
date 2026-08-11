@@ -39,7 +39,7 @@ public class WindowElement : UiElement
     public bool isChildOfOtherWindow = false;
 
     [JsonConstructor]
-    public WindowElement(AnchorPoint Anchor, Hitbox drawBox, List<UiElement> Children) : base("windowID", Anchor, drawBox, Children)
+    public WindowElement(AnchorPoint Anchor, Hitbox drawBox, List<UiElement> Children, string id = "windowElement") : base(id, Anchor, drawBox, Children)
     {
         ResetBounds();
     }
@@ -49,7 +49,7 @@ public class WindowElement : UiElement
     {
         //putting the window border above scaledbox
         Vector2 off = new Vector2(0, TopBarHeight);
-        bottomRight = new Hitbox(ScaledDrawBox.Pos + ScaledDrawBox.Dims, 20, 20);
+        bottomRight = new Hitbox(ScaledDrawBox.Pos + ScaledDrawBox.Dims - new Vector2(6, 6), 18, 18);
         topBar = new Hitbox(ScaledDrawBox.Pos - off, ScaledDrawBox.Width, TopBarHeight);
         closeButton = new Hitbox(ScaledDrawBox.Pos - off + new Vector2(CloseButtonPadding), CloseButtonWidth, TopBarHeight - CloseButtonPadding * 2);
     }
@@ -58,7 +58,7 @@ public class WindowElement : UiElement
     {
         var realWindow = UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 };
         Vector2 scale = new Vector2((float)Camera.ScreenWidth / realWindow.Width, (float)Camera.ScreenHeight / realWindow.Height);
-        Vector2 val = deltaPos * scale / UI.LiveUI.UiScale;
+        Vector2 val = deltaPos * scale;
         AdjustRealPos(val);
         ResetBounds();
     }
@@ -93,6 +93,29 @@ public class WindowElement : UiElement
     {
         if (!isChildOfOtherWindow) 
         {
+            if (isBottomRightDragged)
+            {
+                if (InputConditions.click.Held())
+                {
+                    ResizeWindow(MouseCondition.PointerDelta.ToVector2());
+                }
+                else
+                {
+                    isBottomRightDragged = false;
+                }
+            }
+            if (isDragged)
+            {
+                if (InputConditions.click.Held(true))
+                {
+                    MoveWindow(MouseCondition.PointerDelta.ToVector2());
+                }
+                else
+                {
+                    isDragged = false;
+                }
+            }
+            
             if (bottomRight.Intersects(InputHelper.NewMouse.Position))
             {
                 Mouse.SetCursor(MouseCursor.SizeNWSE);
@@ -102,12 +125,11 @@ public class WindowElement : UiElement
                 Mouse.SetCursor(MouseCursor.Arrow);
             }
             //TODO: have drag logic here and make sure to update pos properly
-            if (InputConditions.click.Pressed())
+            if (InputConditions.click.Pressed(false))
             {
                 if (closeButton.Intersects(InputHelper.NewMouse.Position))
                 {
                     ShouldRemove = true;
-                    InputConditions.click.Consume();
                     return;
                 }
                 if (topBar.Intersects(InputHelper.NewMouse.Position))
@@ -122,28 +144,7 @@ public class WindowElement : UiElement
                 }
             }
 
-            if (isBottomRightDragged)
-            {
-                if (InputConditions.click.Held())
-                {
-                    ResizeWindow(MouseCondition.PointerDelta.ToVector2());
-                }
-                else
-                {
-                    isBottomRightDragged = false;
-                }
-            }
-            if (isDragged)
-            {
-                if (InputConditions.click.Held())
-                {
-                    MoveWindow(MouseCondition.PointerDelta.ToVector2());
-                }
-                else
-                {
-                    isDragged = false;
-                }
-            }
+            
         }
         
         base.Update(gameTime);

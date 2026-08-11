@@ -125,7 +125,7 @@ public class UiElement : ImUpdatable
             int ScreenHeight = Camera.ScreenHeight;
             Rectangle realWindow = window;
 
-            Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight) * UI.LiveUI.UiScale;
+            Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight);
 
             Hitbox scaled = new Hitbox(DrawBox.Pos * scale, (int)(DrawBox.Width * UI.LiveUI.UiScale), (int)(DrawBox.Height * UI.LiveUI.UiScale));
 

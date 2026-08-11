@@ -53,24 +53,29 @@ public class Item : ImItem
 
     public void Draw(SpriteBatch spriteBatch, Hitbox box)
     {
-        Texture.Draw(spriteBatch, box.ToRect());
+        Draw(spriteBatch, box, Color.White);
+    }
+    public void Draw(SpriteBatch spriteBatch, Hitbox box, Color color)
+    {
+        Texture.Draw(spriteBatch, box.ToRect(), color);
         if (Count > 1) {
             Hitbox textBox = new Hitbox(box.Pos + new Vector2(box.Width - TextOffset, box.Height - TextHeightOffset),
             TextWidth, TextHeight);
             textBox.DrawStringInto(spriteBatch, Count.ToString());
         }
     }
-    public void Draw(SpriteBatch spriteBatch, Hitbox box, Rectangle mask)
-    {
-        Texture.Draw(spriteBatch, box.ToRect(), mask);
-        if (Count > 1) {
-            Hitbox textBox = new Hitbox(box.Pos + new Vector2(box.Width - TextOffset, box.Height - TextHeightOffset),
-            TextWidth, TextHeight);
-            if (mask.Contains(textBox.ToRect())) {
-                textBox.DrawStringInto(spriteBatch, Count.ToString());
-            }
-        }
-    }   
+
+    // public void Draw(SpriteBatch spriteBatch, Hitbox box, Rectangle mask)
+    // {
+    //     Texture.Draw(spriteBatch, box.ToRect(), mask);
+    //     if (Count > 1) {
+    //         Hitbox textBox = new Hitbox(box.Pos + new Vector2(box.Width - TextOffset, box.Height - TextHeightOffset),
+    //         TextWidth, TextHeight);
+    //         if (mask.Contains(textBox.ToRect())) {
+    //             textBox.DrawStringInto(spriteBatch, Count.ToString());
+    //         }
+    //     }
+    // }   
 
     public void AddTo(int count)
     {

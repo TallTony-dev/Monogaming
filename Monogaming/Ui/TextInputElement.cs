@@ -38,7 +38,7 @@ public class TextInputElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
-        if (InputConditions.click.Pressed())
+        if (InputConditions.click.Pressed(false))
         {
             if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
             {

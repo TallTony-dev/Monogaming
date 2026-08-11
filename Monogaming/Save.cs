@@ -23,15 +23,23 @@ public class Save
     private Dictionary<string, bool> flags = new();
     [JsonInclude]
     private Dictionary<string, bool> itemsFound = new();
+    public string Name { get; private set; }
+    public PlayerPos PlayerSavePos { get; private set; }
 
 
-    public Save(Dictionary<string, bool> flags, Dictionary<string, bool> itemsFound)
+    [JsonConstructor]
+    public Save(string Name, PlayerPos PlayerSavePos, Dictionary<string, bool> flags, Dictionary<string, bool> itemsFound)
     {
+        this.Name = Name;
         this.flags = flags;
         this.itemsFound = itemsFound;
+        this.PlayerSavePos = PlayerSavePos;
     }
 
-
+    public void SetPlayerSavePos(PlayerPos pos)
+    {
+        PlayerSavePos = pos;
+    }
     public bool IsItemFound(string itemID)
     {
         if (itemsFound.ContainsKey(itemID))
@@ -64,5 +72,18 @@ public class Save
             flags.Add(flag, value);
         }
     }
+    public struct PlayerPos
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public string ChunkName { get; set; }
 
+        [JsonConstructor]
+        public PlayerPos(int x, int y, string chunkName)
+        {
+            X = x;
+            Y = y;
+            ChunkName = chunkName;
+        }
+    }
 }

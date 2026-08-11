@@ -122,11 +122,11 @@ public class Inventory
     }
     public void ClearEmpties()
     {
-        foreach (Item i in Items)
+        for (int i = Items.Count(); i >= 0; i--)
         {
-             if (i.Count == 0)
+            if (Items[i].Count == 0)
             {
-                Items.Remove(i);
+                Items.RemoveAt(i);
                 continue;
             }
         }

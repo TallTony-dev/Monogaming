@@ -1,10 +1,10 @@
 {
-    "Title": "save",
-    "SaveName": "Save1",
-
-    "Flags": {
-        "act1_HasCompletedIntro": false
-    }
-
-    
+  "Name": "save1",
+  "PlayerSavePos": {
+    "X": 0,
+    "Y": 0,
+    "ChunkName": "baseMap"
+  },
+  "flags": null,
+  "itemsFound": null
 }

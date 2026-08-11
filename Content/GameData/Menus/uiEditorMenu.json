@@ -183,64 +183,6 @@
             "X": 0,
             "Y": -60
           }
-        },
-        {
-          "ElementType": "buttonElement",
-          "OnClickActions": [
-            {
-              "CommandName": "UiEditor",
-              "Args": {
-                "UiCommand": "AddElement",
-                "Type": "inventoryElement"
-              }
-            }
-          ],
-          "Text": "Add Inventory",
-          "TextureHandler": {
-            "CurrentTextureType": 0,
-            "textures": {
-              "Default": "buttonRock.Unpressed",
-              "OnHover": "buttonRock.Unpressed"
-            }
-          },
-          "ID": "addInventory",
-          "Anchor": "TopLeft",
-          "Children": [],
-          "DrawBox": {
-            "Width": 50,
-            "Height": 20,
-            "X": 0,
-            "Y": -80
-          }
-        },
-        {
-          "ElementType": "buttonElement",
-          "OnClickActions": [
-            {
-              "CommandName": "UiEditor",
-              "Args": {
-                "UiCommand": "AddElement",
-                "Type": "windowElement"
-              }
-            }
-          ],
-          "Text": "Add Window",
-          "TextureHandler": {
-            "CurrentTextureType": 0,
-            "textures": {
-              "Default": "buttonRock.Unpressed",
-              "OnHover": "buttonRock.Unpressed"
-            }
-          },
-          "ID": "addWindow",
-          "Anchor": "TopLeft",
-          "Children": [],
-          "DrawBox": {
-            "Width": 50,
-            "Height": 20,
-            "X": 0,
-            "Y": -100
-          }
         }
       ],
       "DrawBox": {
@@ -254,78 +196,78 @@
       "ElementType": "textInputElement",
       "Text": "ID",
       "ID": "idElement",
-      "Anchor": "TopLeft",
+      "Anchor": "BottomLeft",
       "Children": [],
       "DrawBox": {
         "Width": 64,
         "Height": 32,
         "X": 180,
-        "Y": 310
+        "Y": -10
       }
     },
     {
       "ElementType": "textInputElement",
       "Text": "X Pos",
       "ID": "xPosElement",
-      "Anchor": "TopLeft",
+      "Anchor": "BottomLeft",
       "Children": [],
       "DrawBox": {
         "Width": 64,
         "Height": 32,
         "X": 246,
-        "Y": 310
+        "Y": -10
       }
     },
     {
       "ElementType": "textInputElement",
       "Text": "Y Pos",
       "ID": "yPosElement",
-      "Anchor": "TopLeft",
+      "Anchor": "BottomLeft",
       "Children": [],
       "DrawBox": {
         "Width": 64,
         "Height": 32,
         "X": 310,
-        "Y": 310
+        "Y": -10
       }
     },
     {
       "ElementType": "textInputElement",
       "Text": "Width",
       "ID": "widthElement",
-      "Anchor": "TopLeft",
+      "Anchor": "BottomLeft",
       "Children": [],
       "DrawBox": {
         "Width": 64,
         "Height": 32,
         "X": 374,
-        "Y": 310
+        "Y": -10
       }
     },
     {
       "ElementType": "textInputElement",
       "Text": "Height",
       "ID": "heightElement",
-      "Anchor": "TopLeft",
+      "Anchor": "BottomLeft",
       "Children": [],
       "DrawBox": {
         "Width": 64,
         "Height": 32,
         "X": 438,
-        "Y": 310
+        "Y": -10
       }
     },
     {
       "ElementType": "textInputElement",
       "Text": "Text",
       "ID": "textEnterElement",
-      "Anchor": "TopLeft",
+      "Anchor": "BottomLeft",
       "Children": [],
       "DrawBox": {
         "Width": 64,
         "Height": 32,
         "X": 502,
-        "Y": 310
+        "Y": -10
       }
     }
   ],

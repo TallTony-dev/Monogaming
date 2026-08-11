@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
+using Apos.Input;
 using Monogaming.Ui.Windows;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ public class UI : ImUpdatable
     //trying something new here, will see how it goes
     public static UI LiveUI { get; private set; }
 
-    public float UiScale { get; private set; } = 1.5f;
+    public float UiScale { get; private set; } = 1.3f;
     public bool IsActive { get; private set; } = true;
     Dictionary<string, UiElement> menus = new();
 
@@ -132,11 +133,17 @@ public class UI : ImUpdatable
     //     }
     // }
 
-    public void AddPopup (WindowElement popup) {
+    public void AddPopup(WindowElement popup) 
+    {
         windows.Add(popup);
         popup.ActivateElement();
         Rectangle bounds = gameWindowRef.ClientBounds with { X = 0, Y = 0 };
         popup.UpdatePos(bounds);
+    }
+
+    public bool ContainsPopupWithID(string id)
+    {
+        return windows.Any(t => t.ID == id);
     }
 
     public void Update(GameTime gameTime)
@@ -147,6 +154,10 @@ public class UI : ImUpdatable
         }
         //remove ones, children because theres a root element, this sucks i know lol
         windows.RemoveAll(t => t.ShouldRemove);
+        if (windows.Any(t => t.ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)))
+        {
+            InputConditions.click.Consume();
+        }
 
         foreach (UiElement menu in menus.Values)
         {
@@ -155,6 +166,7 @@ public class UI : ImUpdatable
                 menu.Update(gameTime);
             }
         }
+
     }
 
     public void Draw(SpriteBatch spriteBatch)

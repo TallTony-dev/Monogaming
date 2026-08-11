@@ -5,7 +5,7 @@ namespace Monogaming;
 
 public static class InputConditions
 {
-    public static ICondition click = new MouseCondition(MouseButton.LeftButton);
+    public static ICondition click = new Apos.Input.Track.MouseCondition(MouseButton.LeftButton);
     public static ICondition copy = new AllCondition(
         new KeyboardCondition(Keys.C), 
         new KeyboardCondition(Keys.LeftControl)

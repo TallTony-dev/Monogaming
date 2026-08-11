@@ -22,7 +22,6 @@ public class GameState
     public UI Ui { get; private set; }
     public Map Map { get; private set; }
     public Player Player { get; private set; }
-    CommandManager commandManager;
 
     public Camera cameraRef { get; private set; }
 
@@ -37,7 +36,7 @@ public class GameState
     public GameState(GameWindow window, ref Camera cameraRef)
     {
         this.cameraRef = cameraRef;
-        Map = new Map(cameraRef);
+        Map = new Map(cameraRef, this);
         Ui = new UI(window);
 
         uiEditor = new (this, window);
@@ -47,24 +46,31 @@ public class GameState
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);
         
-        UiAction.GlobalInit(this);
-
-        _ = Map.LoadChunkAsync("./GameData/Chunks/baseMap.json");
+        Command.GlobalInit(this);
     }
 
 
     public void LoadSave(string saveName)
     {
         string path = "./GameData/" + saveName + ".json";
-        Stream textStream = File.OpenRead(path);
-        JsonDocument document = JsonDocument.Parse(textStream);
-        JsonElement root = document.RootElement;
-        ActiveSave = JsonSerializer.Deserialize<Save>(root);
+        if (File.Exists(path)) {
+            Stream textStream = File.OpenRead(path);
+            JsonDocument document = JsonDocument.Parse(textStream);
+            JsonElement root = document.RootElement;
+            ActiveSave = JsonSerializer.Deserialize<Save>(root);
+        }
+        else
+        {
+            Debug.WriteInfo($"No save file found at {path}, creating new save");
+            ActiveSave = new Save(saveName, new Save.PlayerPos(0, 0, "baseMap"), null, null);
+        }
+        Player.body.SetPos(new Vector2(ActiveSave.PlayerSavePos.X, ActiveSave.PlayerSavePos.Y));
+        _ = Map.LoadChunkAsync("./GameData/saves/" + saveName + "/chunks/" + ActiveSave.PlayerSavePos.ChunkName + ".json");
     }
 
-    public void Save(string saveName, GameState gameState)
+    public void Save(string saveName)
     {
-        string path = "./GameData/" + saveName + ".json";
+        string path = "./GameData/saves/" + saveName + $"/{saveName}.json";
         if (File.Exists(path))
         {
             File.Move(path, path + ".bckp", true);
@@ -73,7 +79,26 @@ public class GameState
         options.Converters.Add(new Vector2JsonConverter());
         File.WriteAllText(path, JsonSerializer.Serialize(ActiveSave, options));
 
+        SaveLoadedChunk("./GameData/saves/" + saveName + "/chunks/" + Map.GetLoadedChunk().MapName + ".json");
+        ActiveSave.SetPlayerSavePos(new Save.PlayerPos((int)MathF.Round(Player.body.Pos.X), (int)MathF.Round(Player.body.Pos.X), Map.GetLoadedChunk().MapName));
         Debug.WriteInfo($"Saved loaded save to {path}");
+    }
+
+    private void SaveLoadedChunk(string path)
+    {
+        Chunk chunk = Map.GetLoadedChunk();
+        if (chunk != null) {
+            if (File.Exists(path))
+            {
+                File.Move(path, path + ".bckp", true);
+            }
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            options.Converters.Add(new Vector2JsonConverter());
+            File.WriteAllText(path, JsonSerializer.Serialize(chunk, options));
+
+            Debug.WriteInfo($"Saved loaded chunk to {path}");
+        }
     }
 
     public void EnterMainGame()
@@ -88,7 +113,12 @@ public class GameState
         isGameLogicPaused = true;
         Ui.ActivateElement("mainMenu");
     }
-
+    public void EnterLoadMenu()
+    {
+        state = State.InMenus;
+        isGameLogicPaused = true;
+        Ui.ActivateElement("loadSaveMenu");
+    }
     public void EnterUiEditor()
     {
         state = State.InUiEditor;

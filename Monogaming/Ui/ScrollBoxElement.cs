@@ -27,8 +27,8 @@ public class ScrollBoxElement : UiElement
     private const int MaxItemWidth = 60;
     private const int PrefItemsPerRow = 6;
 
-    private List<ImItem> Items;
-    private List<(Hitbox box, ImItem item)> ItemBoxes = new();
+    private List<(ImItem item, bool isGrey)> Items;
+    private List<(Hitbox box, ImItem item, bool isGrey)> ItemBoxes = new();
 
     //Gives the item clicked this frame
     public ImItem SelectedItem { get; private set; }
@@ -38,7 +38,7 @@ public class ScrollBoxElement : UiElement
     Hitbox scrollBar;
     float scrollPosNorm = 0;
     
-    public ScrollBoxElement(string ID, AnchorPoint Anchor, TextureHandler scollTex, Hitbox drawBox, List<ImItem> items) : 
+    public ScrollBoxElement(string ID, AnchorPoint Anchor, TextureHandler scollTex, Hitbox drawBox, List<(ImItem, bool)> items) : 
     base(ID, Anchor, drawBox, null)
     {
         Items = items;
@@ -46,7 +46,7 @@ public class ScrollBoxElement : UiElement
         UpdateHitboxes();
     }
 
-    public void SetItems(List<ImItem> items)
+    public void SetItems(List<(ImItem, bool)> items)
     {
         Items = items;
         UpdateHitboxes();
@@ -89,7 +89,7 @@ public class ScrollBoxElement : UiElement
                 }
                 Hitbox hitbox = new Hitbox(ScaledDrawBox.Pos + new Vector2(ItemPadding + xPerItem * j, (i - iOff) * xPerItem + ItemPadding),
                 itemWidth, itemWidth);
-                ItemBoxes.Add((hitbox, Items[ind]));
+                ItemBoxes.Add((hitbox, Items[ind].item, Items[ind].isGrey));
             }
         }
 
@@ -124,19 +124,17 @@ public class ScrollBoxElement : UiElement
             if (InputConditions.click.Pressed())
             {
                 isBeingDragged = true;
-                InputConditions.click.Consume();
             }
         }
 
         //check for item selection
 
-        if (InputConditions.click.Pressed())
+        if (InputConditions.click.Pressed(false))
         {
-            InputConditions.click.Consume();
-
-            (Hitbox box, ImItem item) intersect;
+            (Hitbox box, ImItem item, bool isGrey) intersect;
             if ((intersect = ItemBoxes.FirstOrDefault(t => t.box.Intersects(InputHelper.NewMouse.Position))) != default)
             {
+                InputConditions.click.Consume();
                 SelectedItem = intersect.item;
             }
         }
@@ -188,9 +186,9 @@ public class ScrollBoxElement : UiElement
                 {
                     break;
                 }
-                (Hitbox box, ImItem item) = ItemBoxes[ind];
+                (Hitbox box, ImItem item, bool isGrey) = ItemBoxes[ind];
 
-                item.Draw(spriteBatch, box);
+                item.Draw(spriteBatch, box, isGrey ? Color.DimGray : Color.White);
             }
         }
 

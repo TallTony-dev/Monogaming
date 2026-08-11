@@ -1,0 +1,43 @@
+{
+  "ElementType": "baseElement",
+  "ID": "root",
+  "Anchor": "TopLeft",
+  "Children": [
+    {
+      "ElementType": "buttonElement",
+      "OnClickActions": [
+        {
+          "CommandName": "LoadSave",
+          "Args": {
+            "SaveName": "save1"
+          }
+        },
+        {
+          "CommandName": "EnterMainGame"
+        },
+        {
+          "CommandName": "DeactivateElement",
+          "Args": "loadSaveMenu"
+        }
+      ],
+      "Text": "Load Save1",
+      "TextureHandler": {
+        "CurrentTextureType": 0,
+        "textures": {
+          "Default": "buttonRock.Unpressed",
+          "OnHover": "buttonRock.Unpressed"
+        }
+      },
+      "ID": "save1Element",
+      "Anchor": "TopLeft",
+      "Children": [],
+      "DrawBox": {
+        "Width": 256,
+        "Height": 64,
+        "X": 331,
+        "Y": 81
+      }
+    }
+  ],
+  "DrawBox": null
+}

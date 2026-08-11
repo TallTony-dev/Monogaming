@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Monogaming.Interfaces;
 
 namespace Monogaming.Items;
 
@@ -27,6 +28,7 @@ public static class ItemDict
             return null;
         }
     }
+
     public static bool ContainsItem(string itemID)
     {
         return items.ContainsKey(itemID);

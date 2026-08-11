@@ -36,10 +36,11 @@ public class DropDownElement : TextureElement
     {
         base.Update(gameTime);
 
-        if (InputConditions.click.Pressed())
+        if (InputConditions.click.Pressed(false))
         {
             if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)) 
             {
+                InputConditions.click.Consume();
                 foreach (UiElement element in Children)
                 {
                     element.ActivateElement();
