@@ -76,6 +76,14 @@ public class Player
             new Hitbox(new Vector2 (Camera.ScreenWidth / 3, Camera.ScreenHeight / 3), Camera.ScreenWidth / 3, Camera.ScreenHeight / 3)));
         }
 
+        if (Inventory.HasChanged && GameState.ActiveSave != null)
+        {
+            foreach (Item i in Inventory.Items)
+            {
+                GameState.ActiveSave.SetItemFound(i.ID);
+            }
+        }
+
         Inventory.Update(gameTime);
     }
 

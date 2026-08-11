@@ -81,7 +81,6 @@ public class Inventory
     /// </summary>
     public bool AddItem(Item item)
     {
-        //No duplicates currently, and unordered set
         if (item.Count == 0)
         {
             return false;
@@ -120,6 +119,17 @@ public class Inventory
         }
 
         return true;
+    }
+    public void ClearEmpties()
+    {
+        foreach (Item i in Items)
+        {
+             if (i.Count == 0)
+            {
+                Items.Remove(i);
+                continue;
+            }
+        }
     }
     public bool RemoveItem(string id, int count)
     {
@@ -185,23 +195,4 @@ public class Inventory
 
     }
 
-    const int ItemPadding = 10;
-    const int MaxItemDisplaySize = 40;
-    const int MinItemDisplaySize = 20;
-    // public void Draw(SpriteBatch batch, Rectangle pos)
-    // {
-    //     //determine best representation and draw it here
-    //     int stackCount = Items.Count;
-    //     float aspectRatio = pos.Width / pos.Height;
-
-
-
-    //     int itemDisplaySize = Math.Clamp( pref, MinItemDisplaySize, MaxItemDisplaySize);
-
-    //     //stackCount = ciel(rows * columns)
-
-    //     int itemWidth = 
-
-    //     throw new NotImplementedException();
-    // }
 }

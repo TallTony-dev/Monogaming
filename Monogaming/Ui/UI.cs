@@ -99,6 +99,11 @@ public class UI : ImUpdatable
         return menus[menuName].GetChild(searchPath);
     }
 
+    public List<WindowElement> GetWindowElements()
+    {
+        return windows;
+    }
+
     public void HandleWindowChange(object sender, EventArgs args)
     {
         //tell elements to update their sizes to match new window

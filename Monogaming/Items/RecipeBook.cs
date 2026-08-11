@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -10,6 +11,22 @@ public static class RecipeBook
 {
     //strings are recipe names
     private static Dictionary<string, Recipe> recipeList = new();
+
+
+    public static List<(bool canCraft, Recipe recipe)> GetAvaliableRecipes(Save save, Inventory inv)
+    {
+        List<Recipe> list = recipeList.Values.ToList();
+        List<(bool canCraft, Recipe recipe)> retval = new();
+        foreach (Recipe r in list)
+        {
+            if (r.Ingredients.Any(t => save.IsItemFound(t.Item1)))
+            {
+                retval.Add((r.CanCraft(inv), r));
+            }
+        }
+        return retval;
+    }
+
 
     public static void LoadFromFile(string fileName)
     {

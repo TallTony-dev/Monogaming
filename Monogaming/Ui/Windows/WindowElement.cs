@@ -36,6 +36,7 @@ public class WindowElement : UiElement
     private bool isDragged = false;
     private bool isBottomRightDragged = false;
 
+    public bool isChildOfOtherWindow = false;
 
     [JsonConstructor]
     public WindowElement(AnchorPoint Anchor, Hitbox drawBox, List<UiElement> Children) : base("windowID", Anchor, drawBox, Children)
@@ -90,55 +91,58 @@ public class WindowElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
-        if (bottomRight.Intersects(InputHelper.NewMouse.Position))
+        if (!isChildOfOtherWindow) 
         {
-            Mouse.SetCursor(MouseCursor.SizeNWSE);
-        }
-        else
-        {
-            Mouse.SetCursor(MouseCursor.Arrow);
-        }
-        //TODO: have drag logic here and make sure to update pos properly
-        if (InputConditions.click.Pressed())
-        {
-            if (closeButton.Intersects(InputHelper.NewMouse.Position))
-            {
-                ShouldRemove = true;
-                InputConditions.click.Consume();
-                return;
-            }
-            if (topBar.Intersects(InputHelper.NewMouse.Position))
-            {
-                isDragged = true;
-                InputConditions.click.Consume();
-            }
             if (bottomRight.Intersects(InputHelper.NewMouse.Position))
             {
-                isBottomRightDragged = true;
-                InputConditions.click.Consume();
+                Mouse.SetCursor(MouseCursor.SizeNWSE);
             }
-        }
+            else
+            {
+                Mouse.SetCursor(MouseCursor.Arrow);
+            }
+            //TODO: have drag logic here and make sure to update pos properly
+            if (InputConditions.click.Pressed())
+            {
+                if (closeButton.Intersects(InputHelper.NewMouse.Position))
+                {
+                    ShouldRemove = true;
+                    InputConditions.click.Consume();
+                    return;
+                }
+                if (topBar.Intersects(InputHelper.NewMouse.Position))
+                {
+                    isDragged = true;
+                    InputConditions.click.Consume();
+                }
+                if (bottomRight.Intersects(InputHelper.NewMouse.Position))
+                {
+                    isBottomRightDragged = true;
+                    InputConditions.click.Consume();
+                }
+            }
 
-        if (isBottomRightDragged)
-        {
-            if (InputConditions.click.Held())
+            if (isBottomRightDragged)
             {
-                ResizeWindow(MouseCondition.PointerDelta.ToVector2());
+                if (InputConditions.click.Held())
+                {
+                    ResizeWindow(MouseCondition.PointerDelta.ToVector2());
+                }
+                else
+                {
+                    isBottomRightDragged = false;
+                }
             }
-            else
+            if (isDragged)
             {
-                isBottomRightDragged = false;
-            }
-        }
-        if (isDragged)
-        {
-            if (InputConditions.click.Held())
-            {
-                MoveWindow(MouseCondition.PointerDelta.ToVector2());
-            }
-            else
-            {
-                isDragged = false;
+                if (InputConditions.click.Held())
+                {
+                    MoveWindow(MouseCondition.PointerDelta.ToVector2());
+                }
+                else
+                {
+                    isDragged = false;
+                }
             }
         }
         
@@ -148,8 +152,12 @@ public class WindowElement : UiElement
     public override void Draw(SpriteBatch spriteBatch)
     {
         backTex.Draw(spriteBatch, ScaledDrawBox.ToRect());
-        backTex.Draw(spriteBatch, topBar.ToRect());
-        backTex.Draw(spriteBatch, closeButton.ToRect());
+
+        if (!isChildOfOtherWindow) 
+        {
+            backTex.Draw(spriteBatch, topBar.ToRect());
+            backTex.Draw(spriteBatch, closeButton.ToRect());
+        }
    
         base.Draw(spriteBatch);
     }

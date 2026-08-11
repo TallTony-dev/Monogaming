@@ -18,8 +18,7 @@ namespace Monogaming;
 
 public class GameState
 {
-    //TODO: implement a game state system here to update things based off current state
-
+    public static Save ActiveSave { get; private set; }
     public UI Ui { get; private set; }
     public Map Map { get; private set; }
     public Player Player { get; private set; }
@@ -51,6 +50,30 @@ public class GameState
         UiAction.GlobalInit(this);
 
         _ = Map.LoadChunkAsync("./GameData/Chunks/baseMap.json");
+    }
+
+
+    public void LoadSave(string saveName)
+    {
+        string path = "./GameData/" + saveName + ".json";
+        Stream textStream = File.OpenRead(path);
+        JsonDocument document = JsonDocument.Parse(textStream);
+        JsonElement root = document.RootElement;
+        ActiveSave = JsonSerializer.Deserialize<Save>(root);
+    }
+
+    public void Save(string saveName, GameState gameState)
+    {
+        string path = "./GameData/" + saveName + ".json";
+        if (File.Exists(path))
+        {
+            File.Move(path, path + ".bckp", true);
+        }
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        options.Converters.Add(new Vector2JsonConverter());
+        File.WriteAllText(path, JsonSerializer.Serialize(ActiveSave, options));
+
+        Debug.WriteInfo($"Saved loaded save to {path}");
     }
 
     public void EnterMainGame()

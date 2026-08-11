@@ -29,7 +29,8 @@ public class ScrollBoxElement : UiElement
 
     private List<ImItem> Items;
     private List<(Hitbox box, ImItem item)> ItemBoxes = new();
-    [JsonIgnore]
+
+    //Gives the item clicked this frame
     public ImItem SelectedItem { get; private set; }
 
     bool isBeingDragged = false;
@@ -54,6 +55,11 @@ public class ScrollBoxElement : UiElement
     private int GetItemWidth()
     {
         return Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
+    }
+    
+    public Hitbox GetNewHitboxForItem(ImItem item) 
+    {
+        return new Hitbox(ItemBoxes.Find(t => t.item == item).box);
     }
 
     private void UpdateHitboxes()
@@ -127,13 +133,15 @@ public class ScrollBoxElement : UiElement
         if (InputConditions.click.Pressed())
         {
             InputConditions.click.Consume();
-            SelectedItem = null;
 
             (Hitbox box, ImItem item) intersect;
             if ((intersect = ItemBoxes.FirstOrDefault(t => t.box.Intersects(InputHelper.NewMouse.Position))) != default)
             {
                 SelectedItem = intersect.item;
             }
+        }
+        else {
+            SelectedItem = null;
         }
 
 

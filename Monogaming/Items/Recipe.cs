@@ -34,7 +34,7 @@ public class Recipe
                 count++;
             }
         }
-        return count >= Ingredients.Count();
+        return count == Ingredients.Count();
     }
     public bool TryCraft(Inventory inventory)
     {

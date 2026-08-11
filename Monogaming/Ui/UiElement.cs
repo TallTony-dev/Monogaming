@@ -173,6 +173,10 @@ public class UiElement : ImUpdatable
         DrawBox.ChangeDims(delta);
         UpdatePos(UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 });
     }
+    public void SetRealDims(Vector2 dims)
+    {
+        DrawBox.SetDims(dims); 
+    }
 
     /// <summary>
     /// Recursively searches for a subelement, where path is dot seperated element IDs,

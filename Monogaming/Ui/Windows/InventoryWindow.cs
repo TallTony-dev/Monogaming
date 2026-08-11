@@ -9,13 +9,19 @@ using Microsoft.Xna.Framework.Content;
 using Monogaming.Ui;
 using System.Text.Json.Serialization;
 using Monogaming.Items;
+using Apos.Input;
+using System.Linq;
 
 namespace Monogaming.Ui.Windows;
 
 public class InventoryWindow : WindowElement
 {
-    private Inventory boundInventory;
+    public Inventory BoundInventory { get; private set; }
     private Item SelectedItem { get => (Item)sonion.SelectedItem; }
+
+    private Item prevSelected = null;
+    private bool isDraggingItem = false;
+    private (Item item, Hitbox box) draggedItem;
 
     ScrollBoxElement sonion;
 
@@ -25,7 +31,7 @@ public class InventoryWindow : WindowElement
 
     public InventoryWindow(Inventory inventory, Hitbox drawBox) : base(AnchorPoint.TopLeft, drawBox, null)
     {
-        boundInventory = inventory;
+        BoundInventory = inventory;
 
         sonion = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
          new Hitbox(ScrollBoxPadding, 0, drawBox.Width - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inventory.Items.ConvertAll(t => (ImItem)t));
@@ -37,16 +43,53 @@ public class InventoryWindow : WindowElement
 
     public override void Update(GameTime gameTime)
     {
-        if (boundInventory.HasChanged)
+        if (BoundInventory.HasChanged)
         {
-            sonion.SetItems(boundInventory.Items.ConvertAll(t => (ImItem)t));
+            sonion.SetItems(BoundInventory.Items.ConvertAll(t => (ImItem)t));
+        }
+        
+        base.Update(gameTime);
+
+        if (prevSelected != SelectedItem && SelectedItem != null)
+        {
+            isDraggingItem = true;
+            draggedItem.item = SelectedItem;
+            draggedItem.box = sonion.GetNewHitboxForItem(SelectedItem);
+        }
+        if (isDraggingItem)
+        {
+            if (InputConditions.click.Held())
+            {
+                draggedItem.box.ChangePos(MouseCondition.PointerDelta.ToVector2());
+
+                
+            }
+            else
+            {
+                isDraggingItem = false;
+                
+                InventoryWindow element;
+                if ((element = (InventoryWindow)UI.LiveUI.GetWindowElements().FirstOrDefault(t => 
+                t is InventoryWindow && !(t == this) && t.ScaledDrawBox.Intersects(draggedItem.box))) != default)
+                {
+                    bool allMoved = element.BoundInventory.AddItem(draggedItem.item);
+                    if (allMoved) 
+                    {
+                        BoundInventory.ClearEmpties();
+                    }
+                }
+            }
         }
 
-        base.Update(gameTime);
+        prevSelected = SelectedItem;
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
+        if (isDraggingItem)
+        {
+            draggedItem.item.Draw(spriteBatch, draggedItem.box);
+        }
         base.Draw(spriteBatch);
     }
 }

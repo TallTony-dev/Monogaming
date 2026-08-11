@@ -70,6 +70,11 @@ public class Hitbox
     {
         Pos += deltaPos;
     }
+    public virtual void SetDims(Vector2 deltaDims)
+    {
+        Width = (int)deltaDims.X;
+        Height = (int)deltaDims.Y;
+    }
     public virtual void ChangeDims(Vector2 deltaDims)
     {
         Width += (int)deltaDims.X;
