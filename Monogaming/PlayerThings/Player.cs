@@ -37,6 +37,21 @@ public class Player
         TextureHandler = textureHandler;
     }
 
+    private List<string> GetNearbyWorkbenches()
+    {
+        //TODO: implement this lol
+        return new List<string>();
+    }
+
+    private void UpdateSaveWithCurrentInv()
+    {
+        foreach (Item i in Inventory.Items)
+        {
+            //this is about as cheap/cheaper than checking and then setting
+            GameState.ActiveSave.SetItemFound(i.ID);
+        }
+    }
+
     public void Update(GameTime gameTime, Chunk currentChunk, Map map)
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -73,18 +88,18 @@ public class Player
 
         if (InputConditions.openInventory.Pressed() && !UI.LiveUI.ContainsPopupWithID("playerInventory"))
         {
-            UI.LiveUI.AddPopup(new InventoryWindow(Inventory, 
-            new Hitbox(new Vector2 (Camera.ScreenWidth / 3, Camera.ScreenHeight / 3), Camera.ScreenWidth / 2, Camera.ScreenHeight / 2)
-            , "playerInventory"));
+            UpdateSaveWithCurrentInv();
+
+            UI.LiveUI.AddPopup(new CompositeWindow(new Hitbox(140, 120, 460, 180),
+            new List<UiElement>() { 
+                new InventoryWindow(Inventory, new Hitbox(0,0, 260, 180)),
+                new CraftingMenuWindow(Inventory, GetNearbyWorkbenches(), new Hitbox(0,0, 200, 180)),
+            }, "playerInventory"));
         }
 
         if (Inventory.HasChanged && GameState.ActiveSave != null)
         {
-            foreach (Item i in Inventory.Items)
-            {
-                //this is about as cheap/cheaper than checking and then setting
-                GameState.ActiveSave.SetItemFound(i.ID);
-            }
+            UpdateSaveWithCurrentInv();
         }
 
         Inventory.Update(gameTime);

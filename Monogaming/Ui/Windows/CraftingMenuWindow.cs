@@ -16,37 +16,50 @@ namespace Monogaming.Ui.Windows;
 
 public class CraftingMenuWindow : WindowElement
 {
+    private Recipe prevSelected { get => (Recipe)scrollSon.SelectedItem; }
+    private ScrollBoxElement scrollSon;
+    private CraftingDisplayElement craftingDisplaySon;
 
-    private Recipe prevSelected = null;
-    private ScrollBoxElement sonion;
-
+    private List<string> workbenches;
     private Inventory inv;
 
     private const int TopOffset = 10;
     private const int ScrollBoxPadding = 3;
-
-    public CraftingMenuWindow(Inventory inv, Hitbox drawBox) : base(AnchorPoint.TopLeft, drawBox, null)
+    private const float SpaceRatio = 0.5f;
+    public CraftingMenuWindow(Inventory inv, List<string> workbenches, Hitbox drawBox) : base(AnchorPoint.TopLeft, drawBox, null)
     {
         this.inv = inv;
-        sonion = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
-         new Hitbox(ScrollBoxPadding, 0, drawBox.Width - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding)
-         , RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
+        this.workbenches = workbenches;
+        scrollSon = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
+         new Hitbox(ScrollBoxPadding, 0, (int)(drawBox.Width * SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding)
+         , RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv, workbenches).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
 
-        Children.Add(sonion);
+        craftingDisplaySon = new CraftingDisplayElement("craftingDisplay", AnchorPoint.TopLeft, 
+        new Hitbox(ScrollBoxPadding + (int)(drawBox.Width * SpaceRatio), 0, (int)(drawBox.Width / SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inv);
+
+        Children.Add(scrollSon);
+        Children.Add(craftingDisplaySon);
     }
 
 
+    public void SetWorkbenchesAvailable(List<string> workbenches)
+    {
+        this.workbenches = workbenches;
+    }
 
     public override void Update(GameTime gameTime)
     {
         if (inv.HasChanged)
         {
-            sonion.SetItems(RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
+            scrollSon.SetItems(RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv, workbenches).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
         }
         
         base.Update(gameTime);
 
-        
+        if (scrollSon.SelectedItem != null)
+        {
+            craftingDisplaySon.SetSelectedRecipe((Recipe)scrollSon.SelectedItem);
+        }
         
     }
 

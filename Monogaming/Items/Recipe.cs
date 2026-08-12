@@ -26,7 +26,7 @@ public class Recipe : ImItem
     }
 
 
-    public bool CanCraft(Inventory inventory)
+    public bool CanCraft(Inventory inventory, List<string> workbenches)
     {
         int count = 0;
         foreach (Item i in Ingredients)
@@ -36,11 +36,12 @@ public class Recipe : ImItem
                 count++;
             }
         }
-        return count == Ingredients.Count();
+        return count == Ingredients.Count() && 
+        (RecipeWorkbench == "any" || workbenches.Any(t => t == RecipeWorkbench));
     }
-    public bool TryCraft(Inventory inventory)
+    public bool TryCraft(Inventory inventory, List<string> workbenches)
     {
-        if (!CanCraft(inventory))
+        if (!CanCraft(inventory, workbenches))
         {
             return false;
         }

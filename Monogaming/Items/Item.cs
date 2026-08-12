@@ -13,10 +13,10 @@ namespace Monogaming.Items;
 
 public class Item : ImItem
 {
-    private const int TextOffset = 40;
-    private const int TextHeightOffset = 20;
-    private const int TextWidth = 30;
-    private const int TextHeight = 20;
+    public const int TextOffset = 40;
+    public const int TextHeightOffset = 20;
+    public const int TextWidth = 30;
+    public const int TextHeight = 20;
 
 
     [JsonIgnore]

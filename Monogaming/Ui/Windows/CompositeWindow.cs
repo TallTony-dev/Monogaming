@@ -11,6 +11,7 @@ using Monogaming.Items;
 using Monogaming.Ui;
 using Apos.Input;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
 
 namespace Monogaming.Ui.Windows;
 
@@ -20,28 +21,29 @@ public class CompositeWindow : WindowElement
 {
 
     [JsonConstructor]
-    public CompositeWindow(Hitbox drawBox, List<UiElement> Children) : base(AnchorPoint.TopLeft, drawBox, Children)
+    public CompositeWindow(Hitbox drawBox, List<UiElement> Children, string id = "compWindow") : base(AnchorPoint.TopLeft, drawBox, Children, id)
     {
         foreach (WindowElement e in Children)
         {
             e.isChildOfOtherWindow = true;
         }
         UpdateChildPositions();
+        IsResizable = false;
     }
 
 
     private void UpdateChildPositions()
     {
-        int totalwidth = 0;
+        int totalwidth = (int)(Children.Sum(t => t.DrawBox.Width) * UI.LiveUI.UiScale);
+        float widthScale = (float)DrawBox.Width / totalwidth;
+
+        int runningTotal = 0;
         foreach (WindowElement e in Children)
         {
-            e.SetRealPos(new Vector2(totalwidth, DrawBox.Y));
-            totalwidth += e.DrawBox.Width;
-        }
-        float widthScale = DrawBox.Width / totalwidth;
-        foreach (WindowElement e in Children)
-        {
-            e.SetRealDims(new Vector2(e.DrawBox.Width * widthScale, DrawBox.Height));
+            e.SetRealPos(new Vector2(runningTotal, 0));
+
+            // e.SetRealDims(new Vector2(e.DrawBox.Width, DrawBox.Height));
+            runningTotal += (int)(e.DrawBox.Width * UI.LiveUI.UiScale * widthScale);
         }
     }
 

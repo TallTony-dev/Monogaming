@@ -20,7 +20,17 @@
             "core_iron" : 2
         },
         "Difficulty" : 0.5,
-        "Workbench": "craftingBench"
+        "Workbench": "any"
+    },
+    "core_wire_iron": {
+        "Ingredients": {
+            "core_iron" : 2
+        },
+        "Outputs": {
+            "core_wire" : 6
+        },
+        "Difficulty" : 0.5,
+        "Workbench": "any"
     }
 
 

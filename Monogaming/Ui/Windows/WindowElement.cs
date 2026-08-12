@@ -36,6 +36,7 @@ public class WindowElement : UiElement
     private bool isDragged = false;
     private bool isBottomRightDragged = false;
 
+    protected bool IsResizable = true;
     public bool isChildOfOtherWindow = false;
 
     [JsonConstructor]
@@ -115,14 +116,15 @@ public class WindowElement : UiElement
                     isDragged = false;
                 }
             }
-            
-            if (bottomRight.Intersects(InputHelper.NewMouse.Position))
-            {
-                Mouse.SetCursor(MouseCursor.SizeNWSE);
-            }
-            else
-            {
-                Mouse.SetCursor(MouseCursor.Arrow);
+            if (IsResizable) {
+                if (bottomRight.Intersects(InputHelper.NewMouse.Position))
+                {
+                    Mouse.SetCursor(MouseCursor.SizeNWSE);
+                }
+                else
+                {
+                    Mouse.SetCursor(MouseCursor.Arrow);
+                }
             }
             //TODO: have drag logic here and make sure to update pos properly
             if (InputConditions.click.Pressed(false))
@@ -137,7 +139,7 @@ public class WindowElement : UiElement
                     isDragged = true;
                     InputConditions.click.Consume();
                 }
-                if (bottomRight.Intersects(InputHelper.NewMouse.Position))
+                if (IsResizable && bottomRight.Intersects(InputHelper.NewMouse.Position))
                 {
                     isBottomRightDragged = true;
                     InputConditions.click.Consume();

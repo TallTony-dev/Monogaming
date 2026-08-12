@@ -118,16 +118,22 @@ public class UiElement : ImUpdatable
         return new Hitbox(retPos, child.Width, child.Height);
     }
 
+
+    /// <summary>
+    /// Scales the passed in box from ui coords to real coords
+    /// </summary>
+    public static Hitbox ScaleRealPos(Rectangle realWindow, Hitbox DrawBox)
+    {
+        Vector2 scale = new Vector2(realWindow.Width / (float)Camera.ScreenWidth, realWindow.Height / (float)Camera.ScreenHeight);
+        return new Hitbox(DrawBox.Pos * scale, (int)(DrawBox.Width * UI.LiveUI.UiScale), (int)(DrawBox.Height * UI.LiveUI.UiScale));
+    }
+
     public virtual void UpdatePos(Rectangle window)
     {
         if (DrawBox != null) {
-            int ScreenWidth = Camera.ScreenWidth;
-            int ScreenHeight = Camera.ScreenHeight;
             Rectangle realWindow = window;
 
-            Vector2 scale = new Vector2(realWindow.Width / (float)ScreenWidth, realWindow.Height / (float)ScreenHeight);
-
-            Hitbox scaled = new Hitbox(DrawBox.Pos * scale, (int)(DrawBox.Width * UI.LiveUI.UiScale), (int)(DrawBox.Height * UI.LiveUI.UiScale));
+            Hitbox scaled = ScaleRealPos(realWindow, DrawBox);
 
             if (ParentOffset == null) {
                 ScaledDrawBox = OffsetHitbox(Anchor, scaled, realWindow);
@@ -167,6 +173,7 @@ public class UiElement : ImUpdatable
     public void SetRealPos(Vector2 pos)
     {
         DrawBox.SetPos(pos); 
+        UpdatePos(UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 });
     }
     public void AdjustRealDims(Vector2 delta)
     {

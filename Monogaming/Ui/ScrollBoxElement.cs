@@ -69,6 +69,7 @@ public class ScrollBoxElement : UiElement
         toDrawIn.Width -= ScrollBarWidth + ScrollBarPadding * 2;
         int itemWidth = GetItemWidth();
         int itemsPerRow = toDrawIn.Width / itemWidth;
+        if (itemsPerRow == 0) { itemsPerRow = 1; }
 
         int xPerItem = itemWidth + ItemPadding;
         int itemCount = Items.Count();

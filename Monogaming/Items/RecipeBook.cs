@@ -13,7 +13,7 @@ public static class RecipeBook
     private static Dictionary<string, Recipe> recipeList = new();
 
 
-    public static List<(Recipe recipe, bool canCraft)> GetAvaliableRecipes(Save save, Inventory inv)
+    public static List<(Recipe recipe, bool canCraft)> GetAvaliableRecipes(Save save, Inventory inv, List<string> workbenches)
     {
         List<Recipe> list = recipeList.Values.ToList();
         List<(Recipe recipe, bool canCraft)> retval = new();
@@ -21,7 +21,7 @@ public static class RecipeBook
         {
             if (r.Ingredients.Any(t => save.IsItemFound(t.ID)))
             {
-                retval.Add((r, r.CanCraft(inv)));
+                retval.Add((r, r.CanCraft(inv, workbenches)));
             }
         }
         return retval;
@@ -76,7 +76,7 @@ public static class RecipeBook
                                 Debug.WriteWarn($"Cannot find any loaded item with id {itemID}");
                             }
                             int itemCount = property.Value.GetInt32();
-                            ingredients.Add(ItemDict.GetNewItem(itemID, itemCount));
+                            outputs.Add(ItemDict.GetNewItem(itemID, itemCount));
                         }
 
                         recipeList.Add(obj.Name, new Recipe(ingredients, outputs, obj.Name, workbench, difficulty));

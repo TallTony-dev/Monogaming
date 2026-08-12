@@ -20,9 +20,9 @@ namespace Monogaming;
 public class Save
 {
     [JsonInclude]
-    private Dictionary<string, bool> flags = new();
+    private Dictionary<string, bool> flags;
     [JsonInclude]
-    private Dictionary<string, bool> itemsFound = new();
+    private Dictionary<string, bool> itemsFound;
     public string Name { get; private set; }
     public PlayerPos PlayerSavePos { get; private set; }
 
@@ -34,6 +34,14 @@ public class Save
         this.flags = flags;
         this.itemsFound = itemsFound;
         this.PlayerSavePos = PlayerSavePos;
+        if (flags == null)
+        {
+            this.flags = new();
+        }
+        if (itemsFound == null)
+        {
+            this.itemsFound = new();
+        }
     }
 
     public void SetPlayerSavePos(PlayerPos pos)
