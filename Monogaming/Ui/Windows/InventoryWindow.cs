@@ -42,12 +42,7 @@ public class InventoryWindow : WindowElement
 
 
     public override void Update(GameTime gameTime)
-    {
-        if (BoundInventory.HasChanged)
-        {
-            sonion.SetItems(BoundInventory.Items.ConvertAll(t => ((ImItem)t, false)));
-        }
-        
+    {    
         base.Update(gameTime);
 
 
@@ -61,11 +56,22 @@ public class InventoryWindow : WindowElement
             {
                 isDraggingItem = false;
                 
-                InventoryWindow element;
-                if ((element = (InventoryWindow)UI.LiveUI.GetWindowElements().FirstOrDefault(t => 
-                t is InventoryWindow && !(t == this) && t.ScaledDrawBox.Intersects(draggedItem.box))) != default)
+                UiElement element;
+                if ((element = UI.LiveUI.GetWindowElements().FirstOrDefault(t => 
+                (t is InventoryWindow || (t is CompositeWindow c && c.Children.Any(t => t is InventoryWindow)))
+                && t.ScaledDrawBox.Intersects(draggedItem.box))) != default)
                 {
-                    bool allMoved = element.BoundInventory.AddItem(draggedItem.item);
+                    InventoryWindow window;
+                    if (element is InventoryWindow)
+                    {
+                        window = (InventoryWindow)element;
+                    }
+                    else
+                    {
+                        window = (InventoryWindow)element.Children.Find(t => t is InventoryWindow);
+                    }
+
+                    bool allMoved = window.BoundInventory.AddItem(draggedItem.item);
                     if (allMoved) 
                     {
                         BoundInventory.ClearEmpties();
@@ -79,6 +85,11 @@ public class InventoryWindow : WindowElement
             isDraggingItem = true;
             draggedItem.item = SelectedItem;
             draggedItem.box = sonion.GetNewHitboxForItem(SelectedItem);
+        }
+
+        if (BoundInventory.HasChanged)
+        {
+            sonion.SetItems(BoundInventory.Items.ConvertAll(t => ((ImItem)t, false)));
         }
 
         prevSelected = SelectedItem;

@@ -30,12 +30,15 @@ public class CraftingMenuWindow : WindowElement
     {
         this.inv = inv;
         this.workbenches = workbenches;
+
+        Vector2 scale = UI.LiveUI.Scale;
+
         scrollSon = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
          new Hitbox(ScrollBoxPadding, 0, (int)(drawBox.Width * SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding)
          , RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv, workbenches).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
 
         craftingDisplaySon = new CraftingDisplayElement("craftingDisplay", AnchorPoint.TopLeft, 
-        new Hitbox(ScrollBoxPadding + (int)(drawBox.Width * SpaceRatio), 0, (int)(drawBox.Width / SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inv);
+        new Hitbox(ScrollBoxPadding + (int)(scrollSon.DrawBox.Width / scale.X), 0, (int)(drawBox.Width / SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inv, workbenches);
 
         Children.Add(scrollSon);
         Children.Add(craftingDisplaySon);
@@ -45,6 +48,13 @@ public class CraftingMenuWindow : WindowElement
     public void SetWorkbenchesAvailable(List<string> workbenches)
     {
         this.workbenches = workbenches;
+    }
+
+    public override void UpdatePos(Rectangle window)
+    {
+        Vector2 scale = UI.LiveUI.Scale;
+        craftingDisplaySon.SetRealPos(new Vector2(ScrollBoxPadding + (int)(scrollSon.DrawBox.Width / scale.X), 0));
+        base.UpdatePos(window);
     }
 
     public override void Update(GameTime gameTime)

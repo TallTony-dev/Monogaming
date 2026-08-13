@@ -34,8 +34,9 @@ public class CompositeWindow : WindowElement
 
     private void UpdateChildPositions()
     {
-        int totalwidth = (int)(Children.Sum(t => t.DrawBox.Width) * UI.LiveUI.UiScale);
-        float widthScale = (float)DrawBox.Width / totalwidth;
+        // int totalwidth = (int)(Children.Sum(t => t.DrawBox.Width) * UI.LiveUI.UiScale);
+        // float widthScale = (float)DrawBox.Width / totalwidth;
+        Vector2 scale = UI.LiveUI.Scale;
 
         int runningTotal = 0;
         foreach (WindowElement e in Children)
@@ -43,7 +44,7 @@ public class CompositeWindow : WindowElement
             e.SetRealPos(new Vector2(runningTotal, 0));
 
             // e.SetRealDims(new Vector2(e.DrawBox.Width, DrawBox.Height));
-            runningTotal += (int)(e.DrawBox.Width * UI.LiveUI.UiScale * widthScale);
+            runningTotal += (int)(e.DrawBox.Width / scale.X * UI.LiveUI.UiScale);
         }
     }
 

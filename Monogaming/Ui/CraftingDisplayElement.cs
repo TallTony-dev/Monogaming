@@ -23,16 +23,19 @@ public class CraftingDisplayElement : UiElement
 
     private ButtonElement craftOneElement;
     
-    public int ToCraft { get; set; } = 0;
+    // public int ToCraft { get; set; } = 0;
 
     private Inventory inventoryRef;
     private Recipe selectedRecipe;
 
+    private List<string> workbenches;
+
     private List<(Hitbox box, Item item)> InputItemBoxes = new();
     private List<(Hitbox box, Item item)> OutputItemBoxes = new();
 
-    public CraftingDisplayElement(string ID, AnchorPoint Anchor, Hitbox drawBox, Inventory inventory) : base(ID, Anchor, drawBox, null)
+    public CraftingDisplayElement(string ID, AnchorPoint Anchor, Hitbox drawBox, Inventory inventory, List<string> workbenches) : base(ID, Anchor, drawBox, null)
     {
+        this.workbenches = workbenches;
         UpdateHitboxes();
         inventoryRef = inventory;
         Children.Add(craftOneElement = new ButtonElement("craftOneElement", AnchorPoint.BottomLeft, new Hitbox(5, -5, 64, 32),
@@ -100,11 +103,14 @@ public class CraftingDisplayElement : UiElement
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
-        ToCraft = 0;
+        // ToCraft = 0;
         //TODO: Check if children are clicked and set flags for parent off of that
-        if (craftOneElement.WasClicked)
-        {
-            ToCraft = 1;
+        if (selectedRecipe != null) {
+            if (craftOneElement.WasClicked)
+            {
+                // ToCraft = 1;
+                selectedRecipe.TryCraft(inventoryRef, workbenches);
+            }
         }
     }
 
@@ -114,10 +120,11 @@ public class CraftingDisplayElement : UiElement
         {
             foreach (var i in InputItemBoxes)
             {
-                i.item.Draw(spriteBatch, i.box);
+                int invCnt = inventoryRef.GetCountOfItem(i.item.ID);
+                i.item.Draw(spriteBatch, i.box, invCnt >= i.item.Count ? Color.White : Color.DimGray);
                 Hitbox otherTextBox = new Hitbox(i.box.Pos + new Vector2(i.box.Width - Item.TextOffset, i.box.Height - Item.TextHeightOffset * 2),
                 Item.TextWidth, Item.TextHeight);
-                otherTextBox.DrawStringInto(spriteBatch, "(" + inventoryRef.GetCountOfItem(i.item.ID).ToString() + ")");
+                otherTextBox.DrawStringInto(spriteBatch, "(" + invCnt.ToString() + ")");
                 
             }
 

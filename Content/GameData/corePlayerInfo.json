@@ -13,88 +13,12 @@
     },
 
     "Inventory": {
-        "MaxStackSize": 100,
-        "MaxStackCount": 30,
+        "MaxStackSize": 75,
+        "MaxStackCount": 50,
         "Items" : [
             {
                 "ItemID" : "core_iron",
                 "Count" : 40
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
-            },
-            {
-                "ItemID" : "core_wire",
-                "Count" : 50
             },
             {
                 "ItemID" : "core_wire",

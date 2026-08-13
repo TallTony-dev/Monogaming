@@ -21,6 +21,7 @@ public class Inventory
     
     [JsonIgnore]
     public bool HasChanged { get; private set; }
+    private bool changedlastframe = false;
 
 
     [JsonInclude]
@@ -74,6 +75,38 @@ public class Inventory
         toTakeFrom.CheckEmpty();
     }
 
+    public bool CanStoreItems(List<Item> items)
+    {
+        int totalNewTaken = 0;
+        
+        foreach (Item item in items)
+        {
+            List<Item> matches = Items.FindAll(i => i.IDEqual(item));
+
+            int matchesInd = 0;
+            int itemCount = item.Count;
+            while (itemCount != 0 && matchesInd < matches.Count)
+            {
+                int diff = MaxStackSize - matches[matchesInd].Count;
+                diff = diff > item.Count ? item.Count : diff;
+
+                itemCount -= diff;
+
+                matchesInd++;
+            }
+
+            while (itemCount != 0 && Items.Count < MaxStackCount)
+            {
+                int stackCnt = MaxStackSize < itemCount ? MaxStackSize : itemCount;
+                itemCount -= stackCnt;
+                totalNewTaken++;
+            }
+        }
+
+        return totalNewTaken <= (MaxStackCount - Items.Count);
+    }
+
+
     /// <summary>
     /// Adds items to inventory, note that the count of the item object added
     /// can be greater than MaxStackCount. Returns false on fail to add all
@@ -85,17 +118,20 @@ public class Inventory
         {
             return false;
         }
+
+        int removalCount = 0;
+
         //try adding to the existing item stacks first
-        List<Item> matches = Items.FindAll(i => i.IDEqual(item));
+        List<Item> matches = Items.FindAll(i => i.IDEqual(item) && i != item);
 
         int matchesInd = 0;
-        while (item.Count != 0 && matchesInd < matches.Count)
+        while (item.Count - removalCount != 0 && matchesInd < matches.Count)
         {
             int diff = MaxStackSize - matches[matchesInd].Count;
-            diff = diff > item.Count ? item.Count : diff;
+            diff = diff > (item.Count - removalCount) ? (item.Count - removalCount) : diff;
 
             matches[matchesInd].AddTo(diff);
-            item.RemoveFrom(diff);
+            removalCount += diff;
 
             matchesInd++;
         }
@@ -103,15 +139,18 @@ public class Inventory
         //the below if is implied by the following but its useful to think of as that
         // if (item.Count != 0)
         // {
-            while (item.Count != 0 && Items.Count < MaxStackCount)
+            while ((item.Count - removalCount) != 0 && Items.Count < MaxStackCount)
             {
-                int stackCnt = MaxStackSize < item.Count ? MaxStackSize : item.Count;
+                int stackCnt = MaxStackSize < (item.Count - removalCount) ? MaxStackSize : item.Count - removalCount;
                 Items.Add(item.Copy(stackCnt));
-                item.RemoveFrom(stackCnt);
+                removalCount += stackCnt;
             }
         // }
 
         HasChanged = true;
+        
+        ClearEmpties();
+        item.RemoveFrom(removalCount);
 
         if (item.Count != 0)
         {
@@ -122,11 +161,12 @@ public class Inventory
     }
     public void ClearEmpties()
     {
-        for (int i = Items.Count(); i >= 0; i--)
+        for (int i = Items.Count - 1; i >= 0; i--)
         {
             if (Items[i].Count == 0)
             {
                 Items.RemoveAt(i);
+                
                 continue;
             }
         }
@@ -136,8 +176,9 @@ public class Inventory
         //return true if items were all removed
         //can handle duplicates
         int toRemove = count;
-        foreach (Item i in Items)
+        for (int j = Items.Count - 1; j >= 0; j--)
         {
+            Item i = Items[j];
             if (i.IDEqual(id))
             {
                 int amt = i.Count >= toRemove ? toRemove : i.Count;
@@ -191,7 +232,21 @@ public class Inventory
     public void Update(GameTime gameTime)
     {
         //update items here in case any are animated?
-        HasChanged = false;
+
+        //keeping this true for one extra frame in case a window that needed it
+        //was only updated before haschanged was set which would stink
+        //i think this is a bad workaround and could probably be refactored bc its
+        //inefficient as windows might get updated more then once (TODO) but its ok for now
+        if (changedlastframe)
+        {
+            HasChanged = false;
+            changedlastframe = false;
+        }
+        if (HasChanged)
+        {
+            changedlastframe = true;
+        }
+
 
     }
 

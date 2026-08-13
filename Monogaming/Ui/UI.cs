@@ -22,6 +22,8 @@ public class UI : ImUpdatable
     public static UI LiveUI { get; private set; }
 
     public float UiScale { get; private set; } = 1.3f;
+    public Vector2 Scale { get => new Vector2(gameWindowRef.ClientBounds.Width / (float)Camera.ScreenWidth, 
+    gameWindowRef.ClientBounds.Height / (float)Camera.ScreenHeight); }
     public bool IsActive { get; private set; } = true;
     Dictionary<string, UiElement> menus = new();
 

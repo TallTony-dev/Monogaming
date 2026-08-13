@@ -36,8 +36,9 @@ public class Recipe : ImItem
                 count++;
             }
         }
-        return count == Ingredients.Count() && 
-        (RecipeWorkbench == "any" || workbenches.Any(t => t == RecipeWorkbench));
+        return count == Ingredients.Count && 
+        (RecipeWorkbench == "any" || workbenches.Any(t => t == RecipeWorkbench))
+        && inventory.CanStoreItems(Outputs);
     }
     public bool TryCraft(Inventory inventory, List<string> workbenches)
     {
@@ -50,6 +51,11 @@ public class Recipe : ImItem
         {
             inventory.RemoveItem(i.ID, i.Count);
         }
+        foreach (Item i in Outputs)
+        {
+            inventory.AddItem(ItemDict.GetNewItem(i.ID, i.Count));
+        }
+        inventory.ClearEmpties();
         return true;
     }
 

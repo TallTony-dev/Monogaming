@@ -87,6 +87,8 @@ public class UiElement : ImUpdatable
     private static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent) 
     {
         Vector2 retPos = Vector2.Zero;
+        Vector2 scale = UI.LiveUI.Scale;
+        
         if (anchor == AnchorPoint.Center)
         {
             retPos.X = parent.X + (parent.Width - child.Width) / 2 + child.X;
@@ -124,7 +126,7 @@ public class UiElement : ImUpdatable
     /// </summary>
     public static Hitbox ScaleRealPos(Rectangle realWindow, Hitbox DrawBox)
     {
-        Vector2 scale = new Vector2(realWindow.Width / (float)Camera.ScreenWidth, realWindow.Height / (float)Camera.ScreenHeight);
+        Vector2 scale = UI.LiveUI.Scale;
         return new Hitbox(DrawBox.Pos * scale, (int)(DrawBox.Width * UI.LiveUI.UiScale), (int)(DrawBox.Height * UI.LiveUI.UiScale));
     }
 
