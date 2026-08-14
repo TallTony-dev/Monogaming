@@ -21,7 +21,7 @@ public class UI : ImUpdatable
     //trying something new here, will see how it goes
     public static UI LiveUI { get; private set; }
 
-    public float UiScale { get; private set; } = 1.3f;
+    public float UiScale { get; private set; } = 1.4f;
     public Vector2 Scale { get => new Vector2(gameWindowRef.ClientBounds.Width / (float)Camera.ScreenWidth, 
     gameWindowRef.ClientBounds.Height / (float)Camera.ScreenHeight); }
     public bool IsActive { get; private set; } = true;

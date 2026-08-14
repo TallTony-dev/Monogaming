@@ -18,11 +18,10 @@ namespace Monogaming.Ui;
 
 public class ScrollBoxElement : UiElement
 {
-    private const int ScrollBarWidth = 20;
+    public const int ScrollBarWidth = 20;
     private const int ScrollBarHeight = 50;
-    private const int ScrollBarPadding = 5;
+    public const int ScrollBarPadding = 5;
 
-    private const int ItemPadding = 3;
     private const int MinItemWidth = 30;
     private const int MaxItemWidth = 60;
     private const int PrefItemsPerRow = 6;
@@ -54,7 +53,7 @@ public class ScrollBoxElement : UiElement
 
     private int GetItemWidth()
     {
-        return Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
+        return Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + Item.ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
     }
     
     public Hitbox GetNewHitboxForItem(ImItem item) 
@@ -64,14 +63,18 @@ public class ScrollBoxElement : UiElement
 
     private void UpdateHitboxes()
     {
+        int x = ScaledDrawBox.Width - ScrollBarWidth - ScrollBarPadding;
+        int y = (int)(scrollPosNorm * (float)(ScaledDrawBox.Height - ScrollBarPadding - ScrollBarHeight));
+        scrollBar = new Hitbox(new Vector2(x, y) + ScaledDrawBox.Pos, ScrollBarWidth, ScrollBarHeight);
+
         ItemBoxes.Clear();
         Rectangle toDrawIn = ScaledDrawBox.ToRect();
-        toDrawIn.Width -= ScrollBarWidth + ScrollBarPadding * 2;
+        toDrawIn.Width -= scrollBar.Width + ScrollBarPadding * 2 + 1;
         int itemWidth = GetItemWidth();
         int itemsPerRow = toDrawIn.Width / itemWidth;
         if (itemsPerRow == 0) { itemsPerRow = 1; }
 
-        int xPerItem = itemWidth + ItemPadding;
+        int xPerItem = itemWidth + Item.ItemPadding;
         int itemCount = Items.Count();
         int rowCount = itemCount / itemsPerRow + 1;
 
@@ -88,15 +91,13 @@ public class ScrollBoxElement : UiElement
                 {
                     break;
                 }
-                Hitbox hitbox = new Hitbox(ScaledDrawBox.Pos + new Vector2(ItemPadding + xPerItem * j, (i - iOff) * xPerItem + ItemPadding),
+                Hitbox hitbox = new Hitbox(ScaledDrawBox.Pos + new Vector2(Item.ItemPadding + xPerItem * j, (i - iOff) * xPerItem + Item.ItemPadding),
                 itemWidth, itemWidth);
                 ItemBoxes.Add((hitbox, Items[ind].item, Items[ind].isGrey));
             }
         }
 
-        int x = ScaledDrawBox.Width - ScrollBarWidth - ScrollBarPadding;
-        int y = (int)(scrollPosNorm * (float)(ScaledDrawBox.Height - ScrollBarPadding - ScrollBarHeight));
-        scrollBar = new Hitbox(new Vector2(x, y) + ScaledDrawBox.Pos, ScrollBarWidth, ScrollBarHeight);
+
     }
 
     public override void UpdatePos(Rectangle window)
@@ -170,7 +171,7 @@ public class ScrollBoxElement : UiElement
         int itemWidth = GetItemWidth();
         int itemsPerRow = toDrawIn.Width / itemWidth;
 
-        int xPerItem = itemWidth + ItemPadding;
+        int xPerItem = itemWidth + Item.ItemPadding;
         int itemCount = Items.Count();
         int rowCount = itemCount / itemsPerRow + 1;
 

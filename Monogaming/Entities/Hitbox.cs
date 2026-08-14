@@ -130,7 +130,7 @@ public class Hitbox
         return new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height);
     }
 
-    public void DrawStringInto(SpriteBatch spriteBatch, string text, float size = 0.7f)
+    public void DrawStringInto(SpriteBatch spriteBatch, string text, Color color, float size = 0.7f)
     {
         Vector2 paddedDims = Dims - new Vector2(TextDrawXOffset * 2, 0);
         var stringLen = Textures.MainFont.MeasureString(text);
@@ -140,6 +140,6 @@ public class Hitbox
         scale = Vector2.Min(new Vector2(size), scale);
 
         Vector2 offsetPt = Pos + Dims / 2 + new Vector2(TextDrawXOffset, 0) - stringLen / 2 * scale;
-        spriteBatch.DrawString(Textures.MainFont, text, offsetPt, Color.Indigo, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+        spriteBatch.DrawString(Textures.MainFont, text, offsetPt, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
     }
 }

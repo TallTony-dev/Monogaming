@@ -63,7 +63,7 @@ public class DropDownElement : TextureElement
         base.Draw(spriteBatch);
         if (Text != null)
         {
-            ScaledDrawBox.DrawStringInto(spriteBatch, Text);
+            ScaledDrawBox.DrawStringInto(spriteBatch, Text, Color.Indigo);
         }
     }
 

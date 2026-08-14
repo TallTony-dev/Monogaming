@@ -34,7 +34,7 @@ public class TileEntity : InventoryEntity
 
     public virtual void Break()
     {
-        //if multiblock then disable somehow probably
+        //if multiblock then disable/break somehow probably
     }
 
 

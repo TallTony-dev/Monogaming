@@ -19,7 +19,7 @@
     },
     "wire": {
         "ID": "core_wire",
-        "Category": "materials",
+        "Category": "mechanical",
         "TextureID": "Sprite-0006.Idle"
     }
     

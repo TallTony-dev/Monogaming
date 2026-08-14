@@ -30,7 +30,7 @@ public class TextElement : UiElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        ScaledDrawBox.DrawStringInto(spriteBatch, Text);
+        ScaledDrawBox.DrawStringInto(spriteBatch, Text, Color.Indigo);
         base.Draw(spriteBatch);
     }
 }

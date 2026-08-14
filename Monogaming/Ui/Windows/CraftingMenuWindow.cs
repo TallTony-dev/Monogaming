@@ -23,7 +23,6 @@ public class CraftingMenuWindow : WindowElement
     private List<string> workbenches;
     private Inventory inv;
 
-    private const int TopOffset = 10;
     private const int ScrollBoxPadding = 3;
     private const float SpaceRatio = 0.5f;
     public CraftingMenuWindow(Inventory inv, List<string> workbenches, Hitbox drawBox) : base(AnchorPoint.TopLeft, drawBox, null)
@@ -53,7 +52,7 @@ public class CraftingMenuWindow : WindowElement
     public override void UpdatePos(Rectangle window)
     {
         Vector2 scale = UI.LiveUI.Scale;
-        craftingDisplaySon.SetRealPos(new Vector2(ScrollBoxPadding + (int)(scrollSon.DrawBox.Width / scale.X), 0));
+        craftingDisplaySon.SetRealPos(new Vector2(ScrollBoxElement.ScrollBarPadding + (int)(scrollSon.DrawBox.Width / scale.X + ScrollBoxElement.ScrollBarWidth), 0));
         base.UpdatePos(window);
     }
 

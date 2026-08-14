@@ -124,7 +124,7 @@ public class CraftingDisplayElement : UiElement
                 i.item.Draw(spriteBatch, i.box, invCnt >= i.item.Count ? Color.White : Color.DimGray);
                 Hitbox otherTextBox = new Hitbox(i.box.Pos + new Vector2(i.box.Width - Item.TextOffset, i.box.Height - Item.TextHeightOffset * 2),
                 Item.TextWidth, Item.TextHeight);
-                otherTextBox.DrawStringInto(spriteBatch, "(" + invCnt.ToString() + ")");
+                otherTextBox.DrawStringInto(spriteBatch, "(" + invCnt.ToString() + ")", Color.White);
                 
             }
 

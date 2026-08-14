@@ -96,11 +96,11 @@ public class TextInputElement : UiElement
         spriteBatch.Draw(Textures.BlankTexture, ScaledDrawBox.ToRect(), color);
 
         if (!string.IsNullOrEmpty(buffer)) {
-            ScaledDrawBox.DrawStringInto(spriteBatch, buffer);
+            ScaledDrawBox.DrawStringInto(spriteBatch, buffer, Color.Black);
         }
         else
         {
-            ScaledDrawBox.DrawStringInto(spriteBatch, Text);
+            ScaledDrawBox.DrawStringInto(spriteBatch, Text, Color.Gray);
         }
         base.Draw(spriteBatch);
     }
