@@ -195,6 +195,27 @@ public class Chunk
     }
     
 
+    public bool CanAddTileEntityWithoutCollision(TileEntity e, int x, int y)
+    {
+        bool inBounds = x >= 0 && x + e.Width - 1 < Width && y >= 0 && y + e.Height - 1 < Height;
+        if (inBounds) 
+        {
+            for (int i = x; i < x + e.Width; i++)
+            {
+                for (int j = y; j < y + e.Height; j++)
+                {
+                    //TODO: compare against tiles too
+                    if (_tileEntities[x,y] != null)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public void AddEntity(string EntityID, int tileX, int tileY)
     {
         AddEntity(EntityID, Map.TilePosToWorldPos(tileX,tileY));
@@ -214,12 +235,14 @@ public class Chunk
                 var tp = Map.WorldPosToAbsTilePos(worldPos);
                 e.SetPos(Map.TilePosToWorldPos(tp.x, tp.y));
 
-                if (tp.x >= 0 && tp.x < Width && tp.y >= 0 && tp.y < Height)
+                if (CanAddTileEntityWithoutCollision(te, tp.x, tp.y))
                 {
                     if (_tileEntities[tp.x,tp.y] != null)
                     {
                         BreakTileEntity(tp.x, tp.y);
                     }
+
+
                     _tileEntities[tp.x,tp.y] = te;
                 }
 
@@ -234,8 +257,8 @@ public class Chunk
         {
             toAddTo.TryTransferAllItemsFrom(prev.Inventory);
         }
-        Hitbox pos = new (prev.DrawBox.Center + new Vector2(-6,-6), 12, 12);
-        var dropped = prev.Inventory.GetDroppedEntities(pos);
+        Hitbox dropPos = new (prev.DrawBox.Center + new Vector2(-6,-6), 12, 12);
+        var dropped = prev.Inventory.GetDroppedEntities(dropPos);
         Updatables.AddRange(dropped);
         Drawables.AddRange(dropped);
         prev.Break();
@@ -244,7 +267,14 @@ public class Chunk
         Drawables.Remove(prev);
         Updatables.Remove(prev);
         
-        _tileEntities[x,y] = null;
+        (int x, int y) bottomLeft = Map.WorldPosToAbsTilePos(prev.DrawBox.Pos);
+        for (int ix = bottomLeft.x; ix < prev.Width + bottomLeft.x; ix++)
+        {
+            for (int iy = bottomLeft.y; iy < prev.Height + bottomLeft.y; iy++)
+            {
+                _tileEntities[ix,iy] = null;
+            }
+        }
     }
 
     public void RemoveEntity(Entity e) {

@@ -17,7 +17,7 @@ namespace Monogaming.Ui.Windows;
 public class InventoryWindow : WindowElement
 {
     public Inventory BoundInventory { get; private set; }
-    private Item SelectedItem { get => (Item)sonion.SelectedItem; }
+    public Item SelectedItem { get => (Item)sonion.SelectedItem; }
 
     private Item prevSelected = null;
     private bool isDraggingItem = false;

@@ -140,7 +140,7 @@ public class ScrollBoxElement : UiElement
                 SelectedItem = intersect.item;
             }
         }
-        else {
+        else if (!InputConditions.click.Held(false)){
             SelectedItem = null;
         }
 

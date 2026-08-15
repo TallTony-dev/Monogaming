@@ -69,6 +69,20 @@ public static class EntityDict
         return null;
     }
 
+
+    /// <summary>
+    /// Gets the main copy of the entity by reference to save cost of checking values
+    /// WARNING: DO NOT MODIFY RETURNED VAL
+    /// </summary>
+    public static Entity GetReadOnlyEntity(string id)
+    {
+        if (id != null && entityDict.ContainsKey(id))
+        {
+            return entityDict[id];
+        }
+        return null;
+    }
+
     public static bool Contains(string id)
     {
         return id != null && entityDict.ContainsKey(id);

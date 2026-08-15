@@ -14,7 +14,13 @@ namespace Monogaming.Entities;
 
 public class TileEntity : InventoryEntity
 {
+    /// <summary>
+    /// Width in terms of tiles
+    /// </summary>
     public int Width { get => DrawBox.Width / Map.TileDims; }
+    /// <summary>
+    /// Height in terms of tiles
+    /// </summary>
     public int Height { get => DrawBox.Height / Map.TileDims; }
 
 
@@ -34,7 +40,7 @@ public class TileEntity : InventoryEntity
 
     public virtual void Break()
     {
-        //if multiblock then disable/break somehow probably
+        
     }
 
 

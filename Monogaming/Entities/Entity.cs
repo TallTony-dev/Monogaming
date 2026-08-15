@@ -79,4 +79,8 @@ public class Entity : ImDrawable, ImUpdatable, ImCollidable
             TextureHandler.Draw(spriteBatch, DrawBox.ToRect());
         }
     }
+    public virtual void DrawAtPos(SpriteBatch spriteBatch, Vector2 pos, Color color)
+    {
+        TextureHandler.Draw(spriteBatch, DrawBox.ToRect() with { X = (int)pos.X, Y = (int)pos.Y }, color);
+    }
 }
