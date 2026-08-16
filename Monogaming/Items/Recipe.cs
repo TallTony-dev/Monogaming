@@ -59,18 +59,15 @@ public class Recipe : ImItem
         return true;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Hitbox box)
+    public void Draw(SpriteBatch spriteBatch, Hitbox box, bool withBg)
     {
-        if (Outputs.Count > 0)
-        {
-            Outputs[0].Draw(spriteBatch, box);
-        }
+        Draw(spriteBatch, box, Color.White, withBg);
     }
-    public void Draw(SpriteBatch spriteBatch, Hitbox box, Color color)
+    public void Draw(SpriteBatch spriteBatch, Hitbox box, Color color, bool withBg)
     {
         if (Outputs.Count > 0)
         {
-            Outputs[0].Draw(spriteBatch, box, color);
+            Outputs[0].Draw(spriteBatch, box, color, withBg);
         }
     }
 }

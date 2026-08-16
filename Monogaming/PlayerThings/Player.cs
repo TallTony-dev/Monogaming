@@ -32,6 +32,7 @@ public class Player
     private InventoryWindow inventoryWindow = null;
     private bool isPlacedItemValid = false;
     private Vector2 placedItemPos;
+    private (int x, int y) placedItemTilePos;
 
     public float MoveSpeed { get; private set; }
 
@@ -83,7 +84,7 @@ public class Player
 
         Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();
         Vector2 mWorldPos = map.ScreenPosToWorldPos(mPos);
-        (int x, int y) mTilePos = Map.WorldPosToAbsTilePos(mWorldPos - new Vector2(0, 16));
+        (int x, int y) mTilePos = Map.WorldPosToAbsTilePos(mWorldPos - new Vector2(20, 16));
 
         if (inventoryWindow != null)
         {
@@ -96,6 +97,7 @@ public class Player
                 && IsWithinReach(tileWorldPos);
 
                 placedItemPos = tileWorldPos;
+                placedItemTilePos = mTilePos;
             }
         }
 
@@ -145,9 +147,19 @@ public class Player
             Item item;
             if ((item = inventoryWindow.SelectedItem) != null && !string.IsNullOrEmpty(item.PlacedEntityID))
             {
+                TileEntity entity = (TileEntity)EntityDict.GetReadOnlyEntity(item.PlacedEntityID);
                 Color color = isPlacedItemValid ? new Color((byte)0, (byte)255, (byte)0, (byte)150) : new Color((byte)255, (byte)0, (byte)0, (byte)190);
-                ((TileEntity)EntityDict.GetReadOnlyEntity(item.PlacedEntityID))
-                .DrawAtPos(batch, placedItemPos, color);
+
+                for (int x = placedItemTilePos.x; x < placedItemTilePos.x + entity.Width; x++)
+                {
+                    for (int y = placedItemTilePos.y; y < placedItemTilePos.y + entity.Height; y++)
+                    {
+                        Vector2 pos = Map.TilePosToWorldPos(x,y);
+                        item.DrawBackground(batch, new Hitbox(pos, Map.TileDims, Map.TileDims), color, 0);
+                    }
+                }
+
+                entity.DrawAtPos(batch, placedItemPos, color);
 
 
             }

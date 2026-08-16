@@ -139,9 +139,10 @@ public class ScrollBoxElement : UiElement
                 InputConditions.click.Consume();
                 SelectedItem = intersect.item;
             }
-        }
-        else if (!InputConditions.click.Held(false)){
-            SelectedItem = null;
+            else
+            {
+                SelectedItem = null;
+            }
         }
 
 
@@ -190,7 +191,7 @@ public class ScrollBoxElement : UiElement
                 }
                 (Hitbox box, ImItem item, bool isGrey) = ItemBoxes[ind];
 
-                item.Draw(spriteBatch, box, isGrey ? Color.DimGray : Color.White);
+                item.Draw(spriteBatch, box, isGrey ? Color.DimGray : Color.White, true);
             }
         }
 

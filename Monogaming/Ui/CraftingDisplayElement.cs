@@ -121,7 +121,7 @@ public class CraftingDisplayElement : UiElement
             foreach (var i in InputItemBoxes)
             {
                 int invCnt = inventoryRef.GetCountOfItem(i.item.ID);
-                i.item.Draw(spriteBatch, i.box, invCnt >= i.item.Count ? Color.White : Color.DimGray);
+                i.item.Draw(spriteBatch, i.box, invCnt >= i.item.Count ? Color.White : Color.DimGray, true);
                 Hitbox otherTextBox = new Hitbox(i.box.Pos + new Vector2(i.box.Width - Item.TextOffset, i.box.Height - Item.TextHeightOffset * 2),
                 Item.TextWidth, Item.TextHeight);
                 otherTextBox.DrawStringInto(spriteBatch, "(" + invCnt.ToString() + ")", Color.White);
@@ -130,7 +130,7 @@ public class CraftingDisplayElement : UiElement
 
             foreach (var i in OutputItemBoxes)
             {
-                i.item.Draw(spriteBatch, i.box);
+                i.item.Draw(spriteBatch, i.box, true);
             }
         }
 

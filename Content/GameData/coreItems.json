@@ -20,7 +20,8 @@
     "wire": {
         "ID": "core_wire",
         "Category": "mechanical",
-        "TextureID": "Sprite-0006.Idle"
+        "TextureID": "Sprite-0006.Idle",
+        "PlacedEntityID": "core_wideTestTileEntity"
     }
     
 

@@ -54,15 +54,22 @@ public class Item : ImItem
         return new Item(Name, ID, Category, TextureID, PlacedEntityID, count);
     }
 
-    public void Draw(SpriteBatch spriteBatch, Hitbox box)
-    {
-        Draw(spriteBatch, box, Color.White);
-    }
-    public void Draw(SpriteBatch spriteBatch, Hitbox box, Color color)
+    public void DrawBackground(SpriteBatch spriteBatch, Hitbox box, Color color, int padding)
     {
         Rectangle itemBox = box.ToRect();
-        itemBox.Inflate(ItemPadding, ItemPadding);
+        itemBox.Inflate(padding, padding);
         BackTexture.Draw(spriteBatch, itemBox, color);
+    }
+
+    public void Draw(SpriteBatch spriteBatch, Hitbox box, bool withBg)
+    {
+        Draw(spriteBatch, box, Color.White, withBg);
+    }
+    public void Draw(SpriteBatch spriteBatch, Hitbox box, Color color, bool withBg)
+    {
+        if (withBg) {
+            DrawBackground(spriteBatch, box, color, ItemPadding);
+        }
 
         ItemTexture.Draw(spriteBatch, box.ToRect(), color);
         if (Count > 1) {

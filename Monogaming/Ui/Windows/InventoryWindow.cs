@@ -40,7 +40,30 @@ public class InventoryWindow : WindowElement
     }
 
 
+    private void TryAddHeldItemToInventory()
+    {
+        UiElement element;
+        if ((element = UI.LiveUI.GetWindowElements().FirstOrDefault(t => 
+        (t is InventoryWindow || (t is CompositeWindow c && c.Children.Any(t => t is InventoryWindow)))
+        && t.ScaledDrawBox.Intersects(draggedItem.box))) != default)
+        {
+            InventoryWindow window;
+            if (element is InventoryWindow)
+            {
+                window = (InventoryWindow)element;
+            }
+            else
+            {
+                window = (InventoryWindow)element.Children.Find(t => t is InventoryWindow);
+            }
 
+            bool allMoved = window.BoundInventory.AddItem(draggedItem.item);
+            if (allMoved) 
+            {
+                BoundInventory.ClearEmpties();
+            }
+        }
+    }
     public override void Update(GameTime gameTime)
     {    
         base.Update(gameTime);
@@ -48,35 +71,17 @@ public class InventoryWindow : WindowElement
 
         if (isDraggingItem)
         {
-            if (InputConditions.click.Held(false))
+            if (!InputConditions.click.Pressed(false))
             {
                 draggedItem.box.ChangePos(MouseCondition.PointerDelta.ToVector2());
             }
             else
             {
-                isDraggingItem = false;
+                InputConditions.click.Consume();
                 
-                UiElement element;
-                if ((element = UI.LiveUI.GetWindowElements().FirstOrDefault(t => 
-                (t is InventoryWindow || (t is CompositeWindow c && c.Children.Any(t => t is InventoryWindow)))
-                && t.ScaledDrawBox.Intersects(draggedItem.box))) != default)
-                {
-                    InventoryWindow window;
-                    if (element is InventoryWindow)
-                    {
-                        window = (InventoryWindow)element;
-                    }
-                    else
-                    {
-                        window = (InventoryWindow)element.Children.Find(t => t is InventoryWindow);
-                    }
-
-                    bool allMoved = window.BoundInventory.AddItem(draggedItem.item);
-                    if (allMoved) 
-                    {
-                        BoundInventory.ClearEmpties();
-                    }
-                }
+                isDraggingItem = false;
+                TryAddHeldItemToInventory();
+                
             }
         }
         
@@ -100,7 +105,7 @@ public class InventoryWindow : WindowElement
         base.Draw(spriteBatch);
         if (isDraggingItem)
         {
-            draggedItem.item.Draw(spriteBatch, draggedItem.box);
+            draggedItem.item.Draw(spriteBatch, draggedItem.box, false);
         }
     }
 }
