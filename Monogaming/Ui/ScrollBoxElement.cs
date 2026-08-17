@@ -130,8 +130,12 @@ public class ScrollBoxElement : UiElement
         }
 
         //check for item selection
-
-        if (InputConditions.click.Pressed(false))
+        if (InputConditions.rightClick.Pressed())
+        {
+            isBeingDragged = false;
+            SelectedItem = null;
+        }
+        else if (InputConditions.click.Pressed(false))
         {
             (Hitbox box, ImItem item, bool isGrey) intersect;
             if ((intersect = ItemBoxes.FirstOrDefault(t => t.box.Intersects(InputHelper.NewMouse.Position))) != default)

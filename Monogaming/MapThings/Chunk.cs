@@ -204,8 +204,7 @@ public class Chunk
             {
                 for (int j = y; j < y + e.Height; j++)
                 {
-                    //TODO: compare against tiles too
-                    if (_tileEntities[x,y] != null)
+                    if (_tileEntities[i,j] != null || _tiles[i,j].Blocking)
                     {
                         return false;
                     }
@@ -242,8 +241,18 @@ public class Chunk
                         BreakTileEntity(tp.x, tp.y);
                     }
 
-
-                    _tileEntities[tp.x,tp.y] = te;
+                    
+                    for (int ix = tp.x; ix < te.Width + tp.x; ix++)
+                    {
+                        for (int iy = tp.y; iy < te.Height + tp.y; iy++)
+                        {
+                            _tileEntities[ix,iy] = te;
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.WriteWarn($"Tried to add tile entity to bad location, added as normal entity");
                 }
 
             }

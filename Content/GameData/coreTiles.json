@@ -5,12 +5,14 @@
     "gravel": {
         "ID": "core_gravel",
         "TextureID": "testTile",
-        "Walkable": true
+        "Walkable": true,
+        "Blocking": false
     },
     "grass": {
         "ID": "core_grass",
         "TextureID": "TileTwo",
-        "Walkable": false
+        "Walkable": false,
+        "Blocking": true
     }
 
 

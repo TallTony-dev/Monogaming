@@ -22,6 +22,8 @@ public class Player
     private const int InteractDistance = 120;
     private const int ColliderDiff = 2;
 
+    public static Player LivePlayer { get; private set; }
+
     public Body body { get; private set; } = new(Vector2.Zero, Map.TileDims - ColliderDiff * 2, Map.TileDims - ColliderDiff * 2, 10f);
     private InputManager inputManager = new();
     public TextureHandler TextureHandler { get; private set; }
@@ -30,9 +32,7 @@ public class Player
 
 
     private InventoryWindow inventoryWindow = null;
-    private bool isPlacedItemValid = false;
-    private Vector2 placedItemPos;
-    private (int x, int y) placedItemTilePos;
+
 
     public float MoveSpeed { get; private set; }
 
@@ -42,6 +42,7 @@ public class Player
         Inventory = inventory;
         MoveSpeed = moveSpeed;
         TextureHandler = textureHandler;
+        LivePlayer = this;
     }
 
     private List<string> GetNearbyWorkbenches()
@@ -59,7 +60,7 @@ public class Player
         }
     }
 
-    private bool IsWithinReach(Vector2 worldPos)
+    public bool IsWithinReach(Vector2 worldPos)
     {
         return (worldPos - body.Center).LengthSquared() < InteractDistance * InteractDistance;
     }
@@ -84,22 +85,6 @@ public class Player
 
         Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();
         Vector2 mWorldPos = map.ScreenPosToWorldPos(mPos);
-        (int x, int y) mTilePos = Map.WorldPosToAbsTilePos(mWorldPos - new Vector2(20, 16));
-
-        if (inventoryWindow != null)
-        {
-            Item item;
-            if ((item = inventoryWindow.SelectedItem) != null && !string.IsNullOrEmpty(item.PlacedEntityID))
-            {
-                Vector2 tileWorldPos = Map.TilePosToWorldPos(mTilePos.x, mTilePos.y);
-                isPlacedItemValid = currentChunk.CanAddTileEntityWithoutCollision
-                ((TileEntity)EntityDict.GetReadOnlyEntity(item.PlacedEntityID), mTilePos.x, mTilePos.y)
-                && IsWithinReach(tileWorldPos);
-
-                placedItemPos = tileWorldPos;
-                placedItemTilePos = mTilePos;
-            }
-        }
 
         if (IsWithinReach(mPos))
         {
@@ -113,8 +98,6 @@ public class Player
                     clickedOn.Interact();
                     InputConditions.click.Consume();
                 }
-
-                currentChunk.AddEntity("core_testTileEntity", body.Pos);
             }
 
         }
@@ -140,32 +123,14 @@ public class Player
         Inventory.Update(gameTime);
     }
 
+   
+
     public void Draw(SpriteBatch batch)
     {
         if (inventoryWindow != null)
         {
-            Item item;
-            if ((item = inventoryWindow.SelectedItem) != null && !string.IsNullOrEmpty(item.PlacedEntityID))
-            {
-                TileEntity entity = (TileEntity)EntityDict.GetReadOnlyEntity(item.PlacedEntityID);
-                Color color = isPlacedItemValid ? new Color((byte)0, (byte)255, (byte)0, (byte)150) : new Color((byte)255, (byte)0, (byte)0, (byte)190);
-
-                for (int x = placedItemTilePos.x; x < placedItemTilePos.x + entity.Width; x++)
-                {
-                    for (int y = placedItemTilePos.y; y < placedItemTilePos.y + entity.Height; y++)
-                    {
-                        Vector2 pos = Map.TilePosToWorldPos(x,y);
-                        item.DrawBackground(batch, new Hitbox(pos, Map.TileDims, Map.TileDims), color, 0);
-                    }
-                }
-
-                entity.DrawAtPos(batch, placedItemPos, color);
-
-
-            }
+            inventoryWindow.TryDrawSelectedItem(batch);
         }
-
-
         Rectangle rect = body.ToRect();
         rect.X -= ColliderDiff;
         rect.Y -= ColliderDiff;

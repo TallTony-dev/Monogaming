@@ -13,13 +13,15 @@ public class Map
 
     private GameState gameStateref;
     private Camera cameraRef;
-    private Chunk activeChunk;
+    public static Chunk LiveChunk { get; private set; } // refactored this late so many times it is passed in calls anyways
+    public static Map LiveMap { get; private set; } // refactored this late so many times it is passed in calls anyways
     public bool isLoading { get; private set; } = true;
 
     public Map(Camera cameraRef, GameState gameState)
     {
         this.cameraRef = cameraRef;
         gameStateref = gameState;
+        LiveMap = this;
     }
 
 
@@ -33,13 +35,13 @@ public class Map
             var options = new JsonSerializerOptions { WriteIndented = true };
             options.Converters.Add(new Vector2JsonConverter());
 
-            if (activeChunk != null) {
+            if (LiveChunk != null) {
                 gameStateref.Save(GameState.ActiveSave.Name);
             }
 
             //TransitionManager.AddTransition(new SlideLeftTransition(() => !isLoading))
 
-            activeChunk = await JsonSerializer.DeserializeAsync<Chunk>(textStream, options);
+            LiveChunk = await JsonSerializer.DeserializeAsync<Chunk>(textStream, options);
             
             isLoading = false;
         }
@@ -57,7 +59,7 @@ public class Map
     {
         if (!isLoading)
         {
-            return activeChunk;
+            return LiveChunk;
         }
         return null;
     }
@@ -66,7 +68,7 @@ public class Map
     {
         if (!isLoading)
         {
-            activeChunk?.Update(gameTime);
+            LiveChunk?.Update(gameTime);
         }
     }
 
@@ -74,7 +76,7 @@ public class Map
     {
         if (!isLoading)
         {
-            activeChunk?.Draw(spriteBatch, screen);
+            LiveChunk?.Draw(spriteBatch, screen);
         }
     }
 
@@ -84,8 +86,8 @@ public class Map
 
         (int x, int y) tilePos = WorldPosToAbsTilePos(screen);
         (int ix, int iy) old = tilePos;
-        tilePos.x = Math.Clamp(tilePos.x, 0, activeChunk.Width);
-        tilePos.y = Math.Clamp(tilePos.y, 0, activeChunk.Height);
+        tilePos.x = Math.Clamp(tilePos.x, 0, LiveChunk.Width);
+        tilePos.y = Math.Clamp(tilePos.y, 0, LiveChunk.Height);
         return (tilePos.x, tilePos.y, tilePos != old);
     }
 
@@ -104,14 +106,14 @@ public class Map
     }   
     private void SetTileAtPos(int x, int y, Tile tile)
     {
-        activeChunk.ChangeTile(x, y, tile);
+        LiveChunk.ChangeTile(x, y, tile);
     } 
 
     public void SettleLoadedChunk()
     {
         if (!isLoading)
         {
-            activeChunk?.SettleTiles();
+            LiveChunk?.SettleTiles();
         }
     }
     public static Vector2 TilePosToWorldPos(int x, int y)
