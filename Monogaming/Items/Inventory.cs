@@ -14,7 +14,6 @@ namespace Monogaming.Items;
 
 public class Inventory
 {
-    public int MaxStackSize { get; private set; }
     public int MaxStackCount { get; private set; }
     [JsonIgnore]
     public List<Item> Items { get; private set; }
@@ -35,9 +34,8 @@ public class Inventory
     public int StackCount { get => Items.Count(); }
 
     [JsonConstructor]
-    public Inventory(int MaxStackSize, int MaxStackCount, JsonItem[] SerializedItems)
+    public Inventory(int MaxStackCount, JsonItem[] SerializedItems)
     {
-        this.MaxStackSize = MaxStackSize;
         this.MaxStackCount = MaxStackCount;
         this.Items = SerializedItems.Select(t => ItemDict.GetNewItem(t.ItemID, t.Count)).ToList();
     }
@@ -49,7 +47,7 @@ public class Inventory
         {
             cpy[i] = new JsonItem(SerializedItems[i].ItemID, SerializedItems[i].Count);
         }
-        return new Inventory(MaxStackSize, MaxStackCount, cpy);
+        return new Inventory(MaxStackCount, cpy);
     }
 
     public struct JsonItem
@@ -87,7 +85,7 @@ public class Inventory
             int itemCount = item.Count;
             while (itemCount != 0 && matchesInd < matches.Count)
             {
-                int diff = MaxStackSize - matches[matchesInd].Count;
+                int diff = item.MaxStackSize - matches[matchesInd].Count;
                 diff = diff > item.Count ? item.Count : diff;
 
                 itemCount -= diff;
@@ -97,7 +95,7 @@ public class Inventory
 
             while (itemCount != 0 && Items.Count < MaxStackCount)
             {
-                int stackCnt = MaxStackSize < itemCount ? MaxStackSize : itemCount;
+                int stackCnt = item.MaxStackSize < itemCount ? item.MaxStackSize : itemCount;
                 itemCount -= stackCnt;
                 totalNewTaken++;
             }
@@ -127,7 +125,7 @@ public class Inventory
         int matchesInd = 0;
         while (item.Count - removalCount != 0 && matchesInd < matches.Count)
         {
-            int diff = MaxStackSize - matches[matchesInd].Count;
+            int diff = item.MaxStackSize - matches[matchesInd].Count;
             diff = diff > (item.Count - removalCount) ? (item.Count - removalCount) : diff;
 
             matches[matchesInd].AddTo(diff);
@@ -141,7 +139,7 @@ public class Inventory
         // {
             while ((item.Count - removalCount) != 0 && Items.Count < MaxStackCount)
             {
-                int stackCnt = MaxStackSize < (item.Count - removalCount) ? MaxStackSize : item.Count - removalCount;
+                int stackCnt = item.MaxStackSize < (item.Count - removalCount) ? item.MaxStackSize : item.Count - removalCount;
                 Items.Add(item.Copy(stackCnt));
                 removalCount += stackCnt;
             }
@@ -171,6 +169,14 @@ public class Inventory
             }
         }
     }
+
+    public Item TakeItemFrom(int ind)
+    {
+        Item i = Items[ind];
+        Items.Remove(i);
+        return i;
+    }
+
     public bool RemoveItem(string id, int count)
     {
         //return true if items were all removed

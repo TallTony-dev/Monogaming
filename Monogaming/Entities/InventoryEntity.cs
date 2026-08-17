@@ -25,6 +25,23 @@ public class InventoryEntity : InteractableEntity
         Hitbox newBox = new Hitbox(pos, DrawBox.Width, DrawBox.Height);
         return new InventoryEntity(Name, ID, IsSolid, newBox, Inventory, TextureHandler.Copy());
     }
+    
+    public bool TryAddTo(Item item)
+    {
+        return Inventory.AddItem(item);
+    }
+    
+    /// <summary>
+    /// Tries to get the last item out of inv and removes it, or else null
+    /// </summary>
+    /// <returns></returns>
+    public Item TryTakeFrom()
+    {
+        Item i = Inventory.Items.Count > 0 ? Inventory.TakeItemFrom(Inventory.Items.Count - 1) : null;
+        return i;
+    }
+
+
 
     /// <summary>
     /// Player can call this to do something of some sort

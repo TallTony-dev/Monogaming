@@ -351,7 +351,7 @@ public class Chunk
                     TileEntity e = _tileEntities[x,y];
                     if (e != null && e.IsActive)
                     {
-                        e.UpdateTile(_tileEntities, x, y, timeSinceUpdatedTiles);
+                        e.UpdateTile(new TileEntity.UpdateData(_tileEntities, x, y, timeSinceUpdatedTiles));
                     }
                 }
             }

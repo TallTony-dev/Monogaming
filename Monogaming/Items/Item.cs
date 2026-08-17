@@ -26,6 +26,7 @@ public class Item : ImItem
     public string ID { get; private set; } //describes the type of item this is
     public string Category { get; private set; }
     public int Count { get; private set; } = 1;
+    public int MaxStackSize { get; private set; } = 75;
     public string PlacedEntityID { get; private set; }
 
     public string TextureID { get; private set; }
@@ -33,7 +34,7 @@ public class Item : ImItem
     ImTexture BackTexture;
 
     [JsonConstructor]
-    public Item(string name, string ID, string category, string textureID, string PlacedEntityID, int count = 1)
+    public Item(string name, string ID, string category, int MaxStackSize, string textureID, string PlacedEntityID, int count = 1)
     {
         this.PlacedEntityID = PlacedEntityID;
         TextureID = textureID;
@@ -47,11 +48,11 @@ public class Item : ImItem
     
     public Item Copy()
     {
-        return new Item(Name, ID, Category, TextureID, PlacedEntityID, Count);
+        return new Item(Name, ID, Category, MaxStackSize, TextureID, PlacedEntityID, Count);
     }
     public Item Copy(int count)
     {
-        return new Item(Name, ID, Category, TextureID, PlacedEntityID, count);
+        return new Item(Name, ID, Category, MaxStackSize, TextureID, PlacedEntityID, count);
     }
 
     public void DrawBackground(SpriteBatch spriteBatch, Hitbox box, Color color, int padding)

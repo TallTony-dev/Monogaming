@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using Monogaming.Ui.Windows;
 using Monogaming.MapThings;
 using Monogaming.Items;
+using System.Linq;
 
 
 namespace Monogaming.Entities;
@@ -47,7 +48,7 @@ public class TileEntity : InventoryEntity
     /// <summary>
     /// Updates this tile with a 'tick', maybe doesn't need to be called every frame
     /// </summary>
-    public virtual void UpdateTile(TileEntity[,] state, int myx, int myy, float passedSecs)
+    public virtual void UpdateTile(UpdateData data)
     {
         
     }
@@ -63,6 +64,9 @@ public class TileEntity : InventoryEntity
         
         UI.LiveUI.AddPopup(popup);
     }
+
+    private enum Direction { Left, Right, Up, Down }
+
     public struct JsonItem
     {
         [JsonInclude]
@@ -78,6 +82,19 @@ public class TileEntity : InventoryEntity
             this.Count = Count;
         }
     }
-
+    public struct UpdateData
+    {
+        public UpdateData(TileEntity[,] state, int myx, int myy, float passedSecs)
+        {
+            this.state = state;
+            this.myx = myx;
+            this.myy = myy;
+            this.passedSecs = passedSecs;
+        }
+        public TileEntity[,] state;
+        public int myx;
+        public int myy;
+        public float passedSecs;
+    }
 }
 

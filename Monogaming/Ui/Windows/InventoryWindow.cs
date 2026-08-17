@@ -76,7 +76,7 @@ public class InventoryWindow : WindowElement
             isDraggingItem = true;
             draggedItem.item = SelectedItem;
             draggedItem.box = sonion.GetNewHitboxForItem(SelectedItem);
-            draggedItem.box.ChangePos(new Vector2(-draggedItem.box.Width / 2, 0));
+            draggedItem.box.ChangePos(new Vector2(draggedItem.box.Width / 2, 0));
         }
 
         Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();

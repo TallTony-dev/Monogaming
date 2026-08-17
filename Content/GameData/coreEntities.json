@@ -26,7 +26,6 @@
         "Width": 1,
         "Height": 1,
         "Inventory": {
-            "MaxStackSize": 1,
             "MaxStackCount": 1,
             "Items": [
                 {
@@ -50,7 +49,6 @@
         "Width": 4,
         "Height": 2,
         "Inventory": {
-            "MaxStackSize": 1,
             "MaxStackCount": 1,
             "Items": [
                 {

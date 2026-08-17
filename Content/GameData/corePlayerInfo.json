@@ -13,7 +13,6 @@
     },
 
     "Inventory": {
-        "MaxStackSize": 75,
         "MaxStackCount": 50,
         "Items" : [
             {

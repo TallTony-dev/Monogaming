@@ -4,22 +4,26 @@
     "turret": {
         "ID": "core_turret",
         "Category": "weapons",
+        "MaxStackSize": 75,
         "TextureID": "Sprite-0006.Idle"
     },
     "iron": {
         "ID": "core_iron",
         "Category": "materials",
+        "MaxStackSize": 75,
         "TextureID": "Sprite-0006.Idle",
         "PlacedEntityID": "core_testTileEntity"
     },
     "ore": {
         "ID": "core_ore",
         "Category": "rawMaterials",
+        "MaxStackSize": 75,
         "TextureID": "Sprite-0006.Idle"
     },
     "wire": {
         "ID": "core_wire",
         "Category": "mechanical",
+        "MaxStackSize": 75,
         "TextureID": "Sprite-0006.Idle",
         "PlacedEntityID": "core_wideTestTileEntity"
     }
