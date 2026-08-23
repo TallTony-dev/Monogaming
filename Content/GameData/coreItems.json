@@ -25,7 +25,7 @@
         "Category": "mechanical",
         "MaxStackSize": 75,
         "TextureID": "Sprite-0006.Idle",
-        "PlacedEntityID": "core_wideTestTileEntity"
+        "PlacedEntityID": "core_furnaceEntity"
     }
     
 

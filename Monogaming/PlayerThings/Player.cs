@@ -86,7 +86,7 @@ public class Player
         Vector2 mPos = InputHelper.NewMouse.Position.ToVector2();
         Vector2 mWorldPos = map.ScreenPosToWorldPos(mPos);
 
-        if (IsWithinReach(mPos))
+        if (IsWithinReach(mWorldPos))
         {
             
             if (InputConditions.click.Pressed(false))

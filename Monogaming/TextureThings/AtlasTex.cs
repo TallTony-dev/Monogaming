@@ -51,10 +51,13 @@ public class AtlasTex : ImTexture
     }
     public void Draw(SpriteBatch batch, Vector2 pos, Color color)
     {
+        // Rectangle rect = new Rectangle((int)pos.X, (int)pos.Y, Texture.Width, Texture.Height);
+        // batch.Draw(Texture, rect, SourceRect, color, 0, Vector2.Zero, SpriteEffects.None, pos.Y);
         batch.Draw(Texture, pos, SourceRect, color);
     }
     public void Draw(SpriteBatch batch, Rectangle dest, Color color)
     {
+        // batch.Draw(Texture, dest, SourceRect, color, 0, Vector2.Zero, SpriteEffects.None, dest.Y);
         batch.Draw(Texture, dest, SourceRect, color);
     }
 

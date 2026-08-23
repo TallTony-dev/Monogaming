@@ -27,6 +27,10 @@ public static class RecipeBook
         return retval;
     }
 
+    public static IEnumerable<Recipe> GetRecipesForWorkbench(string workbenchName)
+    {
+        return recipeList.Values.Where(t => t.RecipeWorkbench == workbenchName);
+    }
 
     public static void LoadFromFile(string fileName)
     {

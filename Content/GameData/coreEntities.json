@@ -64,5 +64,40 @@
                 "Walking": "Sprite-0006.Walk"
             }
         }
+    },
+    "furnace": {
+        "EntityType": "processingEntity",
+        "Name": "Furnace Entity",
+        "WorkbenchName": "furnace",
+        "WorkbenchSpeed": 0.5,
+        "ID": "core_furnaceEntity",
+        "Width": 2,
+        "Height": 2,
+        "Inputs": {
+            "MaxStackCount": 1,
+            "Items": [
+            ]
+        },
+        "Outputs": {
+            "MaxStackCount": 1,
+            "Items": [
+            ]
+        },
+        "Inventory": {
+            "MaxStackCount": 1,
+            "Items": [
+                {
+                    "ItemID": "core_iron",
+                    "Count": 5
+                }
+            ]
+        },
+        "TextureHandler": {
+            "textures": {
+                "Default": "Sprite-0006.Idle",
+                "Idle": "Sprite-0006.Idle",
+                "Walking": "Sprite-0006.Walk"
+            }
+        }
     }
 }

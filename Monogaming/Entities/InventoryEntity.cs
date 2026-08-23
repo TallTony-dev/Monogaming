@@ -11,7 +11,7 @@ namespace Monogaming.Entities;
 
 public class InventoryEntity : InteractableEntity
 {
-    public Inventory Inventory { get; private set; }
+    public virtual Inventory Inventory { get; private set; }
 
     [JsonConstructor]
     public InventoryEntity(string name, string id, bool IsSolid, Hitbox drawBox, Inventory Inventory, TextureHandler textureHandler) :

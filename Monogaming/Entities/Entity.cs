@@ -17,6 +17,7 @@ namespace Monogaming.Entities;
 [JsonDerivedType(typeof(InteractableEntity), typeDiscriminator: "interactableEntity")]
 [JsonDerivedType(typeof(InventoryEntity), typeDiscriminator: "inventoryEntity")]
 [JsonDerivedType(typeof(TileEntity), typeDiscriminator: "tileEntity")]
+[JsonDerivedType(typeof(ProcessingEntity), typeDiscriminator: "processingEntity")]
 [JsonDerivedType(typeof(ItemEntity), typeDiscriminator: "itemEntity")]
 
 public class Entity : ImDrawable, ImUpdatable, ImCollidable

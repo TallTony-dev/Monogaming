@@ -40,6 +40,17 @@ public class Inventory
         this.Items = SerializedItems.Select(t => ItemDict.GetNewItem(t.ItemID, t.Count)).ToList();
     }
 
+    private Inventory(List<Item> items, int MaxStackCount)
+    {
+        this.Items = items;
+        this.MaxStackCount = MaxStackCount;
+    }
+
+    public static Inventory Union(Inventory i, Inventory j)
+    {
+        return new Inventory(i.Items.Union(j.Items).ToList(), i.MaxStackCount + j.MaxStackCount);
+    }
+
     public Inventory Copy()
     {
         JsonItem[] cpy = new JsonItem[SerializedItems.Length];

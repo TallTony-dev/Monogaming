@@ -122,7 +122,7 @@ public class MeowGame : Game
 
 
         // testEffect.Parameters["view_projection"].SetValue(camera.ViewProjMatrix);        
-        testEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
+        // testEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
         SpriteBatch.Begin(/*effect: testEffect, */samplerState: SamplerState.PointClamp, transformMatrix: camera.ViewMatrix);
 
         //https://github.com/SuRGeoNix/Flyleaf

@@ -65,7 +65,7 @@ public class TileEntity : InventoryEntity
         UI.LiveUI.AddPopup(popup);
     }
 
-    private enum Direction { Left, Right, Up, Down }
+    protected enum Direction { Left, Right, Up, Down }
 
     public struct JsonItem
     {

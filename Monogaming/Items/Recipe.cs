@@ -40,22 +40,41 @@ public class Recipe : ImItem
         (RecipeWorkbench == "any" || workbenches.Any(t => t == RecipeWorkbench))
         && inventory.CanStoreItems(Outputs);
     }
+
+    public bool CanCraft(Inventory inventory)
+    {
+        int count = 0;
+        foreach (Item i in Ingredients)
+        {
+            if (inventory.GetCountOfItem(i.ID) >= i.Count)
+            {
+                count++;
+            }
+        }
+        return count == Ingredients.Count;
+    }
+
     public bool TryCraft(Inventory inventory, List<string> workbenches)
     {
-        if (!CanCraft(inventory, workbenches))
+        return TryCraft(inventory, inventory, workbenches);
+    }
+
+    public bool TryCraft(Inventory inputInv, Inventory outputInv, List<string> workbenches)
+    {
+        if (!CanCraft(inputInv, workbenches))
         {
             return false;
         }
 
         foreach (Item i in Ingredients)
         {
-            inventory.RemoveItem(i.ID, i.Count);
+            inputInv.RemoveItem(i.ID, i.Count);
         }
         foreach (Item i in Outputs)
         {
-            inventory.AddItem(ItemDict.GetNewItem(i.ID, i.Count));
+            outputInv.AddItem(ItemDict.GetNewItem(i.ID, i.Count));
         }
-        inventory.ClearEmpties();
+        inputInv.ClearEmpties();
         return true;
     }
 
