@@ -1,21 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Monogaming.Interfaces;
 using Monogaming.Entities;
+using Monogaming.Interfaces;
+using System.Linq;
 
 namespace Monogaming.Items;
 
 public class Recipe : ImItem
 {
     //string in list is id or an expression for getting ids, int is count
-    public List<Item> Ingredients { get; private set; } 
+    public List<Item> Ingredients { get; private set; }
     public List<Item> Outputs { get; private set; }
     public float RecipeDifficulty { get; private set; } //could be time, could be nothing
     public string RecipeWorkbench { get; private set; }
     public string RecipeName { get; private set; }
-    
-    public Recipe(List<Item> ingredients, List<Item> outputs, 
+
+    public Recipe(List<Item> ingredients, List<Item> outputs,
     string recipeName, string workbench, float recipeDifficulty = 0)
     {
         Ingredients = ingredients;
@@ -36,7 +34,7 @@ public class Recipe : ImItem
                 count++;
             }
         }
-        return count == Ingredients.Count && 
+        return count == Ingredients.Count &&
         (RecipeWorkbench == "any" || workbenches.Any(t => t == RecipeWorkbench))
         && inventory.CanStoreItems(Outputs);
     }

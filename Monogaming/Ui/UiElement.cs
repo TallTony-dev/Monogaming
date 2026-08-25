@@ -1,17 +1,8 @@
-using System;
 using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-using Apos.Input;
-using Monogaming.PlayerThings;
 using Monogaming.Ui.Windows;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Ui;
 
@@ -84,11 +75,11 @@ public class UiElement : ImUpdatable
         return false;
     }
 
-    private static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent) 
+    private static Hitbox OffsetHitbox(AnchorPoint anchor, Hitbox child, Rectangle parent)
     {
         Vector2 retPos = Vector2.Zero;
         Vector2 scale = UI.LiveUI.Scale;
-        
+
         if (anchor == AnchorPoint.Center)
         {
             retPos.X = parent.X + (parent.Width - child.Width) / 2 + child.X;
@@ -132,12 +123,14 @@ public class UiElement : ImUpdatable
 
     public virtual void UpdatePos(Rectangle window)
     {
-        if (DrawBox != null) {
+        if (DrawBox != null)
+        {
             Rectangle realWindow = window;
 
             Hitbox scaled = ScaleRealPos(realWindow, DrawBox);
 
-            if (ParentOffset == null) {
+            if (ParentOffset == null)
+            {
                 ScaledDrawBox = OffsetHitbox(Anchor, scaled, realWindow);
             }
             else
@@ -174,7 +167,7 @@ public class UiElement : ImUpdatable
     }
     public void SetRealPos(Vector2 pos)
     {
-        DrawBox.SetPos(pos); 
+        DrawBox.SetPos(pos);
         UpdatePos(UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 });
     }
     public void AdjustRealDims(Vector2 delta)
@@ -184,7 +177,7 @@ public class UiElement : ImUpdatable
     }
     public void SetRealDims(Vector2 dims)
     {
-        DrawBox.SetDims(dims); 
+        DrawBox.SetDims(dims);
     }
 
     /// <summary>
@@ -198,7 +191,8 @@ public class UiElement : ImUpdatable
             int dotIndex = searchPath.IndexOf('.');
 
             UiElement found = null;
-            try {
+            try
+            {
                 if (dotIndex == -1)
                 {
                     found = Children.Find(t => t.ID == searchPath.Substring(0, searchPath.Length));
@@ -211,7 +205,7 @@ public class UiElement : ImUpdatable
             }
             catch (Exception ex)
             {
-                Debug.WriteError($"Failed to find element at path {searchPath} with exception {ex.Message} and children {string.Join(',',Children.Select(t => t.ID))}");
+                Debug.WriteError($"Failed to find element at path {searchPath} with exception {ex.Message} and children {string.Join(',', Children.Select(t => t.ID))}");
             }
 
             if (found == null)
@@ -268,7 +262,7 @@ public class UiElement : ImUpdatable
 
     public virtual void Update(GameTime gameTime)
     {
-        foreach(UiElement child in Children)
+        foreach (UiElement child in Children)
         {
             if (child.IsActive)
             {
@@ -279,7 +273,7 @@ public class UiElement : ImUpdatable
 
     public virtual void Draw(SpriteBatch spriteBatch)
     {
-        foreach(UiElement child in Children)
+        foreach (UiElement child in Children)
         {
             if (child.IsVisible)
             {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework.Audio;
 
 namespace Monogaming
 {
@@ -40,7 +35,7 @@ namespace Monogaming
                     var instance = Apply3DTransform(activeSoundEffectInstances[i].emitterPos, activeSoundEffectInstances[i].instance, null);
                     activeSoundEffectInstances[i] = (instance, activeSoundEffectInstances[i].emitterPos);
                 }
-               
+
             }
 
         }

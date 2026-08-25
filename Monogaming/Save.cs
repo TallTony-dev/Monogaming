@@ -1,17 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Entities;
-using Monogaming.TextureThings;
-using Monogaming.Ui;
-using Apos.Input;
-using Monogaming.Interfaces;
-using System.IO;
-using System.Text.Json;
-using Monogaming.MapThings;
-using Monogaming.PlayerThings;
 using System.Text.Json.Serialization;
 
 namespace Monogaming;
@@ -67,7 +53,7 @@ public class Save
             itemsFound.Add(itemID, true);
         }
     }
-    
+
     public void SetFlag(string flag, bool value)
     {
         if (flags.ContainsKey(flag))

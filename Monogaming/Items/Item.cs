@@ -1,13 +1,7 @@
-using System;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+using Monogaming.Entities;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
-using System.Security.Cryptography;
-using Monogaming.Entities;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Items;
 
@@ -45,7 +39,7 @@ public class Item : ImItem
         Category = category;
         Count = count;
     }
-    
+
     public Item Copy()
     {
         return new Item(Name, ID, Category, MaxStackSize, TextureID, PlacedEntityID, Count);
@@ -68,12 +62,14 @@ public class Item : ImItem
     }
     public void Draw(SpriteBatch spriteBatch, Hitbox box, Color color, bool withBg)
     {
-        if (withBg) {
+        if (withBg)
+        {
             DrawBackground(spriteBatch, box, color, ItemPadding);
         }
 
         ItemTexture.Draw(spriteBatch, box.ToRect(), color);
-        if (Count > 1) {
+        if (Count > 1)
+        {
             Hitbox textBox = new Hitbox(box.Pos + new Vector2(box.Width - TextOffset, box.Height - TextHeightOffset),
             TextWidth, TextHeight);
             textBox.DrawStringInto(spriteBatch, Count.ToString(), Color.White);
@@ -101,11 +97,11 @@ public class Item : ImItem
     }
     #region EqualityHelpers
     public bool IDEqual(Item i)
-    {        
+    {
         return i.ID == ID;
     }
     public bool IDEqual(string s)
-    {        
+    {
         return s == ID;
     }
     /// <summary>

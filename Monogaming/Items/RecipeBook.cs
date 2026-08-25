@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 namespace Monogaming.Items;
 
 public static class RecipeBook
@@ -34,7 +29,8 @@ public static class RecipeBook
 
     public static void LoadFromFile(string fileName)
     {
-        try {
+        try
+        {
             string path = "./GameData/" + fileName + ".json";
 
             Stream textStream = File.OpenRead(path);

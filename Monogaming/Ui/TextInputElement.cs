@@ -1,13 +1,10 @@
-using System;
+using Apos.Input;
+using Microsoft.Xna.Framework.Input;
+using Monogaming;
 using Monogaming.Entities;
 using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
 using Monogaming.Ui;
-using Apos.Input;
-using Monogaming;
+using System.Text.Json.Serialization;
 
 public class TextInputElement : UiElement
 {
@@ -23,7 +20,7 @@ public class TextInputElement : UiElement
     private string buffer;
     [JsonInclude]
     public string Text { get; set; } //Displays when nothing in buffer
-    
+
     [JsonConstructor]
     public TextInputElement(string ID, AnchorPoint Anchor, Hitbox drawBox, string Text, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
     {
@@ -95,7 +92,8 @@ public class TextInputElement : UiElement
         Color color = failedLastBind ? Color.Red : (isSelected ? Color.LightBlue : Color.White);
         spriteBatch.Draw(Textures.BlankTexture, ScaledDrawBox.ToRect(), color);
 
-        if (!string.IsNullOrEmpty(buffer)) {
+        if (!string.IsNullOrEmpty(buffer))
+        {
             ScaledDrawBox.DrawStringInto(spriteBatch, buffer, Color.Black);
         }
         else

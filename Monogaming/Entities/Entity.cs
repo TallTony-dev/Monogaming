@@ -1,11 +1,5 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Monogaming.Entities;
@@ -21,7 +15,7 @@ namespace Monogaming.Entities;
 [JsonDerivedType(typeof(ItemEntity), typeDiscriminator: "itemEntity")]
 
 public class Entity : ImDrawable, ImUpdatable, ImCollidable
-{   
+{
     [JsonIgnore]
     public bool IsVisible { get; private set; } = true;
     [JsonIgnore]

@@ -1,13 +1,6 @@
-using System;
 using Monogaming.Entities;
-using Microsoft.Xna.Framework;
 using Monogaming.Items;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Interfaces;
 using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
 
 namespace Monogaming.Ui;
 
@@ -22,7 +15,7 @@ public class CraftingDisplayElement : UiElement
     private const int OutputYOffset = 10;
 
     private ButtonElement craftOneElement;
-    
+
     // public int ToCraft { get; set; } = 0;
 
     private Inventory inventoryRef;
@@ -66,7 +59,7 @@ public class CraftingDisplayElement : UiElement
         int itemCount = getIngredients ? recipe.Ingredients.Count : recipe.Outputs.Count;
         int rowCount = itemCount / itemsPerRow + 1;
 
-        for (int i = 0; i < rowCount; i++) 
+        for (int i = 0; i < rowCount; i++)
         {
             for (int j = 0; j < itemsPerRow; j++)
             {
@@ -81,11 +74,12 @@ public class CraftingDisplayElement : UiElement
             }
         }
         return values;
-    }   
+    }
 
     private void UpdateHitboxes()
     {
-        if (selectedRecipe != null) {
+        if (selectedRecipe != null)
+        {
             InputItemBoxes.Clear();
             OutputItemBoxes.Clear();
 
@@ -105,7 +99,8 @@ public class CraftingDisplayElement : UiElement
         base.Update(gameTime);
         // ToCraft = 0;
         //TODO: Check if children are clicked and set flags for parent off of that
-        if (selectedRecipe != null) {
+        if (selectedRecipe != null)
+        {
             if (craftOneElement.WasClicked)
             {
                 // ToCraft = 1;
@@ -125,7 +120,7 @@ public class CraftingDisplayElement : UiElement
                 Hitbox otherTextBox = new Hitbox(i.box.Pos + new Vector2(i.box.Width - Item.TextOffset, i.box.Height - Item.TextHeightOffset * 2),
                 Item.TextWidth, Item.TextHeight);
                 otherTextBox.DrawStringInto(spriteBatch, "(" + invCnt.ToString() + ")", Color.White);
-                
+
             }
 
             foreach (var i in OutputItemBoxes)

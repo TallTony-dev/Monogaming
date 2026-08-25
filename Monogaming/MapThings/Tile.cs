@@ -1,11 +1,6 @@
-using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Monogaming.Entities;
 using Monogaming.Interfaces;
 using Monogaming.TextureThings;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.MapThings;
 

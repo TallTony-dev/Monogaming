@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.TextureThings;
 
@@ -17,10 +13,10 @@ public class TileTex : ImTexture
     [JsonPropertyName("frame")]
     public List<Rectangle> SourceRects { get; private set; }
     public Texture2D Texture { get; private set; } //ref to the one made by textures.cs so its fine for efficiency okkk :((
-    
+
 
     public TileTex(Texture2D tex, List<Rectangle> sourceRects)
-    { 
+    {
         SourceRects = sourceRects;
         Texture = tex;
     }
@@ -56,9 +52,11 @@ public class TileTex : ImTexture
     {
         batch.Draw(Texture, dest, SourceRects[(int)currentType], color);
     }
-    public enum TileTexType 
-    { AllSides = 0, LeftTopBottom, TopBottom, TopRightBottom, ExBottomRight, ExBottomLeft,
-    LeftRightTop, LeftTop, Top, TopRight, ExTopRight, ExTopLeft, 
-    LeftRight, Left, None, Right, _, _2, 
-    LeftRightBottom, LeftBottom, Bottom, BottomRight, _3, _4 }
+    public enum TileTexType
+    {
+        AllSides = 0, LeftTopBottom, TopBottom, TopRightBottom, ExBottomRight, ExBottomLeft,
+        LeftRightTop, LeftTop, Top, TopRight, ExTopRight, ExTopLeft,
+        LeftRight, Left, None, Right, _, _2,
+        LeftRightBottom, LeftBottom, Bottom, BottomRight, _3, _4
+    }
 }

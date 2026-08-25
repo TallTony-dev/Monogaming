@@ -1,10 +1,6 @@
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Monogaming.Items;
+using Monogaming.TextureThings;
+using System.Text.Json.Serialization;
 
 
 namespace Monogaming.Entities;
@@ -22,9 +18,9 @@ public class ItemEntity : InteractableEntity
     {
         this.Item = Item;
         //this isn't actually a unit vector, but having both be random might lead to better look anyways
-        if (anim) 
+        if (anim)
         {
-            randKindaUnitVec = new Vector2((float)Random.Shared.NextDouble() * 2 - 1,(float)Random.Shared.NextDouble() * 2 - 1);
+            randKindaUnitVec = new Vector2((float)Random.Shared.NextDouble() * 2 - 1, (float)Random.Shared.NextDouble() * 2 - 1);
         }
         else
         {
@@ -43,7 +39,7 @@ public class ItemEntity : InteractableEntity
     /// </summary>
     public override void Interact()
     {
-        
+
     }
 
     public override void Update(GameTime gameTime)

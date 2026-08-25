@@ -1,18 +1,9 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
 using Apos.Input;
-using Monogaming.PlayerThings;
-using Monogaming;
-using System.Linq;
+using Monogaming.Entities;
+using Monogaming.Interfaces;
 using Monogaming.Items;
+using Monogaming.TextureThings;
+using System.Linq;
 
 namespace Monogaming.Ui;
 
@@ -36,8 +27,8 @@ public class ScrollBoxElement : UiElement
     TextureHandler scollTex;
     Hitbox scrollBar;
     float scrollPosNorm = 0;
-    
-    public ScrollBoxElement(string ID, AnchorPoint Anchor, TextureHandler scollTex, Hitbox drawBox, List<(ImItem, bool)> items) : 
+
+    public ScrollBoxElement(string ID, AnchorPoint Anchor, TextureHandler scollTex, Hitbox drawBox, List<(ImItem, bool)> items) :
     base(ID, Anchor, drawBox, null)
     {
         Items = items;
@@ -55,8 +46,8 @@ public class ScrollBoxElement : UiElement
     {
         return Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + Item.ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
     }
-    
-    public Hitbox GetNewHitboxForItem(ImItem item) 
+
+    public Hitbox GetNewHitboxForItem(ImItem item)
     {
         return new Hitbox(ItemBoxes.Find(t => t.item == item).box);
     }
@@ -82,7 +73,7 @@ public class ScrollBoxElement : UiElement
 
         float iOff = maxScrollY / (float)xPerItem * scrollPosNorm;
 
-        for (int i = 0; i < rowCount; i++) 
+        for (int i = 0; i < rowCount; i++)
         {
             for (int j = 0; j < itemsPerRow; j++)
             {
@@ -184,7 +175,7 @@ public class ScrollBoxElement : UiElement
 
         int firstRowInd = (int)(maxScrollY / (float)xPerItem * scrollPosNorm);
         int lastRowInd = Math.Min(rowCount, (int)MathF.Ceiling(ScaledDrawBox.Height / xPerItem) + firstRowInd + 2);
-        for (int i = firstRowInd; i < lastRowInd; i++) 
+        for (int i = firstRowInd; i < lastRowInd; i++)
         {
             for (int j = 0; j < itemsPerRow; j++)
             {

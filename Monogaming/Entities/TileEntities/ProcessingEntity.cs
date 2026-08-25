@@ -1,14 +1,9 @@
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Monogaming.Interfaces;
+using Monogaming.Items;
 using Monogaming.TextureThings;
 using Monogaming.Ui;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Monogaming.Ui.Windows;
-using Monogaming.MapThings;
-using Monogaming.Items;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 
 namespace Monogaming.Entities;
@@ -45,7 +40,7 @@ public class ProcessingEntity : TileEntity
 
     protected virtual void OnCraft(UpdateData data)
     {
-        
+
     }
 
     /// <summary>
@@ -81,8 +76,8 @@ public class ProcessingEntity : TileEntity
     /// </summary>
     public override void Interact()
     {
-        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2", 
-        null, 
+        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2",
+        null,
         () => Debug.WriteInfo("Pressed butt"));
 
         UI.LiveUI.AddPopup(popup);

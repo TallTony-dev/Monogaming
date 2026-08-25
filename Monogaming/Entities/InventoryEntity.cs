@@ -1,10 +1,6 @@
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Monogaming.Items;
+using Monogaming.TextureThings;
+using System.Text.Json.Serialization;
 
 
 namespace Monogaming.Entities;
@@ -25,12 +21,12 @@ public class InventoryEntity : InteractableEntity
         Hitbox newBox = new Hitbox(pos, DrawBox.Width, DrawBox.Height);
         return new InventoryEntity(Name, ID, IsSolid, newBox, Inventory, TextureHandler.Copy());
     }
-    
+
     public bool TryAddTo(Item item)
     {
         return Inventory.AddItem(item);
     }
-    
+
     /// <summary>
     /// Tries to get the last item out of inv and removes it, or else null
     /// </summary>
@@ -48,7 +44,7 @@ public class InventoryEntity : InteractableEntity
     /// </summary>
     public override void Interact()
     {
-        
+
     }
 
     public override void Update(GameTime gameTime)

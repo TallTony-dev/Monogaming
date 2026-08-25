@@ -1,16 +1,7 @@
-using System;
 using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
-using Monogaming.Ui;
-using System.Text.Json.Serialization;
 using Monogaming.Items;
-using Apos.Input;
-using System.Linq;
+using Monogaming.TextureThings;
 
 namespace Monogaming.Ui.Windows;
 
@@ -36,7 +27,7 @@ public class CraftingMenuWindow : WindowElement
          new Hitbox(ScrollBoxPadding, 0, (int)(drawBox.Width * SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding)
          , RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv, workbenches).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
 
-        craftingDisplaySon = new CraftingDisplayElement("craftingDisplay", AnchorPoint.TopLeft, 
+        craftingDisplaySon = new CraftingDisplayElement("craftingDisplay", AnchorPoint.TopLeft,
         new Hitbox(ScrollBoxPadding + (int)(scrollSon.DrawBox.Width / scale.X), 0, (int)(drawBox.Width / SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inv, workbenches);
 
         Children.Add(scrollSon);
@@ -62,14 +53,14 @@ public class CraftingMenuWindow : WindowElement
         {
             scrollSon.SetItems(RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv, workbenches).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
         }
-        
+
         base.Update(gameTime);
 
         if (scrollSon.SelectedItem != null)
         {
             craftingDisplaySon.SetSelectedRecipe((Recipe)scrollSon.SelectedItem);
         }
-        
+
     }
 
     public override void Draw(SpriteBatch spriteBatch)

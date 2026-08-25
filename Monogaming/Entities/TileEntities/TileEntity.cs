@@ -1,14 +1,9 @@
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Monogaming.Interfaces;
+using Monogaming.Items;
+using Monogaming.MapThings;
 using Monogaming.TextureThings;
 using Monogaming.Ui;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Monogaming.Ui.Windows;
-using Monogaming.MapThings;
-using Monogaming.Items;
-using System.Linq;
+using System.Text.Json.Serialization;
 
 
 namespace Monogaming.Entities;
@@ -29,7 +24,7 @@ public class TileEntity : InventoryEntity
     public TileEntity(string name, string id, int Width, int Height, bool IsSolid, Inventory inventory, TextureHandler textureHandler) :
     base(name, id, IsSolid, new Hitbox(Width * Map.TileDims, Height * Map.TileDims), inventory, textureHandler)
     {
-        
+
     }
 
     public override Entity CopyToPos(Vector2 worldPos)
@@ -41,7 +36,7 @@ public class TileEntity : InventoryEntity
 
     public virtual void Break()
     {
-        
+
     }
 
 
@@ -50,7 +45,7 @@ public class TileEntity : InventoryEntity
     /// </summary>
     public virtual void UpdateTile(UpdateData data)
     {
-        
+
     }
 
     /// <summary>
@@ -58,10 +53,10 @@ public class TileEntity : InventoryEntity
     /// </summary>
     public override void Interact()
     {
-        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2", 
-        null, 
+        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2",
+        null,
         () => Debug.WriteInfo("Pressed butt"));
-        
+
         UI.LiveUI.AddPopup(popup);
     }
 

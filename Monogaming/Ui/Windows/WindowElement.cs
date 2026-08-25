@@ -1,16 +1,9 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
-using System.Text.Json.Serialization;
-using Monogaming.Items;
-using Monogaming.Ui;
 using Apos.Input;
 using Microsoft.Xna.Framework.Input;
+using Monogaming.Entities;
+using Monogaming.Interfaces;
+using Monogaming.TextureThings;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Ui.Windows;
 
@@ -18,7 +11,7 @@ namespace Monogaming.Ui.Windows;
 
 public class WindowElement : UiElement
 {
-    
+
     protected const int TopBarHeight = 20;
     const int CloseButtonPadding = 1;
     const int CloseButtonWidth = 30;
@@ -92,7 +85,7 @@ public class WindowElement : UiElement
 
     public override void Update(GameTime gameTime)
     {
-        if (!isChildOfOtherWindow) 
+        if (!isChildOfOtherWindow)
         {
             if (isBottomRightDragged)
             {
@@ -116,7 +109,8 @@ public class WindowElement : UiElement
                     isDragged = false;
                 }
             }
-            if (IsResizable) {
+            if (IsResizable)
+            {
                 if (bottomRight.Intersects(InputHelper.NewMouse.Position))
                 {
                     Mouse.SetCursor(MouseCursor.SizeNWSE);
@@ -146,9 +140,9 @@ public class WindowElement : UiElement
                 }
             }
 
-            
+
         }
-        
+
         base.Update(gameTime);
     }
 
@@ -156,12 +150,12 @@ public class WindowElement : UiElement
     {
         backTex.Draw(spriteBatch, ScaledDrawBox.ToRect());
 
-        if (!isChildOfOtherWindow) 
+        if (!isChildOfOtherWindow)
         {
             backTex.Draw(spriteBatch, topBar.ToRect());
             backTex.Draw(spriteBatch, closeButton.ToRect());
         }
-   
+
         base.Draw(spriteBatch);
     }
 }

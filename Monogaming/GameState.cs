@@ -1,18 +1,14 @@
-global using System;
-global using System.Collections.Generic;
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Graphics;
+global using System;
+global using System.Collections.Generic;
 global using System.Text.Json;
 using Monogaming.Entities;
-using Monogaming.TextureThings;
-using Monogaming.Ui;
-using Apos.Input;
-using Monogaming.Interfaces;
-using System.Diagnostics.Metrics;
 using Monogaming.MapThings;
 using Monogaming.PlayerThings;
-using System.IO;
+using Monogaming.Ui;
 using Monogaming.Utils;
+using System.IO;
 
 namespace Monogaming;
 
@@ -28,7 +24,7 @@ public class GameState
 
     public UiEditor uiEditor { get; private set; }
     public MapEditor mapEditor { get; private set; }
-    
+
     State state = State.InMenus;
     bool isGameLogicPaused = false;
 
@@ -39,13 +35,13 @@ public class GameState
         Map = new Map(cameraRef, this);
         Ui = new UI(window);
 
-        uiEditor = new (this, window);
-        mapEditor = new (this);
+        uiEditor = new(this, window);
+        mapEditor = new(this);
 
         window.ClientSizeChanged += Ui.HandleWindowChange;
         var stream = File.OpenRead("./GameData/corePlayerInfo.json");
         Player = JsonSerializer.Deserialize<Player>(stream);
-        
+
         Command.GlobalInit(this);
     }
 
@@ -53,7 +49,8 @@ public class GameState
     public void LoadSave(string saveName)
     {
         string path = "./GameData/" + saveName + ".json";
-        if (File.Exists(path)) {
+        if (File.Exists(path))
+        {
             Stream textStream = File.OpenRead(path);
             JsonDocument document = JsonDocument.Parse(textStream);
             JsonElement root = document.RootElement;
@@ -87,7 +84,8 @@ public class GameState
     private void SaveLoadedChunk(string path)
     {
         Chunk chunk = Map.GetLoadedChunk();
-        if (chunk != null) {
+        if (chunk != null)
+        {
             if (File.Exists(path))
             {
                 File.Move(path, path + ".bckp", true);
@@ -125,7 +123,7 @@ public class GameState
         isGameLogicPaused = true;
         Ui.ActivateElement("uiEditorMenu");
     }
-    
+
     public void EnterMapEditor()
     {
         state = State.InMapEditor;
@@ -138,7 +136,7 @@ public class GameState
         Ui.Update(gameTime);
 
         Chunk currentChunk = Map.GetLoadedChunk();
-        
+
         //you should have something here that stops if theres a transition in progress
         if (!isGameLogicPaused && currentChunk != null)
         {
@@ -149,12 +147,12 @@ public class GameState
         {
             case State.InUiEditor:
                 uiEditor.Update(gameTime);
-            break;
+                break;
             case State.InMapEditor:
                 mapEditor.Update(gameTime);
-            break;
+                break;
             default:
-            break;
+                break;
         }
     }
 
@@ -164,16 +162,16 @@ public class GameState
         {
             case State.InUiEditor:
                 Map.Draw(spriteBatch, screen);
-            break;
+                break;
             case State.InMapEditor:
                 Map.Draw(spriteBatch, screen);
-            break;
+                break;
             case State.InGame:
                 Map.Draw(spriteBatch, screen);
                 Player.Draw(spriteBatch);
-            break;
+                break;
             default:
-            break;
+                break;
         }
     }
 

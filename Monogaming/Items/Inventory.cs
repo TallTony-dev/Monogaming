@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Entities;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Items;
 
@@ -17,7 +10,7 @@ public class Inventory
     public int MaxStackCount { get; private set; }
     [JsonIgnore]
     public List<Item> Items { get; private set; }
-    
+
     [JsonIgnore]
     public bool HasChanged { get; private set; }
     private bool changedlastframe = false;
@@ -87,7 +80,7 @@ public class Inventory
     public bool CanStoreItems(List<Item> items)
     {
         int totalNewTaken = 0;
-        
+
         foreach (Item item in items)
         {
             List<Item> matches = Items.FindAll(i => i.IDEqual(item));
@@ -148,16 +141,16 @@ public class Inventory
         //the below if is implied by the following but its useful to think of as that
         // if (item.Count != 0)
         // {
-            while ((item.Count - removalCount) != 0 && Items.Count < MaxStackCount)
-            {
-                int stackCnt = item.MaxStackSize < (item.Count - removalCount) ? item.MaxStackSize : item.Count - removalCount;
-                Items.Add(item.Copy(stackCnt));
-                removalCount += stackCnt;
-            }
+        while ((item.Count - removalCount) != 0 && Items.Count < MaxStackCount)
+        {
+            int stackCnt = item.MaxStackSize < (item.Count - removalCount) ? item.MaxStackSize : item.Count - removalCount;
+            Items.Add(item.Copy(stackCnt));
+            removalCount += stackCnt;
+        }
         // }
 
         HasChanged = true;
-        
+
         ClearEmpties();
         item.RemoveFrom(removalCount);
 
@@ -175,7 +168,7 @@ public class Inventory
             if (Items[i].Count == 0)
             {
                 Items.RemoveAt(i);
-                
+
                 continue;
             }
         }
@@ -232,7 +225,7 @@ public class Inventory
             }
         }
     }
- 
+
     public int GetCountOfItem(string id)
     {
         int count = 0;

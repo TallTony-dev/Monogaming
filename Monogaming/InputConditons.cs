@@ -8,15 +8,15 @@ public static class InputConditions
     public static ICondition click = new Apos.Input.Track.MouseCondition(MouseButton.LeftButton);
     public static ICondition rightClick = new Apos.Input.Track.MouseCondition(MouseButton.RightButton);
     public static ICondition copy = new AllCondition(
-        new KeyboardCondition(Keys.C), 
+        new KeyboardCondition(Keys.C),
         new KeyboardCondition(Keys.LeftControl)
     );
     public static ICondition paste = new AllCondition(
-        new KeyboardCondition(Keys.V), 
+        new KeyboardCondition(Keys.V),
         new KeyboardCondition(Keys.LeftControl)
     );
     public static ICondition delete = new AllCondition(
-        new KeyboardCondition(Keys.Back), 
+        new KeyboardCondition(Keys.Back),
         new KeyboardCondition(Keys.LeftControl)
     );
     public static ICondition openInventory = new AnyCondition(

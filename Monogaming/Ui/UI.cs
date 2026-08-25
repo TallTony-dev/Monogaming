@@ -1,18 +1,9 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
 using Apos.Input;
+using Monogaming.Interfaces;
 using Monogaming.Ui.Windows;
-using Microsoft.Xna.Framework.Content;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Ui;
 
@@ -22,8 +13,11 @@ public class UI : ImUpdatable
     public static UI LiveUI { get; private set; }
 
     public float UiScale { get; private set; } = 1.4f;
-    public Vector2 Scale { get => new Vector2(gameWindowRef.ClientBounds.Width / (float)Camera.ScreenWidth, 
-    gameWindowRef.ClientBounds.Height / (float)Camera.ScreenHeight); }
+    public Vector2 Scale
+    {
+        get => new Vector2(gameWindowRef.ClientBounds.Width / (float)Camera.ScreenWidth,
+    gameWindowRef.ClientBounds.Height / (float)Camera.ScreenHeight);
+    }
     public bool IsActive { get; private set; } = true;
     Dictionary<string, UiElement> menus = new();
 
@@ -48,7 +42,7 @@ public class UI : ImUpdatable
             try
             {
                 Stream textStream = File.OpenRead(fileName);
-                menus.Add(Path.GetFileNameWithoutExtension(fileName), 
+                menus.Add(Path.GetFileNameWithoutExtension(fileName),
                 JsonSerializer.Deserialize<UiElement>(textStream));
                 count++;
             }
@@ -115,7 +109,8 @@ public class UI : ImUpdatable
         {
             element.UpdatePos(bounds);
         }
-        foreach (WindowElement element in windows) {
+        foreach (WindowElement element in windows)
+        {
             element.UpdatePos(bounds);
         }
     }
@@ -135,7 +130,7 @@ public class UI : ImUpdatable
     //     }
     // }
 
-    public void AddPopup(WindowElement popup) 
+    public void AddPopup(WindowElement popup)
     {
         windows.Add(popup);
         popup.ActivateElement();

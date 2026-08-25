@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Apos.Input;
 using Monogaming.Entities;
-using Monogaming.MapThings;
-using Microsoft.Xna.Framework.Graphics;
-using System.IO;
-using Monogaming.TextureThings;
 using Monogaming.Items;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Monogaming.MapThings;
+using Monogaming.TextureThings;
 using Monogaming.Ui;
 using Monogaming.Ui.Windows;
-using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.PlayerThings;
 
@@ -88,7 +81,7 @@ public class Player
 
         if (IsWithinReach(mWorldPos))
         {
-            
+
             if (InputConditions.click.Pressed(false))
             {
                 InteractableEntity clickedOn = currentChunk.GetTopCollision<InteractableEntity>(mWorldPos);
@@ -102,14 +95,14 @@ public class Player
 
         }
 
-        
+
 
         if (InputConditions.openInventory.Pressed() && !UI.LiveUI.ContainsPopupWithID("playerInventory"))
         {
             UpdateSaveWithCurrentInv(); //adds items to discovered
 
             UI.LiveUI.AddPopup(new CompositeWindow(new Hitbox(140, 120, 460, 180),
-            new List<UiElement>() { 
+            new List<UiElement>() {
                 (inventoryWindow = new InventoryWindow(Inventory, new Hitbox(0,0, 260, 180), "inv")),
                 new CraftingMenuWindow(Inventory, GetNearbyWorkbenches(), new Hitbox(0,0, 200, 180)),
             }, "playerInventory"));
@@ -123,7 +116,7 @@ public class Player
         Inventory.Update(gameTime);
     }
 
-   
+
 
     public void Draw(SpriteBatch batch)
     {

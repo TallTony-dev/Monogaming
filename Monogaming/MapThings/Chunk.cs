@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Entities;
 using Monogaming.Interfaces;
 using Monogaming.Items;
 using Monogaming.TextureThings;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.MapThings;
 
@@ -30,7 +23,7 @@ public class Chunk
     //TODO: Fix how these are stored seperately cause it sucks lol, make a custom jsonConverter or something!
     [JsonInclude]
     [JsonPropertyName("Entities")]
-    List <JsonEntity> Entities = new();
+    List<JsonEntity> Entities = new();
 
     [JsonIgnore]
     private Tile[,] _tiles;
@@ -43,7 +36,7 @@ public class Chunk
     private List<ImDrawable> Drawables = new();
     [JsonIgnore]
     private List<ImCollidable> Collidables = new();
-    
+
 
     private const float TileUpdateTickLength = 0.1f;
     private float timeSinceUpdatedTiles = 0;
@@ -62,13 +55,13 @@ public class Chunk
             throw new JsonException($"Bad tile length, width: {Width} height: {Height} but got array of width {Tiles.GetLength(0)} and max height {Tiles.Max(t => t.Length)}");
         }
 
-        _tiles = new Tile[Width,Height];
+        _tiles = new Tile[Width, Height];
         _tileEntities = new TileEntity[Width, Height];
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
-                _tiles[x,y] = TileDict.GetTileCopy(Tiles[x][y]);
+                _tiles[x, y] = TileDict.GetTileCopy(Tiles[x][y]);
             }
         }
         SettleTiles();
@@ -93,9 +86,9 @@ public class Chunk
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
-            {                
-                TileTex.TileTexType texTyp = GetTextureTypeForNeighbors(x,y);
-                _tiles[x,y].SetTileTex(texTyp);
+            {
+                TileTex.TileTexType texTyp = GetTextureTypeForNeighbors(x, y);
+                _tiles[x, y].SetTileTex(texTyp);
             }
         }
     }
@@ -103,10 +96,11 @@ public class Chunk
     /// <summary>
     /// To be used after moving entities after they spawn in 
     /// </summary>
-    public void SettleEntities() 
+    public void SettleEntities()
     {
         Entities.Clear();
-        foreach (Entity e in Updatables) {
+        foreach (Entity e in Updatables)
+        {
             Entities.Add(new JsonEntity(e.ID, e.DrawBox.Pos));
         }
     }
@@ -143,22 +137,26 @@ public class Chunk
             _ => TileTex.TileTexType.AllSides,
         };
         //end llm lol it forgot to do the next part so i had to do it again anyways ;P
-        if (t == TileTex.TileTexType.None) {
+        if (t == TileTex.TileTexType.None)
+        {
             bool tl = y > 0 && x > 0 && _tiles[x - 1, y - 1].ID != id;
             bool tr = y > 0 && x < Width - 1 && _tiles[x + 1, y - 1].ID != id;
             bool bl = y < Height - 1 && x > 0 && _tiles[x - 1, y + 1].ID != id;
             bool br = y < Height - 1 && x < Width - 1 && _tiles[x + 1, y + 1].ID != id;
             int mask2 = (tl ? 1 : 0) | (tr ? 2 : 0) | (bl ? 4 : 0) | (br ? 8 : 0);
             int sum = (tl ? 1 : 0) + (tr ? 1 : 0) + (bl ? 1 : 0) + (br ? 1 : 0);
-            if (sum != 1) {
+            if (sum != 1)
+            {
                 return t;
             }
-            else {
-                switch (mask2) {
-                    case(1): return TileTex.TileTexType.ExTopLeft;
-                    case(2): return TileTex.TileTexType.ExTopRight;
-                    case(4): return TileTex.TileTexType.ExBottomLeft;
-                    case(8): return TileTex.TileTexType.ExBottomRight;
+            else
+            {
+                switch (mask2)
+                {
+                    case (1): return TileTex.TileTexType.ExTopLeft;
+                    case (2): return TileTex.TileTexType.ExTopRight;
+                    case (4): return TileTex.TileTexType.ExBottomLeft;
+                    case (8): return TileTex.TileTexType.ExBottomRight;
                 }
             }
         }
@@ -170,7 +168,7 @@ public class Chunk
     {
         if (x >= 0 && x < Width && y >= 0 && y < Height)
         {
-            _tiles[x,y] = tile;
+            _tiles[x, y] = tile;
             Tiles[x][y] = tile.ID;
             return true;
         }
@@ -184,27 +182,29 @@ public class Chunk
     //     }
     //     return null;
     // }
-    public Entity GetTopEntityCollision(Vector2 worldPos) {
+    public Entity GetTopEntityCollision(Vector2 worldPos)
+    {
         return (Entity)Collidables.Find(t => (t.DrawBox.Intersects(worldPos)) && t is Entity);
     }
     /// <summary>
     /// Gets the top item in collidables of type T that intersects with a pos
     /// </summary>
-    public T GetTopCollision<T>(Vector2 worldPos) {
+    public T GetTopCollision<T>(Vector2 worldPos)
+    {
         return (T)Collidables.Find(t => (t.DrawBox.Intersects(worldPos)) && t is T);
     }
-    
+
 
     public bool CanAddTileEntityWithoutCollision(TileEntity e, int x, int y)
     {
         bool inBounds = x >= 0 && x + e.Width - 1 < Width && y >= 0 && y + e.Height - 1 < Height;
-        if (inBounds) 
+        if (inBounds)
         {
             for (int i = x; i < x + e.Width; i++)
             {
                 for (int j = y; j < y + e.Height; j++)
                 {
-                    if (_tileEntities[i,j] != null || _tiles[i,j].Blocking)
+                    if (_tileEntities[i, j] != null || _tiles[i, j].Blocking)
                     {
                         return false;
                     }
@@ -217,11 +217,12 @@ public class Chunk
 
     public void AddEntity(string EntityID, int tileX, int tileY)
     {
-        AddEntity(EntityID, Map.TilePosToWorldPos(tileX,tileY));
+        AddEntity(EntityID, Map.TilePosToWorldPos(tileX, tileY));
     }
     public void AddEntity(string EntityID, Vector2 worldPos)
     {
-        if (EntityDict.Contains(EntityID)) {
+        if (EntityDict.Contains(EntityID))
+        {
             JsonEntity entity = new JsonEntity(EntityID, worldPos);
             Entities.Add(entity);
 
@@ -236,17 +237,17 @@ public class Chunk
 
                 if (CanAddTileEntityWithoutCollision(te, tp.x, tp.y))
                 {
-                    if (_tileEntities[tp.x,tp.y] != null)
+                    if (_tileEntities[tp.x, tp.y] != null)
                     {
                         BreakTileEntity(tp.x, tp.y);
                     }
 
-                    
+
                     for (int ix = tp.x; ix < te.Width + tp.x; ix++)
                     {
                         for (int iy = tp.y; iy < te.Height + tp.y; iy++)
                         {
-                            _tileEntities[ix,iy] = te;
+                            _tileEntities[ix, iy] = te;
                         }
                     }
                 }
@@ -261,12 +262,12 @@ public class Chunk
 
     public void BreakTileEntity(int x, int y, Inventory toAddTo = null)
     {
-        var prev = _tileEntities[x,y];
+        var prev = _tileEntities[x, y];
         if (toAddTo != null)
         {
             toAddTo.TryTransferAllItemsFrom(prev.Inventory);
         }
-        Hitbox dropPos = new (prev.DrawBox.Center + new Vector2(-6,-6), 12, 12);
+        Hitbox dropPos = new(prev.DrawBox.Center + new Vector2(-6, -6), 12, 12);
         var dropped = prev.Inventory.GetDroppedEntities(dropPos);
         Updatables.AddRange(dropped);
         Drawables.AddRange(dropped);
@@ -275,18 +276,19 @@ public class Chunk
         Collidables.Remove(prev);
         Drawables.Remove(prev);
         Updatables.Remove(prev);
-        
+
         (int x, int y) bottomLeft = Map.WorldPosToAbsTilePos(prev.DrawBox.Pos);
         for (int ix = bottomLeft.x; ix < prev.Width + bottomLeft.x; ix++)
         {
             for (int iy = bottomLeft.y; iy < prev.Height + bottomLeft.y; iy++)
             {
-                _tileEntities[ix,iy] = null;
+                _tileEntities[ix, iy] = null;
             }
         }
     }
 
-    public void RemoveEntity(Entity e) {
+    public void RemoveEntity(Entity e)
+    {
         Updatables.Remove(e);
         Drawables.Remove(e);
         Collidables.Remove(e);
@@ -310,14 +312,14 @@ public class Chunk
         {
             for (int y = topY; y < bottomY; y++)
             {
-                _tiles[x,y].Draw(spriteBatch, Map.TilePosToWorldPos(new Vector2(x,y)));
+                _tiles[x, y].Draw(spriteBatch, Map.TilePosToWorldPos(new Vector2(x, y)));
             }
         }
-        
+
 
         foreach (ImDrawable i in Drawables)
         {
-            if (i.IsVisible) 
+            if (i.IsVisible)
             {
                 i.Draw(spriteBatch, screen);
             }
@@ -339,7 +341,7 @@ public class Chunk
         {
             if (i.IsActive)
             {
-                i.Update(gameTime);    
+                i.Update(gameTime);
             }
         }
         if (timeSinceUpdatedTiles > TileUpdateTickLength)
@@ -348,7 +350,7 @@ public class Chunk
             {
                 for (int y = 0; y < Height; y++)
                 {
-                    TileEntity e = _tileEntities[x,y];
+                    TileEntity e = _tileEntities[x, y];
                     if (e != null && e.IsActive)
                     {
                         e.UpdateTile(new TileEntity.UpdateData(_tileEntities, x, y, timeSinceUpdatedTiles));
@@ -359,7 +361,7 @@ public class Chunk
         }
     }
 
-    
+
     public Vector2 GetCollision(Hitbox box)
     {
         Vector2 boxTilePos = Map.WorldPosToTilePos(box.Pos);
@@ -375,10 +377,11 @@ public class Chunk
             for (int y = (int)boxTilePos.Y - 1; y <= (int)boxTilePos.Y + 1; y++)
             {
                 if (x >= 0 && x < maxX && y >= 0 && y < maxY
-                && (!_tiles[x,y].Walkable || (_tileEntities[x,y] != null && _tileEntities[x,y].IsSolid)))
+                && (!_tiles[x, y].Walkable || (_tileEntities[x, y] != null && _tileEntities[x, y].IsSolid)))
                 {
-                    Hitbox tileBox = new Hitbox(Map.TilePosToWorldPos(new(x,y)), Map.TileDims, Map.TileDims);
-                    if (tileBox.Intersects(box)) {
+                    Hitbox tileBox = new Hitbox(Map.TilePosToWorldPos(new(x, y)), Map.TileDims, Map.TileDims);
+                    if (tileBox.Intersects(box))
+                    {
                         Vector2 pt = tileBox.GetClosestPointTo(box);
 
                         Vector2 pen = box.GetClosestPointTo(tileBox) - pt;

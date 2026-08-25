@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using Monogaming.Interfaces;
 
 namespace Monogaming.Items;
 
 public static class ItemDict
 {
     private static Dictionary<string, Item> items = new();
-    
+
     public static Item GetNewItem(string itemID)
     {
         return GetNewItem(itemID, 1);
@@ -36,7 +31,8 @@ public static class ItemDict
 
     public static void LoadFromFile(string fileName)
     {
-        try {
+        try
+        {
             string path = "./GameData/" + fileName + ".json";
 
             Stream textStream = File.OpenRead(path);

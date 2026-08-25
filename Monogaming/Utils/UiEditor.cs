@@ -1,16 +1,10 @@
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using Apos.Input;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Monogaming.Entities;
-using Monogaming.MapThings;
-using System.Reflection; //ruh roh raggy
 using Monogaming.TextureThings;
 using Monogaming.Ui;
 using NativeFileDialogNET;
-using Monogaming.Ui.Windows;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Monogaming.Utils;
 /// <summary>
@@ -40,19 +34,19 @@ public class UiEditor
         HandleWindowChange(null, null);
     }
 
-    private static async Task<(bool ok,string path)> AskUserOpenFile()
+    private static async Task<(bool ok, string path)> AskUserOpenFile()
     {
         using var selectFileDialog = new NativeFileDialog()
         .SelectFile();
-        
+
         DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
         return (result == DialogResult.Okay, output);
     }
-    private static async Task<(bool ok,string path)> AskUserSaveFile()
+    private static async Task<(bool ok, string path)> AskUserSaveFile()
     {
         using var selectFileDialog = new NativeFileDialog()
         .SaveFile();
-        
+
         DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
         return (result == DialogResult.Okay, output + ".json");
     }
@@ -79,30 +73,31 @@ public class UiEditor
         UiElement blank;
 
         //lol ts sucks
-        switch (type) {
-            case("buttonElement"):
+        switch (type)
+        {
+            case ("buttonElement"):
                 blank = new ButtonElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null, null, "button", null);
-            break;
-            case("textInputElement"):
+                break;
+            case ("textInputElement"):
                 blank = new TextInputElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), "default", null);
-            break;
-            case("dropDownElement"):
+                break;
+            case ("dropDownElement"):
                 blank = new DropDownElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null, "default", null);
-            break;
+                break;
             default:
                 blank = new UiElement("newElement", AnchorPoint.TopLeft, new Hitbox(0, 0, 64, 32), null);
-            break;
+                break;
         }
-        
+
         AddElementToEditor(blank);
-    }   
+    }
 
     public async void HandleCommand(JsonElement args)
     {
         switch (args.GetProperty("UiCommand").GetString())
         {
             case ("LoadFile"):
-                (bool loadok,string loadPath) = await AskUserOpenFile();
+                (bool loadok, string loadPath) = await AskUserOpenFile();
                 if (loadok)
                 {
                     LoadElement(loadPath);
@@ -111,9 +106,9 @@ public class UiEditor
                 {
                     Debug.WriteInfo("Ui file open not ok");
                 }
-            break;
+                break;
             case ("SaveFile"):
-                (bool saveok,string savePath) = await AskUserSaveFile();
+                (bool saveok, string savePath) = await AskUserSaveFile();
                 if (saveok)
                 {
                     SaveWorkingElement(savePath);
@@ -122,13 +117,13 @@ public class UiEditor
                 {
                     Debug.WriteInfo("Ui file save not ok");
                 }
-            break;
+                break;
             case ("AddElement"):
                 AddBlankElementToSelected(args.GetProperty("Type").ToString());
-            break;
+                break;
             default:
-            Debug.WriteWarn($"Fell out of ui editor command handling with {args}");
-            break;
+                Debug.WriteWarn($"Fell out of ui editor command handling with {args}");
+                break;
         }
     }
 
@@ -204,43 +199,44 @@ public class UiEditor
     {
         //mmmm yummy spaghetti sure hope i dont have to debug this
         //also im only letting this slide cause its a dev tool
-        if (element != null) {
+        if (element != null)
+        {
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "xPosElement")).
-            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().X, s), 
+            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().X, s),
             () => GetStringFromFloat(ref element.DrawBox.GetPosRef().X));
 
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "yPosElement")).
-            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().Y, s), 
+            BindString((s) => SetFloatFromString(ref element.DrawBox.GetPosRef().Y, s),
             () => GetStringFromFloat(ref element.DrawBox.GetPosRef().Y));
 
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "heightElement")).
-            BindString((s) => SetIntFromString(ref element.DrawBox.GetHeightRef(), s), 
+            BindString((s) => SetIntFromString(ref element.DrawBox.GetHeightRef(), s),
             () => GetStringFromInt(ref element.DrawBox.GetHeightRef()));
 
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "widthElement")).
-            BindString((s) => SetIntFromString(ref element.DrawBox.GetWidthRef(), s), 
+            BindString((s) => SetIntFromString(ref element.DrawBox.GetWidthRef(), s),
             () => GetStringFromInt(ref element.DrawBox.GetWidthRef()));
 
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "idElement")).
-            BindString((s) => { element.ID = s; return true; }, 
+            BindString((s) => { element.ID = s; return true; },
             () => element.ID);
 
             if (element is TextElement textElement)
             {
                 ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "textEnterElement")).
-                BindString((s) => { textElement.Text = s; return true; }, 
+                BindString((s) => { textElement.Text = s; return true; },
                 () => textElement.Text);
             }
             else if (element is ButtonElement buttonElement)
             {
                 ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "textEnterElement")).
-                BindString((s) => { buttonElement.Text = s; return true; }, 
+                BindString((s) => { buttonElement.Text = s; return true; },
                 () => buttonElement.Text);
             }
             else if (element is TextInputElement textInputElement)
             {
                 ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "textEnterElement")).
-                BindString((s) => { textInputElement.Text = s; return true; }, 
+                BindString((s) => { textInputElement.Text = s; return true; },
                 () => textInputElement.Text);
             }
 
@@ -257,7 +253,8 @@ public class UiEditor
     bool isDragging = false;
     public void Update(GameTime gameTime)
     {
-        if (workingElement != null) {
+        if (workingElement != null)
+        {
             // workingElement.Update(gameTime);
 
             if (InputConditions.click.Pressed() && innerBounds.Contains(InputHelper.NewMouse.Position.ToVector2()))
@@ -299,7 +296,7 @@ public class UiEditor
                 if (isDragging)
                 {
                     Vector2 innerScale = new Vector2(
-                    (float)Camera.ScreenWidth / innerBounds.Width, 
+                    (float)Camera.ScreenWidth / innerBounds.Width,
                     (float)Camera.ScreenHeight / innerBounds.Height);
                     selected.AdjustRealPos((InputHelper.NewMouse.Position - InputHelper.OldMouse.Position).ToVector2() / innerScale);
                     // selected.AdjustRealPos(MeowGame.ScaledMouseDelta);
@@ -317,11 +314,11 @@ public class UiEditor
         if (selected != null)
         {
             Rectangle rect = selected.ScaledDrawBox.ToRect();
-            rect.Inflate(2,2);
+            rect.Inflate(2, 2);
             spriteBatch.Draw(Textures.BlankTexture, rect, Color.Black);
         }
         workingElement?.Draw(spriteBatch);
-        
+
     }
 
 

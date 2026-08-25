@@ -1,16 +1,10 @@
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using Apos.Input;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Monogaming.Entities;
 using Monogaming.MapThings;
-using System.Reflection; //ruh roh raggy
-using Monogaming.TextureThings;
 using Monogaming.Ui;
 using NativeFileDialogNET;
-using Monogaming.Interfaces;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Monogaming.Utils;
 /// <summary>
@@ -40,14 +34,14 @@ public class MapEditor
         BindString((s) => { placedEntityID = s; return true; }, () => placedEntityID);
     }
 
-    private static async Task<(bool ok,string path)> AskUserOpenFile()
+    private static async Task<(bool ok, string path)> AskUserOpenFile()
     {
         using var selectFileDialog = new NativeFileDialog()
         .SelectFile();
         DialogResult result = selectFileDialog.Open(out string output, "./GameData/Chunks");
         return (result == DialogResult.Okay, output);
     }
-    private static async Task<(bool ok,string path)> AskUserSaveFile()
+    private static async Task<(bool ok, string path)> AskUserSaveFile()
     {
         using var selectFileDialog = new NativeFileDialog()
         .SaveFile();
@@ -61,30 +55,30 @@ public class MapEditor
         {
             case ("SettleLoadedChunk"):
                 gameStateRef.Map.SettleLoadedChunk();
-            break;
+                break;
             case ("SaveLoadedChunk"):
                 (bool ok, string path) = await AskUserSaveFile();
                 if (ok)
                 {
                     TrySaveLoadedChunk(path);
                 }
-            break;
+                break;
             case ("AddEntity"):
                 gameStateRef.Map.GetLoadedChunk()?.AddEntity(placedEntityID, Vector2.Zero);
-            break;
+                break;
             case ("LoadChunk"):
                 (bool ok2, string path2) = await AskUserOpenFile();
                 if (ok2)
                 {
                     await gameStateRef.Map.LoadChunkAsync(path2);
                 }
-            break;
+                break;
             case ("ToggleDraw"):
                 isDrawing = !isDrawing;
-            break;
+                break;
             default:
                 Debug.WriteWarn("Fell out of Map command handler");
-            break;
+                break;
         }
     }
 
@@ -102,7 +96,8 @@ public class MapEditor
             Vector2 mWorldPos = m.ScreenPosToWorldPos(mPos);
             (int x, int y, bool offscreen) mouseTPos = m.GetTileCoordAtScreenPos(mPos);
 
-            if (isDrawing && !mouseTPos.offscreen) {
+            if (isDrawing && !mouseTPos.offscreen)
+            {
                 if (InputConditions.click.Held())
                 {
                     m.TrySetTileAtPos(mouseTPos.x, mouseTPos.y, placedTileID);
@@ -135,13 +130,14 @@ public class MapEditor
 
     // public void Draw(SpriteBatch spriteBatch)
     // {
-        
+
     // }
 
     private void TrySaveLoadedChunk(string path)
     {
         Chunk chunk = gameStateRef.Map.GetLoadedChunk();
-        if (chunk != null) {
+        if (chunk != null)
+        {
             if (File.Exists(path))
             {
                 File.Move(path, path + ".bckp", true);

@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.TextureThings;
 
@@ -15,10 +11,10 @@ public class AtlasTex : ImTexture
     [JsonPropertyName("frame")]
     public Rectangle SourceRect { get; private set; }
     public Texture2D Texture { get; private set; } //ref to the one made by textures.cs so its fine for efficiency okkk :((
-    
+
 
     public AtlasTex(Texture2D tex, Rectangle sourceRect)
-    { 
+    {
         SourceRect = sourceRect;
         Texture = tex;
     }
@@ -43,7 +39,7 @@ public class AtlasTex : ImTexture
         Vector2 scale = new Vector2((float)mask.Width / dest.Width, (float)mask.Height / dest.Height);
 
         newSrc.Width = (int)(newSrc.Width * scale.X);
-        newSrc.Height = (int)(newSrc.Height * scale.Y); 
+        newSrc.Height = (int)(newSrc.Height * scale.Y);
         newSrc.X = (mask.X - dest.X) * SourceRect.Width / dest.Width;
         newSrc.Y = (mask.Y - dest.Y) * SourceRect.Height / dest.Height;
 

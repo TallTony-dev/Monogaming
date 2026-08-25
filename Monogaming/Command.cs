@@ -1,18 +1,4 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
 using System.Text.Json.Serialization;
-using System.Collections.Generic;
-using Apos.Input;
-using Monogaming.PlayerThings;
-using System.Text.Json;
-using System.IO;
-using Monogaming.MapThings;
 
 namespace Monogaming;
 
@@ -40,39 +26,40 @@ public class Command
 
     public void DispatchCommand()
     {
-        if (!string.IsNullOrEmpty(CommandName)) {
-            switch(CommandName)
+        if (!string.IsNullOrEmpty(CommandName))
+        {
+            switch (CommandName)
             {
                 case ("ActivateElement"):
                     gameStateRef.Ui.ActivateElement(Args.GetString());
-                break;
+                    break;
                 case ("DeactivateElement"):
                     gameStateRef.Ui.DeactivateElement(Args.GetString());
-                break;
+                    break;
                 case ("EnterMainGame"):
                     gameStateRef.EnterMainGame();
-                break;
+                    break;
                 case ("EnterUiEditor"):
                     gameStateRef.EnterUiEditor();
-                break;
+                    break;
                 case ("EnterMapEditor"):
                     gameStateRef.EnterMapEditor();
-                break;
+                    break;
                 case ("EnterLoadMenu"):
                     gameStateRef.EnterLoadMenu();
-                break;
+                    break;
                 case ("LoadSave"):
                     gameStateRef.LoadSave(Args.GetProperty("SaveName").GetString());
-                break;
+                    break;
                 case ("UiEditor"):
                     gameStateRef.uiEditor.HandleCommand(Args);
-                break;
+                    break;
                 case ("Map"):
                     gameStateRef.mapEditor.HandleCommand(Args);
-                break;
+                    break;
                 default:
-                Debug.WriteWarn($"Fell out of dispatch ui command with name {CommandName}");
-                break;
+                    Debug.WriteWarn($"Fell out of dispatch ui command with name {CommandName}");
+                    break;
             }
         }
         else

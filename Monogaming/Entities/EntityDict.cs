@@ -1,13 +1,4 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using System.Text.Json;
 using System.IO;
-using System.Collections.Generic;
 
 namespace Monogaming.Entities;
 
@@ -16,7 +7,7 @@ public static class EntityDict
     //string is ID
     private static Dictionary<string, Entity> entityDict = new();
 
-    
+
     public static void LoadEntities(string fileName)
     {
         try

@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
+using Microsoft.Xna.Framework.Content;
+using Monogaming.Interfaces;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
-using System.Text.Json.Nodes;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Monogaming.Interfaces;
-using Monogaming.Items;
-using Microsoft.VisualBasic;
 
 namespace Monogaming.TextureThings;
 
@@ -35,13 +28,13 @@ public static class Textures
     /// Holds references to loadedTextures2D along with json rect data
     /// </summary>
     private static Dictionary<string, AtlasTex> loadedAtlasTexs = new();
-    
+
     private static Dictionary<string, TextureAnimation> loadedAnimatedTexs = new();
     private static Dictionary<string, TileTex> loadedTileTexs = new();
 
     public static bool TextureExists(string textureName)
     {
-        return loadedAtlasTexs.ContainsKey(textureName) || 
+        return loadedAtlasTexs.ContainsKey(textureName) ||
         loadedAnimatedTexs.ContainsKey(textureName);
     }
 
@@ -110,7 +103,8 @@ public static class Textures
     }
     private static TextureAnimation GetAnimatedTexture(string textureName)
     {
-        try {
+        try
+        {
             if (!loadedAnimatedTexs.ContainsKey(textureName))
             {
                 throw new ArgumentException($"Texture with name '{textureName}' not found in loadedImTexs.");
@@ -160,12 +154,12 @@ public static class Textures
         MainFontBold = content.Load<SpriteFont>("PixelFontBold");
         BlankTexture = new Texture2D(graphics, 1, 1);
         BlankTexture.SetData(new[] { Color.White });
-        
-        foreach(string path in Directory.EnumerateFiles(DefaultPath, "*.json"))
+
+        foreach (string path in Directory.EnumerateFiles(DefaultPath, "*.json"))
         {
             LoadTextures(content, path);
         }
-        foreach(string path in Directory.EnumerateFiles(DefaultPath + "Tiles/", "*.json"))
+        foreach (string path in Directory.EnumerateFiles(DefaultPath + "Tiles/", "*.json"))
         {
             LoadTextures(content, path, true);
         }
@@ -190,7 +184,8 @@ public static class Textures
 
             if (!loadedTextures2D.ContainsKey(title))
             {
-                try {
+                try
+                {
                     loadedTextures2D.Add(title, content.Load<Texture2D>(title));
                 }
                 catch (Exception ex)
@@ -201,8 +196,9 @@ public static class Textures
 
             Dictionary<(string texType, int frameNum), FrameInfo> frameInfos = new();
             //each texture property within the texture file object
-            foreach (JsonProperty frame in frames.EnumerateObject()) {
- 
+            foreach (JsonProperty frame in frames.EnumerateObject())
+            {
+
                 string[] texNameSplit = frame.Name.Split('.');
                 string texName = texNameSplit[0];
                 string texType = texNameSplit[1];
@@ -213,7 +209,7 @@ public static class Textures
                 }
 
                 FrameInfo frameInfo = JsonSerializer.Deserialize<FrameInfo>(frame.Value);
-                
+
                 //if is animated, loop through subobjs again to get rects
                 frameInfos.Add((texType, frameNum), frameInfo);
 
@@ -227,16 +223,17 @@ public static class Textures
 
                 if (group.Count() > 1)
                 {
-                    if (!isTiles) {
+                    if (!isTiles)
+                    {
                         List<(AtlasTex tex, float delay)> texs = new();
-                        
+
                         foreach (var item in group)
                         {
                             //is ascending from previous ordering
                             texs.Add((ParseTex(item.Value, title), item.Value.Duration));
                         }
 
-                        loadedAnimatedTexs.Add($"{title}.{group.First().Key.texType}", 
+                        loadedAnimatedTexs.Add($"{title}.{group.First().Key.texType}",
                         new TextureAnimation(texs));
                         loadCount++;
                     }
@@ -247,7 +244,7 @@ public static class Textures
                         {
                             sourceRects.Add(ConvertRect(item.Value.Frame));
                         }
-                        loadedTileTexs.Add($"{group.First().Key.texType}", 
+                        loadedTileTexs.Add($"{group.First().Key.texType}",
                         new TileTex(loadedTextures2D[title], sourceRects));
                         loadCount++;
                     }
@@ -255,7 +252,7 @@ public static class Textures
                 }
                 else
                 {
-                    loadedAtlasTexs.Add($"{title}.{group.First().Key.texType}", 
+                    loadedAtlasTexs.Add($"{title}.{group.First().Key.texType}",
                     ParseTex(group.First().Value, title));
                     loadCount++;
                 }

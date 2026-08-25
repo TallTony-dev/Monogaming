@@ -1,9 +1,7 @@
-using Microsoft.Xna.Framework;
 using Monogaming.Entities;
-using System;
+using Monogaming.Ui;
 using System.IO;
 using System.Threading.Tasks;
-using Monogaming.Ui;
 
 namespace Monogaming.MapThings;
 
@@ -27,7 +25,8 @@ public class Map
 
     public async Task LoadChunkAsync(string path)
     {
-        try {
+        try
+        {
             isLoading = true;
 
             Stream textStream = File.OpenRead(path);
@@ -35,14 +34,15 @@ public class Map
             var options = new JsonSerializerOptions { WriteIndented = true };
             options.Converters.Add(new Vector2JsonConverter());
 
-            if (LiveChunk != null) {
+            if (LiveChunk != null)
+            {
                 gameStateref.Save(GameState.ActiveSave.Name);
             }
 
             //TransitionManager.AddTransition(new SlideLeftTransition(() => !isLoading))
 
             LiveChunk = await JsonSerializer.DeserializeAsync<Chunk>(textStream, options);
-            
+
             isLoading = false;
         }
         catch (Exception ex)
@@ -81,7 +81,7 @@ public class Map
     }
 
     public (int x, int y, bool offscreen) GetTileCoordAtScreenPos(Vector2 screenPos)
-    {  
+    {
         Vector2 screen = ScreenPosToWorldPos(screenPos);
 
         (int x, int y) tilePos = WorldPosToAbsTilePos(screen);
@@ -103,11 +103,11 @@ public class Map
             return true;
         }
         return false;
-    }   
+    }
     private void SetTileAtPos(int x, int y, Tile tile)
     {
         LiveChunk.ChangeTile(x, y, tile);
-    } 
+    }
 
     public void SettleLoadedChunk()
     {
@@ -118,7 +118,7 @@ public class Map
     }
     public static Vector2 TilePosToWorldPos(int x, int y)
     {
-        return new Vector2(x,y) * TileDims;
+        return new Vector2(x, y) * TileDims;
     }
     public static Vector2 TilePosToWorldPos(Vector2 tilePos)
     {

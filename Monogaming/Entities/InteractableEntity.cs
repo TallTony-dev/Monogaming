@@ -1,11 +1,7 @@
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Monogaming.Interfaces;
 using Monogaming.TextureThings;
 using Monogaming.Ui;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Monogaming.Ui.Windows;
+using System.Text.Json.Serialization;
 
 
 namespace Monogaming.Entities;
@@ -17,7 +13,7 @@ public class InteractableEntity : Entity
     public InteractableEntity(string name, string id, bool IsSolid, Hitbox drawBox, TextureHandler textureHandler) :
     base(name, id, IsSolid, drawBox, textureHandler)
     {
-        
+
     }
 
     public override Entity CopyToPos(Vector2 pos)
@@ -31,10 +27,10 @@ public class InteractableEntity : Entity
     /// </summary>
     public virtual void Interact()
     {
-        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2", 
-        null, 
+        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2",
+        null,
         () => Debug.WriteInfo("Pressed butt"));
-        
+
         UI.LiveUI.AddPopup(popup);
     }
 

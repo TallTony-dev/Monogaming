@@ -1,9 +1,5 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework;
 using Monogaming.MapThings;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Entities;
 
@@ -33,7 +29,7 @@ public class Body : Hitbox
         Height = height;
         Damping = damping;
     }
-    [JsonConstructor] 
+    [JsonConstructor]
     public Body(int width, int height) : base(width, height)
     {
         Width = width;
@@ -45,7 +41,7 @@ public class Body : Hitbox
     {
         Collided = false;
         float i = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        
+
         velocity -= velocity * Damping * i;
 
         if (velocity.Length() > WalkingEpsilon)

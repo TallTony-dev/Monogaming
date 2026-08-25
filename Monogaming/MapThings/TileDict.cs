@@ -1,20 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Monogaming.Entities;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
 using System.Data;
+using System.IO;
 
 namespace Monogaming.MapThings;
 
 public static class TileDict
 {
-    
+
 
     private static Dictionary<string, Tile> loadedTiles = new();
 

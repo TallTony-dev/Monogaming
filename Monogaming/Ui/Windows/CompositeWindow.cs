@@ -1,17 +1,5 @@
-using System;
 using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
 using System.Text.Json.Serialization;
-using Monogaming.Items;
-using Monogaming.Ui;
-using Apos.Input;
-using Microsoft.Xna.Framework.Input;
-using System.Linq;
 
 namespace Monogaming.Ui.Windows;
 
@@ -64,7 +52,7 @@ public class CompositeWindow : WindowElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-   
+
         base.Draw(spriteBatch);
     }
 }

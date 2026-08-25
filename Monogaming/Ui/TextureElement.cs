@@ -1,14 +1,7 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
 using Apos.Input;
+using Monogaming.Entities;
+using Monogaming.TextureThings;
 using System.Text.Json.Serialization;
-using System.Collections.Generic;
 
 namespace Monogaming.Ui;
 
@@ -20,12 +13,13 @@ public class TextureElement : UiElement
     [JsonConstructor]
     public TextureElement(string ID, AnchorPoint Anchor, Hitbox drawBox, TextureHandler TextureHandler, List<UiElement> Children) : base(ID, Anchor, drawBox, Children)
     {
-        if (TextureHandler != null) {
+        if (TextureHandler != null)
+        {
             this.TextureHandler = TextureHandler;
         }
         else
         {
-            this.TextureHandler = new (TextureHandler.TextureType.Default, Textures.DefaultTextureID);
+            this.TextureHandler = new(TextureHandler.TextureType.Default, Textures.DefaultTextureID);
         }
     }
 

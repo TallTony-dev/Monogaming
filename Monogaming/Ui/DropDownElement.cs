@@ -1,16 +1,8 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
 using Apos.Input;
-using Monogaming.PlayerThings;
+using Monogaming.Entities;
+using Monogaming.TextureThings;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Ui;
 
@@ -38,7 +30,7 @@ public class DropDownElement : TextureElement
 
         if (InputConditions.click.Pressed(false))
         {
-            if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)) 
+            if (ScaledDrawBox.Intersects(InputHelper.NewMouse.Position))
             {
                 InputConditions.click.Consume();
                 foreach (UiElement element in Children)

@@ -1,14 +1,5 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using System.Text.Json;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Linq;
 
 namespace Monogaming.TextureThings;
 
@@ -19,7 +10,7 @@ public class TextureHandler
     public Dictionary<TextureType, string> textures { get; private set; } //mix of keys to animated and static textures
 
     //TODO: clean this up a little lot to be more efficient with new texture loader
-    
+
     [JsonConstructor]
     public TextureHandler(Dictionary<TextureType, string> textures)
     {
@@ -73,7 +64,8 @@ public class TextureHandler
 
     public void SetTexture(TextureType textureType)
     {
-        if (CurrentTextureType != textureType) {
+        if (CurrentTextureType != textureType)
+        {
             if (textures.ContainsKey(textureType))
             {
                 //creates a copy if animated so works good

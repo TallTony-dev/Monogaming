@@ -1,5 +1,3 @@
-using System;
-
 namespace Monogaming;
 
 public static class Debug

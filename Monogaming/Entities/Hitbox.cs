@@ -1,7 +1,5 @@
-using System;
-using System.Text.Json.Serialization;
-using Microsoft.Xna.Framework;
 using Monogaming.TextureThings;
+using System.Text.Json.Serialization;
 
 namespace Monogaming.Entities;
 
@@ -36,7 +34,7 @@ public class Hitbox
     [JsonConstructor]
     public Hitbox(int X, int Y, int width, int height)
     {
-        Pos = new Vector2(X,Y);
+        Pos = new Vector2(X, Y);
         Width = width;
         Height = height;
     }
@@ -95,7 +93,7 @@ public class Hitbox
 
     public bool Intersects(Hitbox hitbox)
     {
-        return Pos.X < hitbox.Pos.X + hitbox.Width && Pos.X + Width > hitbox.Pos.X && 
+        return Pos.X < hitbox.Pos.X + hitbox.Width && Pos.X + Width > hitbox.Pos.X &&
         Pos.Y < hitbox.Pos.Y + hitbox.Height && Pos.Y + Height > hitbox.Pos.Y;
     }
     public bool Intersects(Vector2 pos)
@@ -107,7 +105,7 @@ public class Hitbox
         return Pos.X < pos.X && Pos.X + Width > pos.X && Pos.Y < pos.Y && Pos.Y + Height > pos.Y;
     }
 
-    
+
     public Vector2 GetClosestPointTo(Hitbox hitbox)
     {
         Vector2 delta = Center - hitbox.Center;

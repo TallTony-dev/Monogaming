@@ -1,5 +1,3 @@
-using System;
-using Microsoft.Xna.Framework.Graphics;
 using Monogaming.Entities;
 
 namespace Monogaming.Interfaces;

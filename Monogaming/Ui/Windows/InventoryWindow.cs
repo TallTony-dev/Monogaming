@@ -1,18 +1,11 @@
-using System;
-using Monogaming.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using Monogaming.Interfaces;
-using Monogaming.TextureThings;
-using Microsoft.Xna.Framework.Content;
-using Monogaming.Ui;
-using System.Text.Json.Serialization;
-using Monogaming.Items;
 using Apos.Input;
-using System.Linq;
+using Monogaming.Entities;
+using Monogaming.Interfaces;
+using Monogaming.Items;
 using Monogaming.MapThings;
 using Monogaming.PlayerThings;
+using Monogaming.TextureThings;
+using System.Linq;
 
 namespace Monogaming.Ui.Windows;
 
@@ -48,7 +41,7 @@ public class InventoryWindow : WindowElement
     private void TryAddHeldItemToOtherInventory()
     {
         UiElement element;
-        if ((element = UI.LiveUI.GetWindowElements().FirstOrDefault(t => 
+        if ((element = UI.LiveUI.GetWindowElements().FirstOrDefault(t =>
         (t is InventoryWindow || (t is CompositeWindow c && c.Children.Any(t => t is InventoryWindow)))
         && t.ScaledDrawBox.Intersects(draggedItem.box))) != default)
         {
@@ -63,14 +56,14 @@ public class InventoryWindow : WindowElement
             }
 
             bool allMoved = window.BoundInventory.AddItem(draggedItem.item);
-            if (allMoved) 
+            if (allMoved)
             {
                 BoundInventory.ClearEmpties();
             }
         }
     }
     public override void Update(GameTime gameTime)
-    {    
+    {
         if (prevSelected != SelectedItem && SelectedItem != null)
         {
             isDraggingItem = true;
@@ -101,7 +94,7 @@ public class InventoryWindow : WindowElement
             isDraggingItem = false;
         }
 
-        
+
         if (isDraggingItem)
         {
             if (InputConditions.click.Pressed())
@@ -117,10 +110,10 @@ public class InventoryWindow : WindowElement
                 {
                     TryAddHeldItemToOtherInventory();
                 }
-                
+
             }
         }
-        
+
 
         if (BoundInventory.HasChanged)
         {
@@ -148,7 +141,7 @@ public class InventoryWindow : WindowElement
             {
                 for (int y = placedItemTilePos.y; y < placedItemTilePos.y + entity.Height; y++)
                 {
-                    Vector2 pos = Map.TilePosToWorldPos(x,y);
+                    Vector2 pos = Map.TilePosToWorldPos(x, y);
                     SelectedItem.DrawBackground(batch, new Hitbox(pos, Map.TileDims, Map.TileDims), color, 0);
                 }
             }
@@ -161,7 +154,7 @@ public class InventoryWindow : WindowElement
     {
         if (isDraggingItem)
         {
-            draggedItem.item.Draw(spriteBatch, draggedItem.box, false);   
+            draggedItem.item.Draw(spriteBatch, draggedItem.box, false);
         }
         base.Draw(spriteBatch);
     }

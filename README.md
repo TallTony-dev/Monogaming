@@ -30,4 +30,5 @@ Potential future opimizations:
 - Optimize how/when chunks, ui menus, and textures are loaded
 
 Name ideas:
-NASC (NASC Ain't a Survival Craft OR Not Another Survival Craft)
+NASC (NASC Ain't a Survival Craft OR Not Another Survival Craft OR NASC is A Survival Craft)
+or MASC with same defs
