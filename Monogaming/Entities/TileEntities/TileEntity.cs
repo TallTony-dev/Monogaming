@@ -13,11 +13,11 @@ public class TileEntity : InventoryEntity
     /// <summary>
     /// Width in terms of tiles
     /// </summary>
-    public int Width { get => DrawBox.Width / Map.TileDims; }
+    public int Width { get => (int)DrawBox.Width / Map.TileDims; }
     /// <summary>
     /// Height in terms of tiles
     /// </summary>
-    public int Height { get => DrawBox.Height / Map.TileDims; }
+    public int Height { get => (int)DrawBox.Height / Map.TileDims; }
 
 
     [JsonConstructor]
@@ -29,7 +29,7 @@ public class TileEntity : InventoryEntity
 
     public override Entity CopyToPos(Vector2 worldPos)
     {
-        var e = new TileEntity(Name, ID, Width, Height, IsSolid, Inventory.Copy(), TextureHandler.Copy());
+        var e = new TileEntity(Name, ID, (int)Width, (int)Height, IsSolid, Inventory.Copy(), TextureHandler.Copy());
         e.SetPos(worldPos);
         return e;
     }

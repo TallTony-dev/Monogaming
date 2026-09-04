@@ -10,6 +10,14 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+	<MonoGamePlatform>DesktopGL</MonoGamePlatform>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Monogaming.Content\**" />
+    <EmbeddedResource Remove="Monogaming.Content\**" />
+    <None Remove="Monogaming.Content\**" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
@@ -22,17 +30,13 @@
       <LogicalName>Icon.bmp</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+	<Import Project="Monogaming.Content\BuildContent.targets" />
   <ItemGroup>
-    <PackageReference Include="Apos.Input" Version="2.5.0" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.5" />
+    <PackageReference Include="Apos.Input" Version="3.2.1" />
+    <PackageReference Include="AsepriteDotNet" Version="1.9.1" />
+    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.6.1" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.6.1" />
     <PackageReference Include="NativeFileDialogNET" Version="2.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\GameData\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <TargetPath>GameData\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
   </ItemGroup>
 </Project>

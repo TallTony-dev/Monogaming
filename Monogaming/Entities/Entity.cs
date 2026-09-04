@@ -21,9 +21,8 @@ public class Entity : ImDrawable, ImUpdatable, ImCollidable
     [JsonIgnore]
     public bool IsActive { get; private set; } = true; // determines if should be updated
     public bool IsSolid { get; private set; } = true;
-
+    
     public Hitbox DrawBox { get; private set; }
-
     public string Name { get; private set; }
     public string ID { get; private set; } //used to identify entity in code
     public TextureHandler TextureHandler { get; private set; }
@@ -41,7 +40,7 @@ public class Entity : ImDrawable, ImUpdatable, ImCollidable
 
     public virtual Entity CopyToPos(Vector2 pos)
     {
-        Hitbox newBox = new Hitbox(pos, DrawBox.Width, DrawBox.Height);
+        Hitbox newBox = new Hitbox(pos, (int)DrawBox.Width, (int)DrawBox.Height);
         return new Entity(Name, ID, IsSolid, newBox, TextureHandler.Copy());
     }
 
@@ -73,6 +72,13 @@ public class Entity : ImDrawable, ImUpdatable, ImCollidable
         {
             TextureHandler.Draw(spriteBatch, DrawBox.ToRect());
         }
+    }
+    public virtual void TryDrawLight(SpriteBatch spriteBatch, Hitbox screen)
+    {
+        //if (screen.Intersects(DrawBox)) 
+        //{
+            TextureHandler.TryDrawLight(spriteBatch, DrawBox.ToRect(), Color.White);
+        //}
     }
     public virtual void DrawAtPos(SpriteBatch spriteBatch, Vector2 pos, Color color)
     {

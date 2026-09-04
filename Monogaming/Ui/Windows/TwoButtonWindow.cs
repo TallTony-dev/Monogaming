@@ -18,9 +18,9 @@ public class TwoButtonWindow : WindowElement
     {
         b1action = button1Action;
         b2action = button2Action;
-        Hitbox textBox = new Hitbox(new Vector2(TextPadding, TopBarHeight + TextPadding), drawBox.Width, drawBox.Height - TopBarHeight - TextPadding * 2 - ButtonHeight - ButtonPadding * 2);
-        Hitbox h1 = new Hitbox(new Vector2(ButtonPadding, -ButtonPadding - ButtonHeight), drawBox.Width / 3 - ButtonPadding, ButtonHeight);
-        Hitbox h2 = new Hitbox(new Vector2(-ButtonPadding, -ButtonPadding - ButtonHeight), drawBox.Width / 3 - ButtonPadding, ButtonHeight);
+        Hitbox textBox = new Hitbox(new Vector2(TextPadding, TopBarHeight + TextPadding), (int)drawBox.Width, (int)drawBox.Height - TopBarHeight - TextPadding * 2 - ButtonHeight - ButtonPadding * 2);
+        Hitbox h1 = new Hitbox(new Vector2(ButtonPadding, -ButtonPadding - ButtonHeight), (int)drawBox.Width / 3 - ButtonPadding, ButtonHeight);
+        Hitbox h2 = new Hitbox(new Vector2(-ButtonPadding, -ButtonPadding - ButtonHeight), (int)drawBox.Width / 3 - ButtonPadding, ButtonHeight);
 
         //maybe having null uiactions is bad design but probably fine 
         kid1 = new ButtonElement("kid1", AnchorPoint.BottomLeft, h1, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),

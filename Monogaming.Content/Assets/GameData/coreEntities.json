@@ -1,0 +1,111 @@
+{
+    "Title": "entities",
+    "EntityBookName": "Core",
+
+  "testEntity": {
+    "EntityType": "interactableEntity",
+    "DrawBox": {
+      "Width": 100,
+      "Height": 100
+    },
+    "Name": "Test Entity",
+    "ID": "core_testEntity",
+    "IsSolid": false,
+    "TextureHandler": {
+      "LightRadius": 400,
+      "textures": {
+        "Default": "Sprite-0006.Idle",
+        "Idle": "Sprite-0006.Idle",
+        "Walking": "Sprite-0006.Walk",
+        "Light": "lights.light-1"
+      }
+    }
+  },
+  "testTileEntity": {
+    "EntityType": "tileEntity",
+    "Name": "Test Tile Entity",
+    "ID": "core_testTileEntity",
+    "Width": 1,
+    "Height": 1,
+    "Inventory": {
+      "MaxStackCount": 1,
+      "Items": [
+        {
+          "ItemID": "core_iron",
+          "Count": 5
+        }
+      ]
+    },
+    "TextureHandler": {
+      "LightRadius": 50,
+      "textures": {
+        "Default": "Sprite-0006.Idle",
+        "Idle": "Sprite-0006.Idle",
+        "Walking": "Sprite-0006.Walk",
+        "Light": "lights.light-1"
+      }
+    }
+  },
+  "wideTileEntity": {
+    "EntityType": "tileEntity",
+    "Name": "Test Tile Entity",
+    "ID": "core_wideTestTileEntity",
+    "Width": 4,
+    "Height": 2,
+    "Inventory": {
+      "MaxStackCount": 1,
+      "Items": [
+        {
+          "ItemID": "core_iron",
+          "Count": 5
+        }
+      ]
+    },
+    "TextureHandler": {
+      "LightRadius": 50,
+      "textures": {
+        "Default": "Sprite-0006.Idle",
+        "Idle": "Sprite-0006.Idle",
+        "Walking": "Sprite-0006.Walk",
+        "Light": "lights.light-1"
+      }
+    }
+  },
+  "furnace": {
+    "EntityType": "processingEntity",
+    "Name": "Furnace Entity",
+    "WorkbenchName": "furnace",
+    "WorkbenchSpeed": 0.5,
+    "ID": "core_furnaceEntity",
+    "Width": 2,
+    "Height": 2,
+    "Inputs": {
+      "MaxStackCount": 1,
+      "Items": [
+      ]
+    },
+    "Outputs": {
+      "MaxStackCount": 1,
+      "Items": [
+      ]
+    },
+    "Inventory": {
+      "MaxStackCount": 1,
+      "Items": [
+        {
+          "ItemID": "core_iron",
+          "Count": 5
+        }
+      ]
+    },
+    "TextureHandler": {
+      "LightRadius": 50,
+      "textures": {
+        "Default": "Sprite-0006.Idle",
+        "Idle": "Sprite-0006.Idle",
+        "Walking": "Sprite-0006.Walk",
+        "Light": "lights.light-1"
+      }
+    }
+  }
+}

@@ -327,6 +327,22 @@ public class Chunk
 
     }
 
+    public void DrawLights(SpriteBatch spriteBatch, Hitbox screen)
+    {
+        //TODO: draw any lights as textures here
+
+        foreach (ImDrawable i in Drawables)
+        {
+            if (i.IsVisible)
+            {
+                i.TryDrawLight(spriteBatch, screen);
+            }
+        }
+
+
+
+    }
+
     public void Update(GameTime gameTime)
     {
         timeSinceUpdatedTiles += (float)gameTime.ElapsedGameTime.TotalSeconds;

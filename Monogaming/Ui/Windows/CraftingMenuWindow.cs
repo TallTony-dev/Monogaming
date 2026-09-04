@@ -18,17 +18,18 @@ public class CraftingMenuWindow : WindowElement
     private const float SpaceRatio = 0.5f;
     public CraftingMenuWindow(Inventory inv, List<string> workbenches, Hitbox drawBox) : base(AnchorPoint.TopLeft, drawBox, null)
     {
+        MinHeight = 200;
         this.inv = inv;
         this.workbenches = workbenches;
 
         Vector2 scale = UI.LiveUI.Scale;
 
         scrollSon = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
-         new Hitbox(ScrollBoxPadding, 0, (int)(drawBox.Width * SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding)
+         new Hitbox(ScrollBoxPadding, 0, (int)(drawBox.Width * SpaceRatio) - ScrollBoxPadding * 2, (int)drawBox.Height - ScrollBoxPadding)
          , RecipeBook.GetAvaliableRecipes(GameState.ActiveSave, inv, workbenches).ConvertAll(t => ((ImItem)t.recipe, !t.canCraft)));
 
         craftingDisplaySon = new CraftingDisplayElement("craftingDisplay", AnchorPoint.TopLeft,
-        new Hitbox(ScrollBoxPadding + (int)(scrollSon.DrawBox.Width / scale.X), 0, (int)(drawBox.Width / SpaceRatio) - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inv, workbenches);
+        new Hitbox(ScrollBoxPadding + (int)(scrollSon.DrawBox.Width / scale.X), 0, (int)(drawBox.Width / SpaceRatio) - ScrollBoxPadding * 2, (int)drawBox.Height - ScrollBoxPadding), inv, workbenches);
 
         Children.Add(scrollSon);
         Children.Add(craftingDisplaySon);

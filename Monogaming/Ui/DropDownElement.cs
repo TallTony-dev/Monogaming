@@ -14,7 +14,7 @@ namespace Monogaming.Ui;
 public class DropDownElement : TextureElement
 {
     [JsonIgnore]
-    private bool isMenuOpen = false;
+    public bool IsMenuOpen { get; private set; } = false;
 
     public string Text { get; private set; }
 
@@ -37,7 +37,7 @@ public class DropDownElement : TextureElement
                 {
                     element.ActivateElement();
                 }
-                isMenuOpen = true;
+                IsMenuOpen = true;
             }
             else if (!Children.Any(t => t.ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)))
             {
@@ -45,7 +45,7 @@ public class DropDownElement : TextureElement
                 {
                     element.DeactivateElement();
                 }
-                isMenuOpen = false;
+                IsMenuOpen = false;
             }
         }
 

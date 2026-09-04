@@ -18,7 +18,7 @@ public class InteractableEntity : Entity
 
     public override Entity CopyToPos(Vector2 pos)
     {
-        Hitbox newBox = new Hitbox(pos, DrawBox.Width, DrawBox.Height);
+        Hitbox newBox = new Hitbox(pos, (int)DrawBox.Width, (int)DrawBox.Height);
         return new InteractableEntity(Name, ID, IsSolid, newBox, TextureHandler.Copy());
     }
 

@@ -1,9 +1,12 @@
 using Apos.Input;
 using Monogaming.Entities;
 using Monogaming.MapThings;
+using Monogaming.Monogaming.Utils;
 using Monogaming.Ui;
 using NativeFileDialogNET;
 using System.IO;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Monogaming.Utils;
@@ -34,21 +37,6 @@ public class MapEditor
         BindString((s) => { placedEntityID = s; return true; }, () => placedEntityID);
     }
 
-    private static async Task<(bool ok, string path)> AskUserOpenFile()
-    {
-        using var selectFileDialog = new NativeFileDialog()
-        .SelectFile();
-        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Chunks");
-        return (result == DialogResult.Okay, output);
-    }
-    private static async Task<(bool ok, string path)> AskUserSaveFile()
-    {
-        using var selectFileDialog = new NativeFileDialog()
-        .SaveFile();
-        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Chunks");
-        return (result == DialogResult.Okay, output + ".json");
-    }
-
     public async void HandleCommand(JsonElement Args)
     {
         switch (Args.GetProperty("UiCommand").GetString())
@@ -57,7 +45,7 @@ public class MapEditor
                 gameStateRef.Map.SettleLoadedChunk();
                 break;
             case ("SaveLoadedChunk"):
-                (bool ok, string path) = await AskUserSaveFile();
+                (bool ok, string path) = await FileSystemUtils.AskUserSaveFile(Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Content/GameData/Chunks"));
                 if (ok)
                 {
                     TrySaveLoadedChunk(path);
@@ -67,7 +55,7 @@ public class MapEditor
                 gameStateRef.Map.GetLoadedChunk()?.AddEntity(placedEntityID, Vector2.Zero);
                 break;
             case ("LoadChunk"):
-                (bool ok2, string path2) = await AskUserOpenFile();
+                (bool ok2, string path2) = await FileSystemUtils.AskUserOpenFile(Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Content/GameData/Chunks"));
                 if (ok2)
                 {
                     await gameStateRef.Map.LoadChunkAsync(path2);

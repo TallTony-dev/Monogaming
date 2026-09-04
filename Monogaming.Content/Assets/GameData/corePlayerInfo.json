@@ -3,14 +3,16 @@
     "PlayerDataName": "core",
 
     "MoveSpeed": 100,
-    
-    "TextureHandler": {
-        "textures": {
-            "Default": "Sprite-0006.Idle",
-            "Idle": "Sprite-0006.Idle",
-            "Walking": "Sprite-0006.Walk"
-        }
-    },
+
+  "TextureHandler": {
+    "LightRadius": 150,
+    "textures": {
+      "Default": "character_robot.walk",
+      "Idle": "character_robot.walk",
+      "Walking": "Sprite-0006.Walk",
+      "Light": "lights.light-1"
+    }
+  },
 
     "Inventory": {
         "MaxStackCount": 50,

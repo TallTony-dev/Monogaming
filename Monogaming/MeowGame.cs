@@ -1,10 +1,13 @@
 ﻿using Apos.Input;
+using Assimp;
 using Microsoft.Xna.Framework.Input;
 using Monogaming.Entities;
 using Monogaming.Interfaces;
 using Monogaming.Items;
 using Monogaming.MapThings;
 using Monogaming.TextureThings;
+using Monogaming.Ui;
+using Monogaming.Ui.Transitions;
 
 namespace Monogaming;
 
@@ -17,9 +20,9 @@ public class MeowGame : Game
     GameState gameState;
 
     Camera camera;
-    // RenderTarget2D gameTarget;
+    RenderTarget2D lightingTarget;
 
-    Effect testEffect;
+    //Effect testEffect;
 
     //TEMP:
     Entity testEntity;
@@ -47,10 +50,6 @@ public class MeowGame : Game
         Window.AllowUserResizing = true;
         Window.Title = "Fun awesome game :)";
 
-        testEffect = Content.Load<Effect>("testshader");
-        // gameTarget = new RenderTarget2D(GraphicsDevice, ScreenWidth, ScreenHeight, 
-        // false, SurfaceFormat.Color, DepthFormat.None, 0 ,RenderTargetUsage.PreserveContents);
-
         base.Initialize();
     }
 
@@ -64,6 +63,10 @@ public class MeowGame : Game
 
         EntityDict.LoadEntities("coreEntities");
         TileDict.LoadTiles("coreTiles");
+
+        //testEffect = Content.Load<Effect>("testshader");
+        lightingTarget = new RenderTarget2D(GraphicsDevice, Camera.ScreenWidth, Camera.ScreenHeight,
+        false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
 
         gameState = new(Window, ref camera);
         testEntity = EntityDict.CreateEntity("core_testEntity", Vector2.Zero);
@@ -84,7 +87,7 @@ public class MeowGame : Game
     {
         if (escape.Pressed())
             Exit();
-        InputHelper.UpdateSetup();
+        InputHelper.UpdateSetup(gameTime);
 
         OldScaledMousePos = ScaledMousePos;
         ScaledMousePos = InputHelper.NewMouse.Position.ToVector2() / camera.Scale;
@@ -105,6 +108,11 @@ public class MeowGame : Game
 
         camera.Update(gameTime, gameState.Player.body.Center);
 
+        if (TransitionManager.IsTransitioning)
+        {
+            TransitionManager.Update(gameTime);
+        }
+
         InputHelper.UpdateCleanup();
         base.Update(gameTime);
     }
@@ -112,6 +120,16 @@ public class MeowGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        Hitbox screen = camera.Screen;
+
+        GraphicsDevice.SetRenderTarget(lightingTarget);
+        GraphicsDevice.Clear(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+        SpriteBatch.Begin(blendState: BlendState.Additive, transformMatrix: camera.TranslationMatrix * camera.ScaleMatrix * Matrix.CreateScale(Camera.ScreenWidth / (float)Window.ClientBounds.Width, Camera.ScreenHeight / (float)Window.ClientBounds.Height, 1) * Matrix.CreateTranslation(Camera.ScreenWidth / 2, Camera.ScreenHeight / 2, 0));
+        gameState.DrawLights(SpriteBatch, screen);
+        SpriteBatch.End();
+        GraphicsDevice.SetRenderTarget(null);
+
+
         // GraphicsDevice.SetRenderTarget(gameTarget);
         if (timeSinceCleared >= 0)
         {
@@ -128,7 +146,7 @@ public class MeowGame : Game
 
         //https://github.com/SuRGeoNix/Flyleaf
         //try implementing this for videos
-        Hitbox screen = camera.Screen;
+
         foreach (ImDrawable e in activeDrawables)
         {
             if (e.IsVisible)
@@ -139,9 +157,25 @@ public class MeowGame : Game
         gameState.Draw(SpriteBatch, screen);
         SpriteBatch.End();
 
+        var multiplyBlend = new BlendState
+        {
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.DestinationColor,
+            ColorDestinationBlend = Blend.Zero
+        };
+
+        SpriteBatch.Begin(blendState: multiplyBlend);
+        SpriteBatch.Draw(lightingTarget, Window.ClientBounds with { X = 0, Y = 0 }, Color.White);
+        SpriteBatch.End();
+
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: null);
         gameState.DrawUI(SpriteBatch);
         SpriteBatch.End();
+
+        if (TransitionManager.IsTransitioning)
+        {
+            TransitionManager.DrawTransitionUninit(SpriteBatch);
+        }
 
         // GraphicsDevice.SetRenderTarget(null);
 

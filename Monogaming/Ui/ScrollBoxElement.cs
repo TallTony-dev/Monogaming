@@ -44,7 +44,7 @@ public class ScrollBoxElement : UiElement
 
     private int GetItemWidth()
     {
-        return Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + Item.ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
+        return (int)Math.Clamp(ScaledDrawBox.Width / PrefItemsPerRow + Item.ItemPadding * PrefItemsPerRow, MinItemWidth, MaxItemWidth);
     }
 
     public Hitbox GetNewHitboxForItem(ImItem item)
@@ -52,24 +52,26 @@ public class ScrollBoxElement : UiElement
         return new Hitbox(ItemBoxes.Find(t => t.item == item).box);
     }
 
-    private void UpdateHitboxes()
+    public void UpdateHitboxes()
     {
-        int x = ScaledDrawBox.Width - ScrollBarWidth - ScrollBarPadding;
+        int x = (int)ScaledDrawBox.Width - ScrollBarWidth - ScrollBarPadding;
         int y = (int)(scrollPosNorm * (float)(ScaledDrawBox.Height - ScrollBarPadding - ScrollBarHeight));
         scrollBar = new Hitbox(new Vector2(x, y) + ScaledDrawBox.Pos, ScrollBarWidth, ScrollBarHeight);
 
         ItemBoxes.Clear();
         Rectangle toDrawIn = ScaledDrawBox.ToRect();
-        toDrawIn.Width -= scrollBar.Width + ScrollBarPadding * 2 + 1;
+        toDrawIn.Width -= (int)scrollBar.Width + ScrollBarPadding * 2 + 1;
         int itemWidth = GetItemWidth();
-        int itemsPerRow = toDrawIn.Width / itemWidth;
+        int xPerItem = itemWidth + Item.ItemPadding;
+
+        int itemsPerRow = toDrawIn.Width / xPerItem;
         if (itemsPerRow == 0) { itemsPerRow = 1; }
 
-        int xPerItem = itemWidth + Item.ItemPadding;
+
         int itemCount = Items.Count();
         int rowCount = itemCount / itemsPerRow + 1;
 
-        int maxScrollY = Math.Max(0, rowCount * xPerItem - ScaledDrawBox.Height);
+        int maxScrollY = (int)Math.Max(0, rowCount * xPerItem - ScaledDrawBox.Height);
 
         float iOff = maxScrollY / (float)xPerItem * scrollPosNorm;
 
@@ -117,11 +119,12 @@ public class ScrollBoxElement : UiElement
             if (InputConditions.click.Pressed())
             {
                 isBeingDragged = true;
+                InputConditions.click.Consume();
             }
         }
 
         //check for item selection
-        if (InputConditions.rightClick.Pressed())
+        if (InputConditions.rightClick.Pressed() || (SelectedItem != null && SelectedItem.Count == 0))
         {
             isBeingDragged = false;
             SelectedItem = null;
@@ -166,12 +169,13 @@ public class ScrollBoxElement : UiElement
 
         int itemWidth = GetItemWidth();
         int itemsPerRow = toDrawIn.Width / itemWidth;
+        itemsPerRow = itemsPerRow == 0 ? 1 : itemsPerRow;
 
         int xPerItem = itemWidth + Item.ItemPadding;
         int itemCount = Items.Count();
         int rowCount = itemCount / itemsPerRow + 1;
 
-        int maxScrollY = Math.Max(0, rowCount * xPerItem - ScaledDrawBox.Height);
+        int maxScrollY = (int)Math.Max(0, rowCount * xPerItem - ScaledDrawBox.Height);
 
         int firstRowInd = (int)(maxScrollY / (float)xPerItem * scrollPosNorm);
         int lastRowInd = Math.Min(rowCount, (int)MathF.Ceiling(ScaledDrawBox.Height / xPerItem) + firstRowInd + 2);

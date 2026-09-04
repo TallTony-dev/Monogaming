@@ -1,5 +1,14 @@
+using AsepriteDotNet;
+using AsepriteDotNet.Aseprite;
+using AsepriteDotNet.Aseprite.Types;
+using AsepriteDotNet.Common;
+using AsepriteDotNet.IO;
+using AsepriteDotNet.Processors;
+using Assimp.Unmanaged;
 using Microsoft.Xna.Framework.Content;
+using MonoGame.Effect;
 using Monogaming.Interfaces;
+using Monogaming.Items;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -10,6 +19,8 @@ public static class Textures
 {
 
     //wow this was all unnessecary and i couldve just used https://github.com/AristurtleDev/monogame-aseprite );
+
+    //hold the phone this is decoupled so I can make my ImTexture impl be this instead!!! HOPE RESTORED
 
     public const string DefaultTextureID = "Sprite-0006.Idle";
 
@@ -83,7 +94,7 @@ public static class Textures
             Debug.WriteError($"Failed to load texture {textureName} with exception {ex.Message}");
         }
 
-        return loadedAnimatedTexs[DefaultTextureID];
+        return new AtlasTex(BlankTexture, new Microsoft.Xna.Framework.Rectangle(0,0,1,1));
     }
     private static AtlasTex Get2DTex(string textureName)
     {
@@ -131,22 +142,31 @@ public static class Textures
     }
     private static AtlasTex ParseTex(FrameInfo element, string texture2DKey)
     {
-        Rectangle rect = ConvertRect(element.Frame);
+        Microsoft.Xna.Framework.Rectangle rect = ConvertRect(element.Frame);
         AtlasTex tex = new AtlasTex(loadedTextures2D[texture2DKey], rect);
         return tex;
     }
-    private static Rectangle ConvertRect(Rect badRect)
+    private static Microsoft.Xna.Framework.Rectangle ConvertRect(Rect badRect)
     {
-        return new Rectangle(
+        return new Microsoft.Xna.Framework.Rectangle(
             badRect.X,
             badRect.Y,
             badRect.W,
             badRect.H
         );
     }
+    private static Microsoft.Xna.Framework.Rectangle ConvertRect(AsepriteDotNet.Common.Rectangle badRect)
+    {
+        return new Microsoft.Xna.Framework.Rectangle(
+            badRect.X,
+            badRect.Y,
+            badRect.Width,
+            badRect.Height
+        );
+    }
 
 
-    const string DefaultPath = "./GameData/Textures/";
+    const string DefaultPath = "./Content/GameData/Textures/";
     public static void Initialize(ContentManager content, GraphicsDevice graphics)
     {
         graphicsRef = graphics;
@@ -163,8 +183,104 @@ public static class Textures
         {
             LoadTextures(content, path, true);
         }
+        foreach (string path in Directory.EnumerateFiles(DefaultPath, "*.aseprite"))
+        {
+            LoadTexturesAseprite(graphics, path, false);
+        }
+        foreach (string path in Directory.EnumerateFiles(DefaultPath + "Tiles/", "*.aseprite"))
+        {
+            LoadTexturesAseprite(graphics, path, true);
+        }
+    }
+    private static void LoadTexturesAseprite(GraphicsDevice graphics, string path, bool isTiles)
+    {
+        try
+        {
+            int loadCount = 0;
+
+            AsepriteFile file = AsepriteFileLoader.FromFile(path);
+            TextureAtlas atlas = TextureAtlasProcessor.Process(file, true);
+            SpriteSheet spriteSheet = SpriteSheetProcessor.Process(file, true);
+
+            string title = file.Name;
+
+            if (!loadedTextures2D.ContainsKey(title))
+            {
+                try
+                {
+                    ReadOnlySpan<Rgba32> pixels = atlas.Texture.Pixels;
+                    Texture2D texture = new Texture2D(graphics, atlas.Texture.Size.Width, atlas.Texture.Size.Height);
+                    texture.SetData(pixels.ToArray());
+                    loadedTextures2D.Add(title, texture);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteError($"Failed to load aseprite file {title} from contentloader in file {path} with err {ex.Message}");
+                    return;
+                }
+            }
+
+
+            foreach (var tag in spriteSheet.Tags)
+            {
+                if (!isTiles)
+                {
+                    if (tag.Frames.Length > 1)
+                    {
+                        List<(AtlasTex tex, float delay)> texs = new();
+                        foreach (var frame in tag.Frames)
+                        {
+                            texs.Add((new AtlasTex(loadedTextures2D[title], ConvertRect(spriteSheet.TextureAtlas.Regions[frame.FrameIndex].Bounds)),
+                                (float)frame.Duration.TotalMilliseconds));
+                        }
+
+                        loadedAnimatedTexs.Add($"{title}.{tag.Name}", new TextureAnimation(texs));
+                        loadCount++;
+                    }
+                    else
+                    {
+                        var tex = new AtlasTex(loadedTextures2D[title], ConvertRect(spriteSheet.TextureAtlas.Regions[tag.Frames[0].FrameIndex].Bounds));
+                        loadedAtlasTexs.Add($"{title}.{tag.Name}", tex);
+                        loadCount++;
+                    }
+                }
+                else
+                {
+                    if (tag.Frames.Length > 1)
+                    {
+                        Debug.WriteError($"Got tile tag with more than one frame which isnt supported currently. Found {tag.Frames.Length} tiles.");
+                        continue;
+                    }
+                    //foreach as eventually this could maybe do animated tiles if wanted though tiletex would need changes too
+                    foreach (var frame in tag.Frames)
+                    {
+                        List<Microsoft.Xna.Framework.Rectangle> sourceRects = new();
+                        var tileSetRect = ConvertRect(spriteSheet.TextureAtlas.Regions[frame.FrameIndex].Bounds);
+                        for (int row = 0; row < 4; row++)
+                        {
+                            for (int col = 0; col < 6; col++)
+                            {
+                                sourceRects.Add(new Microsoft.Xna.Framework.Rectangle(col * 16 + tileSetRect.X, row * 16 + tileSetRect.Y, 16, 16));
+                            }
+                        }
+
+                        loadedTileTexs.Add($"{title}.{tag.Name}",
+                            new TileTex(loadedTextures2D[title], sourceRects));
+                        loadCount++;
+                    }
+                }
+            }
+            Debug.WriteInfo($"Loaded {loadCount} aseprite textures from {title}");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteError($"Failed to load aseprite textureFile with name {path} with exception {ex.Message}");
+        }
     }
 
+    /// <summary>
+    /// Prefer usage of loading aseprite files instead of this method
+    /// </summary>
     private static void LoadTextures(ContentManager content, string path, bool isTiles = false)
     {
         try
@@ -239,7 +355,7 @@ public static class Textures
                     }
                     else
                     {
-                        List<Rectangle> sourceRects = new();
+                        List<Microsoft.Xna.Framework.Rectangle> sourceRects = new();
                         foreach (var item in group)
                         {
                             sourceRects.Add(ConvertRect(item.Value.Frame));

@@ -33,7 +33,7 @@ public static class ItemDict
     {
         try
         {
-            string path = "./GameData/" + fileName + ".json";
+            string path = "./Content/GameData/" + fileName + ".json";
 
             Stream textStream = File.OpenRead(path);
             JsonDocument document = JsonDocument.Parse(textStream);

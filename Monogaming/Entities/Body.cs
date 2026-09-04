@@ -25,15 +25,13 @@ public class Body : Hitbox
     public Body(Vector2 startPos, int width, int height, float damping) : base(startPos, width, height)
     {
         Pos = startPos;
-        Width = width;
-        Height = height;
+        SetDims(new Vector2(width, height));
         Damping = damping;
     }
     [JsonConstructor]
     public Body(int width, int height) : base(width, height)
     {
-        Width = width;
-        Height = height;
+        SetDims(new Vector2(width, height));
         Pos = Vector2.Zero;
     }
 

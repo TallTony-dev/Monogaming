@@ -11,8 +11,8 @@ public class Map
 
     private GameState gameStateref;
     private Camera cameraRef;
-    public static Chunk LiveChunk { get; private set; } // refactored this late so many times it is passed in calls anyways
-    public static Map LiveMap { get; private set; } // refactored this late so many times it is passed in calls anyways
+    public static Chunk LiveChunk { get; private set; } // refactored this late so many times it is passed in calls anyways // what the hell was I talking about
+    public static Map LiveMap { get; private set; } // refactored this late so many times it is passed in calls anyways // what the hell was I talking about 2
     public bool isLoading { get; private set; } = true;
 
     public Map(Camera cameraRef, GameState gameState)
@@ -77,6 +77,14 @@ public class Map
         if (!isLoading)
         {
             LiveChunk?.Draw(spriteBatch, screen);
+        }
+    }
+
+    public void DrawLights(SpriteBatch spriteBatch, Hitbox screen)
+    {
+        if (!isLoading)
+        {
+            LiveChunk?.DrawLights(spriteBatch, screen);
         }
     }
 

@@ -32,13 +32,12 @@ public class InventoryWindow : WindowElement
         BoundInventory = inventory;
 
         sonion = new ScrollBoxElement("scrollBox", AnchorPoint.TopLeft, new TextureHandler(TextureHandler.TextureType.Default, "buttonRock.Unpressed"),
-         new Hitbox(ScrollBoxPadding, 0, drawBox.Width - ScrollBoxPadding * 2, drawBox.Height - ScrollBoxPadding), inventory.Items.ConvertAll(t => ((ImItem)t, false)));
+         new Hitbox(ScrollBoxPadding, 0, (int)drawBox.Width - ScrollBoxPadding * 2, (int)drawBox.Height - ScrollBoxPadding), inventory.Items.ConvertAll(t => ((ImItem)t, false)));
 
         Children.Add(sonion);
     }
 
-
-    private void TryAddHeldItemToOtherInventory()
+    private bool TryAddHeldItemToOtherInventory()
     {
         UiElement element;
         if ((element = UI.LiveUI.GetWindowElements().FirstOrDefault(t =>
@@ -55,12 +54,11 @@ public class InventoryWindow : WindowElement
                 window = (InventoryWindow)element.Children.Find(t => t is InventoryWindow);
             }
 
-            bool allMoved = window.BoundInventory.AddItem(draggedItem.item);
-            if (allMoved)
-            {
-                BoundInventory.ClearEmpties();
-            }
+            window.BoundInventory.AddItem(draggedItem.item);
+            BoundInventory.ClearEmpties();
+            return true;
         }
+        return false;
     }
     public override void Update(GameTime gameTime)
     {
@@ -99,16 +97,14 @@ public class InventoryWindow : WindowElement
         {
             if (InputConditions.click.Pressed())
             {
-                if (isPlacedItemValid)
+                bool addedToOtherInv = TryAddHeldItemToOtherInventory();
+
+                if (!addedToOtherInv && isPlacedItemValid)
                 {
                     Map.LiveChunk.AddEntity(SelectedItem.PlacedEntityID, tileWorldPos);
                     SelectedItem.RemoveFrom(1);
                     BoundInventory.ClearEmpties();
                     InputConditions.click.Consume();
-                }
-                else
-                {
-                    TryAddHeldItemToOtherInventory();
                 }
 
             }
@@ -132,7 +128,8 @@ public class InventoryWindow : WindowElement
     /// </summary>
     public void TryDrawSelectedItem(SpriteBatch batch)
     {
-        if (isDraggingItem && SelectedItem != null && !string.IsNullOrEmpty(SelectedItem.PlacedEntityID))
+        if (isDraggingItem && SelectedItem != null && !string.IsNullOrEmpty(SelectedItem.PlacedEntityID)
+        && !UI.LiveUI.DoesMouseIntersectWithAnyWindow())
         {
             TileEntity entity = (TileEntity)EntityDict.GetReadOnlyEntity(SelectedItem.PlacedEntityID);
             Color color = isPlacedItemValid ? new Color((byte)0, (byte)255, (byte)0, (byte)150) : new Color((byte)255, (byte)0, (byte)0, (byte)190);
@@ -152,10 +149,15 @@ public class InventoryWindow : WindowElement
 
     public override void Draw(SpriteBatch spriteBatch)
     {
+        base.Draw(spriteBatch);
+    }
+
+    public override void DrawTop(SpriteBatch spriteBatch)
+    {
         if (isDraggingItem)
         {
             draggedItem.item.Draw(spriteBatch, draggedItem.box, false);
         }
-        base.Draw(spriteBatch);
+        base.DrawTop(spriteBatch);
     }
 }

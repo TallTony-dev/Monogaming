@@ -20,7 +20,7 @@ public static class TileDict
 
     public static void LoadTiles(string fileName)
     {
-        string path = "./GameData/" + fileName + ".json";
+        string path = "./Content/GameData/" + fileName + ".json";
 
         Stream textStream = File.OpenRead(path);
         JsonDocument document = JsonDocument.Parse(textStream);

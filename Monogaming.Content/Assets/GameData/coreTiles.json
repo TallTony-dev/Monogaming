@@ -4,7 +4,7 @@
 
     "gravel": {
         "ID": "core_gravel",
-        "TextureID": "testTile",
+        "TextureID": "baseTiles.testTile",
         "Walkable": true,
         "Blocking": false
     },

@@ -7,8 +7,8 @@ public class Hitbox
 {
     private const int TextDrawXOffset = 3;
     private Vector2 _pos;
-    private int _width;
-    private int _height;
+    private float _width;
+    private float _height;
 
     [JsonIgnore]
     public Vector2 Center
@@ -21,12 +21,12 @@ public class Hitbox
     [JsonIgnore]
     public Vector2 Pos { get => _pos; set => _pos = value; }
     [JsonIgnore]
-    public Vector2 Dims { get => new Vector2(Width, Height); }
+    public Vector2 Dims { get => new Vector2(_width, _height); }
 
 
 
-    public int Width { get => _width; set => _width = value; }
-    public int Height { get => _height; set => _height = value; }
+    public int Width { get => (int)_width; set => _width = value; }
+    public int Height { get => (int)_height; set => _height = value; }
 
     public int X { get => (int)Pos.X; }
     public int Y { get => (int)Pos.Y; }
@@ -35,25 +35,25 @@ public class Hitbox
     public Hitbox(int X, int Y, int width, int height)
     {
         Pos = new Vector2(X, Y);
-        Width = width;
-        Height = height;
+        _width = width;
+        _height = height;
     }
-    public Hitbox(Vector2 pos, int width, int height)
+    public Hitbox(Vector2 pos, float width, float height)
     {
         Pos = pos;
-        Width = width;
-        Height = height;
+        _width = width;
+        _height = height;
     }
-    public Hitbox(int width, int height)
+    public Hitbox(float width, float height)
     {
-        Width = width;
-        Height = height;
+        _width = width;
+        _height = height;
     }
     public Hitbox(Hitbox hitbox)
     {
         Pos = hitbox.Pos;
-        Width = hitbox.Width;
-        Height = hitbox.Height;
+        _width = hitbox.Width;
+        _height = hitbox.Height;
     }
 
     public void CeilPos()
@@ -70,23 +70,23 @@ public class Hitbox
     }
     public virtual void SetDims(Vector2 deltaDims)
     {
-        Width = (int)deltaDims.X;
-        Height = (int)deltaDims.Y;
+        _width = deltaDims.X;
+        _height = deltaDims.Y;
     }
     public virtual void ChangeDims(Vector2 deltaDims)
     {
-        Width += (int)deltaDims.X;
-        Height += (int)deltaDims.Y;
+        _width += deltaDims.X;
+        _height += deltaDims.Y;
     }
     public ref Vector2 GetPosRef()
     {
         return ref _pos;
     }
-    public ref int GetWidthRef()
+    public ref float GetWidthRef()
     {
         return ref _width;
     }
-    public ref int GetHeightRef()
+    public ref float GetHeightRef()
     {
         return ref _height;
     }
@@ -125,7 +125,7 @@ public class Hitbox
 
     public Rectangle ToRect()
     {
-        return new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height);
+        return new Rectangle((int)Pos.X, (int)Pos.Y, (int)Width, (int)Height);
     }
 
     public void DrawStringInto(SpriteBatch spriteBatch, string text, Color color, float size = 0.7f)

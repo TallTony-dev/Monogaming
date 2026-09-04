@@ -30,7 +30,7 @@ public class ItemEntity : InteractableEntity
 
     public override Entity CopyToPos(Vector2 pos)
     {
-        Hitbox newBox = new Hitbox(pos, DrawBox.Width, DrawBox.Height);
+        Hitbox newBox = new Hitbox(pos, (int)DrawBox.Width, (int)DrawBox.Height);
         return new ItemEntity(newBox, Item);
     }
 

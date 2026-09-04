@@ -108,7 +108,7 @@ public class UiElement : ImUpdatable
             }
         }
 
-        return new Hitbox(retPos, child.Width, child.Height);
+        return new Hitbox(retPos, (int)child.Width, (int)child.Height);
     }
 
 
@@ -178,6 +178,7 @@ public class UiElement : ImUpdatable
     public void SetRealDims(Vector2 dims)
     {
         DrawBox.SetDims(dims);
+        UpdatePos(UI.LiveUI.gameWindowRef.ClientBounds with { X = 0, Y = 0 });
     }
 
     /// <summary>
@@ -224,7 +225,7 @@ public class UiElement : ImUpdatable
     /// Runs on the assumption of no overlapping non familially related elements
     /// Gets the element nearest the bottom of the tree that intersects a pos
     /// </summary>
-    public UiElement GetTopCollision(Vector2 pos)
+    public virtual UiElement GetTopCollision(Vector2 pos)
     {
         foreach (UiElement child in Children)
         {
@@ -278,6 +279,20 @@ public class UiElement : ImUpdatable
             if (child.IsVisible)
             {
                 child.Draw(spriteBatch);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Draw things on top of the ui ie held items and such
+    /// </summary>
+    public virtual void DrawTop(SpriteBatch spriteBatch)
+    {
+        foreach (UiElement child in Children)
+        {
+            if (child.IsVisible)
+            {
+                child.DrawTop(spriteBatch);
             }
         }
     }

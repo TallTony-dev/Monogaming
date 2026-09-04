@@ -168,7 +168,7 @@ public class Inventory
             if (Items[i].Count == 0)
             {
                 Items.RemoveAt(i);
-
+                HasChanged = true;
                 continue;
             }
         }

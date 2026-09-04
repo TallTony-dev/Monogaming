@@ -25,7 +25,7 @@ public class UI : ImUpdatable
 
     public GameWindow gameWindowRef { get; private set; }
 
-    private const string UIPath = "./GameData/Menus/";
+    private const string UIPath = "./Content/GameData/Menus/";
     //gonna try just doing this in code via classes otherwise it becomes a binding mess
     // private const string PopupsUIPath = "./GameData/Menus/Popups/";
     public UI(GameWindow windowRef)
@@ -115,21 +115,6 @@ public class UI : ImUpdatable
         }
     }
 
-    // public void AddPopup(string fileName)
-    // {
-    //     try
-    //     {
-    //         Stream textStream = File.OpenRead(PopupsUIPath + fileName);
-    //         UiElement element = JsonSerializer.Deserialize<UiElement>(textStream);
-    //         popups.Add(element);
-    //         element.ActivateElement(true);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Debug.WriteError($"Failed to load popup {fileName} with error {ex.Message}");
-    //     }
-    // }
-
     public void AddPopup(WindowElement popup)
     {
         windows.Add(popup);
@@ -143,17 +128,31 @@ public class UI : ImUpdatable
         return windows.Any(t => t.ID == id);
     }
 
+    public bool DoesMouseIntersectWithAnyWindow()
+    {
+        return windows.Any(t => t.GetTopCollision(InputHelper.NewMouse.Position.ToVector2()) != null);
+    }
+
     public void Update(GameTime gameTime)
     {
         foreach (WindowElement element in windows)
         {
             element.Update(gameTime);
         }
+
         //remove ones, children because theres a root element, this sucks i know lol
         windows.RemoveAll(t => t.ShouldRemove);
-        if (windows.Any(t => t.ScaledDrawBox.Intersects(InputHelper.NewMouse.Position)))
+        if (DoesMouseIntersectWithAnyWindow())
         {
             InputConditions.click.Consume();
+        }
+
+        WindowElement toMoveFront;
+        if ((toMoveFront = windows.Find(t => t.ShouldMoveToFront)) != null)
+        {
+            windows.Remove(toMoveFront);
+            windows.Insert(0, toMoveFront);
+            toMoveFront.ShouldMoveToFront = false;
         }
 
         foreach (UiElement menu in menus.Values)
@@ -168,16 +167,29 @@ public class UI : ImUpdatable
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        foreach (UiElement menu in menus.Values)
+        for (int i = menus.Values.Count - 1; i >= 0; i--)
         {
+            var menu = menus.ElementAt(i).Value;
             if (menu.IsVisible)
             {
                 menu.Draw(spriteBatch);
             }
         }
+        for (int i = windows.Count - 1; i >= 0; i--)
+        {
+            windows[i].Draw(spriteBatch);
+        }
+
+        foreach (UiElement menu in menus.Values)
+        {
+            if (menu.IsVisible)
+            {
+                menu.DrawTop(spriteBatch);
+            }
+        }
         foreach (UiElement element in windows)
         {
-            element.Draw(spriteBatch);
+            element.DrawTop(spriteBatch);
         }
     }
     //TODO: implement this wrapper and also an animation handler one too

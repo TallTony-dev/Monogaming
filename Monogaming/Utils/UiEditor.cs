@@ -1,9 +1,11 @@
 using Apos.Input;
 using Monogaming.Entities;
+using Monogaming.Monogaming.Utils;
 using Monogaming.TextureThings;
 using Monogaming.Ui;
 using NativeFileDialogNET;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Monogaming.Utils;
@@ -34,22 +36,6 @@ public class UiEditor
         HandleWindowChange(null, null);
     }
 
-    private static async Task<(bool ok, string path)> AskUserOpenFile()
-    {
-        using var selectFileDialog = new NativeFileDialog()
-        .SelectFile();
-
-        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
-        return (result == DialogResult.Okay, output);
-    }
-    private static async Task<(bool ok, string path)> AskUserSaveFile()
-    {
-        using var selectFileDialog = new NativeFileDialog()
-        .SaveFile();
-
-        DialogResult result = selectFileDialog.Open(out string output, "./GameData/Menus");
-        return (result == DialogResult.Okay, output + ".json");
-    }
     private void AddElementToEditor(UiElement element)
     {
         if (selected != null)
@@ -97,7 +83,7 @@ public class UiEditor
         switch (args.GetProperty("UiCommand").GetString())
         {
             case ("LoadFile"):
-                (bool loadok, string loadPath) = await AskUserOpenFile();
+                (bool loadok, string loadPath) = await FileSystemUtils.AskUserOpenFile(Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Content/GameData/Chunks"));
                 if (loadok)
                 {
                     LoadElement(loadPath);
@@ -108,7 +94,7 @@ public class UiEditor
                 }
                 break;
             case ("SaveFile"):
-                (bool saveok, string savePath) = await AskUserSaveFile();
+                (bool saveok, string savePath) = await FileSystemUtils.AskUserSaveFile(Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Content/GameData/Chunks"));
                 if (saveok)
                 {
                     SaveWorkingElement(savePath);
@@ -210,12 +196,12 @@ public class UiEditor
             () => GetStringFromFloat(ref element.DrawBox.GetPosRef().Y));
 
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "heightElement")).
-            BindString((s) => SetIntFromString(ref element.DrawBox.GetHeightRef(), s),
-            () => GetStringFromInt(ref element.DrawBox.GetHeightRef()));
+            BindString((s) => SetFloatFromString(ref element.DrawBox.GetHeightRef(), s),
+            () => GetStringFromFloat(ref element.DrawBox.GetHeightRef()));
 
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "widthElement")).
-            BindString((s) => SetIntFromString(ref element.DrawBox.GetWidthRef(), s),
-            () => GetStringFromInt(ref element.DrawBox.GetWidthRef()));
+            BindString((s) => SetFloatFromString(ref element.DrawBox.GetWidthRef(), s),
+            () => GetStringFromFloat(ref element.DrawBox.GetWidthRef()));
 
             ((TextInputElement)gameStateRef.Ui.GetElement("uiEditorMenu", "idElement")).
             BindString((s) => { element.ID = s; return true; },

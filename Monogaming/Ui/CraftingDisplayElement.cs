@@ -42,7 +42,7 @@ public class CraftingDisplayElement : UiElement
 
     private static int GetItemWidth(int prefItemsPerRow, Hitbox ScaledDrawBox)
     {
-        return Math.Clamp(ScaledDrawBox.Width / prefItemsPerRow + ItemPadding * prefItemsPerRow, MinItemWidth, MaxItemWidth);
+        return (int)Math.Clamp(ScaledDrawBox.Width / prefItemsPerRow + ItemPadding * prefItemsPerRow, MinItemWidth, MaxItemWidth);
     }
 
 
@@ -53,7 +53,7 @@ public class CraftingDisplayElement : UiElement
         List<(Hitbox, Item)> values = new();
 
         int itemWidth = GetItemWidth(prefItemsPerRow, ScaledDrawBox);
-        int itemsPerRow = ScaledDrawBox.Width / itemWidth;
+        int itemsPerRow = (int)ScaledDrawBox.Width / itemWidth;
 
         int xPerItem = itemWidth + ItemPadding;
         int itemCount = getIngredients ? recipe.Ingredients.Count : recipe.Outputs.Count;

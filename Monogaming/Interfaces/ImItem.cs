@@ -6,5 +6,5 @@ public interface ImItem
 {
     void Draw(SpriteBatch spriteBatch, Hitbox screen, bool withBg);
     void Draw(SpriteBatch spriteBatch, Hitbox screen, Color color, bool withBg);
-
+    int Count { get;}
 }

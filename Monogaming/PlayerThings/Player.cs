@@ -1,5 +1,6 @@
 using Apos.Input;
 using Monogaming.Entities;
+using Monogaming.Interfaces;
 using Monogaming.Items;
 using Monogaming.MapThings;
 using Monogaming.TextureThings;
@@ -14,13 +15,13 @@ public class Player
 {
     private const int InteractDistance = 120;
     private const int ColliderDiff = 2;
-
+    private const int LightRadius = 20;
     public static Player LivePlayer { get; private set; }
 
     public Body body { get; private set; } = new(Vector2.Zero, Map.TileDims - ColliderDiff * 2, Map.TileDims - ColliderDiff * 2, 10f);
     private InputManager inputManager = new();
     public TextureHandler TextureHandler { get; private set; }
-
+    
     public Inventory Inventory { get; private set; }
 
 
@@ -101,10 +102,10 @@ public class Player
         {
             UpdateSaveWithCurrentInv(); //adds items to discovered
 
-            UI.LiveUI.AddPopup(new CompositeWindow(new Hitbox(140, 120, 460, 180),
+            UI.LiveUI.AddPopup(new CompositeWindow(new Hitbox(140, 120, 700, 250),
             new List<UiElement>() {
-                (inventoryWindow = new InventoryWindow(Inventory, new Hitbox(0,0, 260, 180), "inv")),
-                new CraftingMenuWindow(Inventory, GetNearbyWorkbenches(), new Hitbox(0,0, 200, 180)),
+                (inventoryWindow = new InventoryWindow(Inventory, new Hitbox(0,0, 400, 250), "inv")),
+                new CraftingMenuWindow(Inventory, GetNearbyWorkbenches(), new Hitbox(0,0, 300, 250)),
             }, "playerInventory"));
         }
 
@@ -116,8 +117,6 @@ public class Player
         Inventory.Update(gameTime);
     }
 
-
-
     public void Draw(SpriteBatch batch)
     {
         if (inventoryWindow != null)
@@ -125,11 +124,14 @@ public class Player
             inventoryWindow.TryDrawSelectedItem(batch);
         }
         Rectangle rect = body.ToRect();
-        rect.X -= ColliderDiff;
-        rect.Y -= ColliderDiff;
-        rect.Width += ColliderDiff * 2;
-        rect.Height += ColliderDiff * 2;
+        rect.Inflate(ColliderDiff, ColliderDiff);
         TextureHandler.Draw(batch, rect);
     }
 
+    public void DrawLight(SpriteBatch batch)
+    {
+        var rect = body.ToRect();
+        rect.Inflate(LightRadius, LightRadius);
+        TextureHandler.TryDrawLight(batch, rect);
+    }
 }

@@ -6,6 +6,7 @@ namespace Monogaming.Items;
 
 public class Recipe : ImItem
 {
+    public int Count => 1;
     //string in list is id or an expression for getting ids, int is count
     public List<Item> Ingredients { get; private set; }
     public List<Item> Outputs { get; private set; }

@@ -33,7 +33,7 @@ public class ProcessingEntity : TileEntity
 
     public override Entity CopyToPos(Vector2 worldPos)
     {
-        var e = new ProcessingEntity(Name, WorkbenchName, WorkbenchSpeed, ID, Width, Height, IsSolid, Inputs.Copy(), Outputs.Copy(), Inventory, TextureHandler.Copy());
+        var e = new ProcessingEntity(Name, WorkbenchName, WorkbenchSpeed, ID, (int)Width, (int)Height, IsSolid, Inputs.Copy(), Outputs.Copy(), Inventory, TextureHandler.Copy());
         e.SetPos(worldPos);
         return e;
     }
@@ -76,11 +76,18 @@ public class ProcessingEntity : TileEntity
     /// </summary>
     public override void Interact()
     {
-        var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2",
-        null,
-        () => Debug.WriteInfo("Pressed butt"));
+        UI.LiveUI.AddPopup(new CompositeWindow(new Hitbox(140, 120, 460, 180),
+        new List<UiElement>() {
+            new InventoryWindow(Inputs, new Hitbox(0,0, 260, 180), "inputs"),
+            //new ProgressBarWindow(ref Progress, new Hitbox(0,0, 260, 180), "progress"),
 
-        UI.LiveUI.AddPopup(popup);
+            new InventoryWindow(Outputs, new Hitbox(0,0, 200, 180), "outputs"),
+        }, "processingInventory"));
+        //var popup = new TwoButtonWindow("TestTextlolol", "butt1", "butt2",
+        //null,
+        //() => Debug.WriteInfo("Pressed butt"));
+
+        //UI.LiveUI.AddPopup(popup);
     }
 
 }

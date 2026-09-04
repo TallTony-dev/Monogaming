@@ -36,6 +36,13 @@ public class Camera
         }
     }
 
+    public Matrix TranslationMatrix
+    {
+        get
+        {
+            return Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
+        }
+    }
     /// <summary>
     /// View matrix to be passed when starting spritebatch
     /// </summary>
@@ -43,7 +50,7 @@ public class Camera
     {
         get
         {
-            Matrix m = Matrix.CreateTranslation(new Vector3(-prevTarget.X, -prevTarget.Y, 0));
+            Matrix m = TranslationMatrix;
             m *= ScaleMatrix;
             m *= Matrix.CreateTranslation(gameWindowRef.ClientBounds.Width / 2, gameWindowRef.ClientBounds.Height / 2, 0);
 
