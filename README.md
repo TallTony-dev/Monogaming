@@ -14,13 +14,9 @@ Jsons are stored in ./GameData/**/*.json for now, should find a better way to ma
 
 Hopefully I'll implement visual editors for json to make texture creation and atlassing/modification easier, will definitly make a level design one at some point. (Currently there is a ui editor and map editor! ui editor lacks some features but helps to get a skeleton of layout). The editors are going to be in game for now, I'll probably make a flag that prevents their attachment to the program on publish tho. 
 
-to edit mgcb on mac: dotnet tool run mgcb-editor-mac ./Content/Content.mgcb
-
 .jsons contain data for things (something new I'm trying that should be helpful)
 
-Aseprite export: fileName is {title}.{tag}.{tagframe}
-
-Current external libs: monogame, apos.input, nativefiledialognet
+Current external libs: monogame, apos.input, nativefiledialognet, asepritedotnet
 
 Potential future opimizations:
 - Use ZLinq for faster linq
